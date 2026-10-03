@@ -100,7 +100,7 @@ function SkillBar({ name, level, delay, icon }: { name: string; level: number; d
         <motion.span className="skill-bar-pct" animate={{ scale: hovered ? 1.2 : 1 }} style={{ color: hovered ? '#ff5500' : 'var(--red)' }}>{level}%</motion.span>
       </div>
       <div className="skill-bar-track">
-        <motion.div className="skill-bar-fill" initial={{ width: 0 }} whileInView={{ width: `${level}%` }} viewport={{ once: true }} transition={{ duration: 1.2, delay: delay + 0.2, ease: 'easeOut' }} />
+        <motion.div className="skill-bar-fill" animate={{ width: `${level}%` }} transition={{ duration: 1.2, delay: delay + 0.2, ease: 'easeOut' }} />
       </div>
     </motion.div>
   );
@@ -121,11 +121,11 @@ function RadarDisplay() {
       <div className="radar-bars">
         {segs.map((s, i) => (
           <motion.div key={s.label} className="radar-bar-row"
-            initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+            animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}
           >
             <span className="radar-label">{s.label}</span>
             <div className="radar-bar-track">
-              <motion.div className="radar-bar-fill" initial={{ width: 0 }} whileInView={{ width: `${s.value}%` }} viewport={{ once: true }}
+              <motion.div className="radar-bar-fill" animate={{ width: `${s.value}%` }}
                 transition={{ duration: 1.1, delay: i * 0.1 + 0.3 }} style={{ background: `linear-gradient(to right, ${s.color}88, ${s.color})` }} />
             </div>
             <span className="radar-value" style={{ color: s.color }}>{s.value}%</span>
@@ -140,7 +140,7 @@ function CaseCard({ project, onClick, delay }: { project: ProjectData; onClick: 
   const [hovered, setHovered] = useState(false);
   return (
     <motion.div className="case-card"
-      initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay }} whileHover={{ y: -10, scale: 1.02 }}
       onHoverStart={() => setHovered(true)} onHoverEnd={() => setHovered(false)}
       onClick={onClick} style={{ cursor: 'pointer' }}
@@ -379,7 +379,7 @@ export default function PortfolioPage() {
               { val: 129, suf: 'k+', label: 'Records Processed', icon: <Database size={18} /> },
               { val: 3, suf: '+', label: 'Projects Shipped', icon: <Cpu size={18} /> },
             ].map((s, i) => (
-              <motion.div key={i} className="stat-box" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} whileHover={{ scale: 1.08 }}>
+              <motion.div key={i} className="stat-box" whileHover={{ scale: 1.08 }}>
                 <motion.div className="stat-icon" animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 4, delay: i, repeat: Infinity }}>{s.icon}</motion.div>
                 <span className="stat-value"><Counter target={s.val} suffix={s.suf} decimals={s.decimals} /></span>
                 <span className="stat-label">{s.label}</span>
@@ -389,15 +389,13 @@ export default function PortfolioPage() {
         </section>
 
         <section id="skills">
-          <motion.h2 className="section-title skills-title" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>Technical Skills</motion.h2>
+          <h2 className="section-title skills-title">Technical Skills</h2>
           <div className="skills-layout">
-            <div className="skill-bars">{skillBars.map((s, i) => <SkillBar key={s.name} {...s} delay={i * 0.1} />)}</div>
+            <div className="skill-bars">{skillBars.map((s, i) => <SkillBar key={s.name} {...s} delay={0} />)}</div>
             <div className="skills-chips-col">
               <div className="skills-grid">
                 {skillsList.map((skill, i) => (
                   <motion.div key={skill} className="skill-chip"
-                    initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: i * 0.03 }}
                     whileHover={{ scale: 1.15, borderColor: 'var(--red)', color: 'var(--off-white)', boxShadow: '0 0 12px var(--red-glow)' }}
                   >{skill}</motion.div>
                 ))}
@@ -408,31 +406,24 @@ export default function PortfolioPage() {
         </section>
 
         <section id="projects">
-          <motion.div className="section-header" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+          <div className="section-header">
             <h2 className="section-title proj-title">Featured Projects</h2>
             <span className="section-count">{projects.length} RECENT WORKS</span>
-          </motion.div>
+          </div>
           <div className="cases-grid">
-            {projects.map((p, i) => <CaseCard key={p.caseNum} project={p} delay={i * 0.15} onClick={() => setSelectedProject(p)} />)}
+            {projects.map((p, i) => <CaseCard key={p.caseNum} project={p} delay={0} onClick={() => setSelectedProject(p)} />)}
           </div>
         </section>
 
         <section id="education">
-          <motion.h2 className="section-title edu-title" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>Education & Journey</motion.h2>
+          <h2 className="section-title edu-title">Education & Journey</h2>
           <div className="timeline">
             {education.map((item, i) => (
-              <motion.div key={i} className="timeline-item"
-                initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.15 }} whileHover={{ x: 8 }}
-              >
+              <motion.div key={i} className="timeline-item" whileHover={{ x: 8 }}>
                 <div className="timeline-year">{item.year}</div>
-                <motion.div className="timeline-dot"
-                  whileInView={{ scale: [0, 1.4, 1] }} viewport={{ once: true }}
-                  transition={{ delay: i * 0.15 + 0.2, duration: 0.4 }}
-                  style={{ borderColor: item.color, background: `${item.color}22` }}
-                >
+                <div className="timeline-dot" style={{ borderColor: item.color, background: `${item.color}22` }}>
                   <div className="timeline-dot-icon" style={{ color: item.color }}>{item.icon}</div>
-                </motion.div>
+                </div>
                 <div className="timeline-body">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
                     <h4>{item.degree}</h4>
@@ -447,7 +438,7 @@ export default function PortfolioPage() {
         </section>
 
         <section id="contact">
-          <motion.div className="contact-section" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <div className="contact-section">
             <h2 className="section-title contact-title" style={{ marginBottom: 12 }}>Get In Touch</h2>
             <p className="contact-desc">Looking to collaborate or recruit? Feel free to reach out.</p>
             <div className="contact-form">
@@ -482,7 +473,7 @@ export default function PortfolioPage() {
               <a href="tel:+918904540775" className="contact-btn contact-btn-ghost"><Phone size={16} /> CALL</a>
               <a href="https://github.com/eshwarhs" target="_blank" rel="noreferrer" className="contact-btn contact-btn-ghost"><GithubIcon size={16} /> GITHUB</a>
             </div>
-          </motion.div>
+          </div>
         </section>
 
       </main>
