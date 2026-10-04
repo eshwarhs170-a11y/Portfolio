@@ -11,8 +11,8 @@ export default function ThemeToggle() {
       className="theme-toggle"
       onClick={toggleTheme}
       title={isDark ? 'Switch to Day Shift' : 'Switch to Night Ops'}
-      whileHover={{ scale: 1.08 }}
-      whileTap={{ scale: 0.93 }}
+      whileHover={{ scale: 1.08, boxShadow: '0 0 15px rgba(211, 47, 47, 0.6)' }}
+      whileTap={{ scale: 0.93, boxShadow: '0 0 5px rgba(211, 47, 47, 0.8)' }}
     >
       <div className="theme-toggle-track">
         <motion.div

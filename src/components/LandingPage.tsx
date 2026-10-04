@@ -109,6 +109,20 @@ export default function LandingPage({ onEnter }: Props) {
     return () => clearInterval(interval);
   }, []);
 
+  // ── Auto-silence background music when typing is done ───────────────────────
+  useEffect(() => {
+    if (!isTyping) {
+      window.dispatchEvent(new Event('force-fade-music'));
+    }
+  }, [isTyping]);
+
+  const playVoiceBriefing = () => {
+    const voiceAudio = new Audio('/voice.mp3');
+    voiceAudio.volume = 1;
+    voiceAudio.play().catch(() => {});
+  };
+
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -215,15 +229,46 @@ export default function LandingPage({ onEnter }: Props) {
               <span>CLEARANCE: TS</span>
             </div>
 
-            <motion.button
-              className="enter-btn"
-              style={{ opacity: showButton ? 1 : 0, pointerEvents: showButton ? 'auto' : 'none', marginTop: 36 }}
-              whileHover={{ scale: 1.06, boxShadow: '0 0 40px rgba(163, 0, 0, 0.8)' }}
-              whileTap={{ scale: 0.97 }}
-              onClick={onEnter}
-            >
-              OPEN THE ARCHIVE
-            </motion.button>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', marginTop: 36, opacity: showButton ? 1 : 0, pointerEvents: showButton ? 'auto' : 'none', transition: 'opacity 0.5s' }}>
+              <motion.button
+                className="enter-btn"
+                style={{ position: 'relative', overflow: 'hidden', padding: '16px 24px', width: '100%' }}
+                whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(163, 0, 0, 0.6)' }}
+                whileTap={{ scale: 0.97 }}
+                onClick={onEnter}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#a30000' }}>
+                    <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/>
+                    <path d="M12 16v-4"/>
+                    <path d="M12 8h.01"/>
+                    <path d="M8 12a4 4 0 0 1 8 0"/>
+                  </svg>
+                  <span style={{ fontSize: '0.9rem', letterSpacing: '2px' }}>OPEN THE ARCHIVE</span>
+                </div>
+                <motion.div 
+                  style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '3px', background: '#d4a017', boxShadow: '0 0 10px #d4a017', opacity: 0.8 }}
+                  animate={{ y: [0, 50, 0] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' }}
+                />
+              </motion.button>
+
+              <motion.button
+                style={{ 
+                  background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', 
+                  fontFamily: 'monospace', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '6px', 
+                  cursor: 'pointer', padding: '4px 10px' 
+                }}
+                whileHover={{ color: '#d4a017' }}
+                onClick={playVoiceBriefing}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                </svg>
+                PLAY AUDIO BRIEFING
+              </motion.button>
+            </div>
           </div>
         </Tilt>
       </div>
