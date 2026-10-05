@@ -73,7 +73,7 @@ export default function LandingPage({ onEnter }: Props) {
   const springX = useSpring(useMotionValue(window.innerWidth / 2), { stiffness: 80, damping: 20 });
   const springY = useSpring(useMotionValue(window.innerHeight / 2), { stiffness: 80, damping: 20 });
 
-  const fullText = "Every problem leaves evidence.\nI find the solution.";
+  const fullText = "Every problem leaves evidence.\nI try to find the solution.";
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -96,6 +96,8 @@ export default function LandingPage({ onEnter }: Props) {
       } else {
         setIsTyping(false);
         setTimeout(() => setShowButton(true), 800);
+        // Auto-open the archive 2 seconds after the button appears
+        setTimeout(() => onEnter(), 800 + 2000);
       }
     };
     const init = setTimeout(type, 500);

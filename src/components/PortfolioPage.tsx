@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import CyberVortexCanvas from './CyberVortexCanvas';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import {
   Folder, FileText, User, Mail, Code, Shield, Database,
@@ -188,7 +189,7 @@ function CaseCard({ project, onClick, delay }: { project: ProjectData; onClick: 
         </div>
 
         {/* ── BACK ── */}
-        <div className="flip-card-back case-card" style={{ background: 'linear-gradient(145deg, #0a0f18, #111827)', borderColor: 'rgba(163,0,0,0.5)' }}>
+        <div className="flip-card-back case-card" style={{ background: 'linear-gradient(145deg, rgba(10, 15, 24, 0.8), rgba(17, 24, 39, 0.8))', borderColor: 'rgba(163,0,0,0.5)' }}>
           {/* Flip back hint */}
           <motion.div
             onClick={e => { e.stopPropagation(); setFlipped(false); }}
@@ -294,6 +295,7 @@ export default function PortfolioPage() {
   const { theme } = useTheme();
   const [activeSection, setActiveSection] = useState('home');
   const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
+  const [contactVisible, setContactVisible] = useState(false);
 
   const { scrollY } = useScroll();
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.3]);
@@ -314,6 +316,17 @@ export default function PortfolioPage() {
     const ids = ['home', 'skills', 'projects', 'education', 'contact'];
     const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); }), { threshold: 0.35 });
     ids.forEach(id => { const el = document.getElementById(id); if (el) obs.observe(el); });
+    return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const el = document.getElementById('contact');
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setContactVisible(entry.isIntersecting),
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
     return () => obs.disconnect();
   }, []);
 
@@ -377,6 +390,9 @@ export default function PortfolioPage() {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} className="portfolio-page" data-theme={theme}>
+      {/* Full-screen animated background — fades in at contact section */}
+      <CyberVortexCanvas visible={contactVisible} />
+
       <header className="portfolio-header">
         <div className="header-brand">
           <motion.div whileHover={{ rotateY: 180, scale: 1.2 }} transition={{ duration: 0.4 }} style={{ display: 'flex', alignItems: 'center' }}>
@@ -529,12 +545,19 @@ export default function PortfolioPage() {
         </section>
 
 
-        <section id="projects">
-          <div className="section-header">
-            <h2 className="section-title proj-title">Featured Projects</h2>
-            <span className="section-count">{projects.length} RECENT WORKS</span>
+        <section id="projects" style={{ position: 'relative', overflow: 'hidden', padding: '60px 0' }}>
+          {/* Animated Background for Projects Section */}
+          <div className="cyber-grid-anim" />
+
+          <div className="section-header" style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
+            <h2 className="section-title proj-title" style={{ margin: 0, textShadow: '0 0 15px rgba(239, 68, 68, 0.4)' }}>Featured Dossiers</h2>
+            <div style={{ height: '1px', flex: 1, background: 'linear-gradient(to right, var(--accent-1), transparent)' }} />
+            <span className="section-count" style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--accent-1)', padding: '6px 12px', borderRadius: '4px', color: 'var(--accent-1)' }}>
+              {projects.length} ACTIVE CASES
+            </span>
           </div>
-          <div className="cases-grid">
+
+          <div className="cases-grid" style={{ position: 'relative', zIndex: 2 }}>
             {projects.map((p, i) => <CaseCard key={p.caseNum} project={p} delay={0} onClick={() => setSelectedProject(p)} />)}
           </div>
         </section>
@@ -599,26 +622,17 @@ export default function PortfolioPage() {
         <section id="certifications">
           <div className="section-header">
             <h2 className="section-title edu-title">Declassified Records // Certifications & Achievements</h2>
-            <span className="section-count">4 FILES FOUND</span>
+            <span className="section-count">2 FILES FOUND</span>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
-            <div className="case-card" style={{ padding: '24px' }}>
-              <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 16px 0', color: 'var(--accent-4)' }}><Award size={18}/> CodeFury 9.0</h4>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Participated in the 9th Annual National-Level Hackathon organized by IEEE UVCE Computer Society.</p>
-              <div style={{ position: 'absolute', top: 12, right: 12, opacity: 0.1 }}><Shield size={40} /></div>
-            </div>
-            <div className="case-card" style={{ padding: '24px' }}>
-              <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 16px 0', color: 'var(--accent-2)' }}><Cpu size={18}/> H4CKING Workshop</h4>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Participated in cybersecurity workshop conducted by MARVEL, UVCE.</p>
-              <div style={{ position: 'absolute', top: 12, right: 12, opacity: 0.1 }}><Shield size={40} /></div>
-            </div>
             <div className="case-card" style={{ padding: '24px', borderLeft: '4px solid var(--accent-3)' }}>
               <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 16px 0', color: 'var(--accent-3)' }}><Zap size={18}/> NammaUGNEET Impact</h4>
               <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Adopted by 1,200+ NEET UG aspirants as a real-time college predictor during Karnataka's 2026 counselling season.</p>
             </div>
             <div className="case-card" style={{ padding: '24px' }}>
-              <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 16px 0', color: 'var(--accent-5)' }}><User size={18}/> Science Drama</h4>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Participated in Division Level Science Drama Competition.</p>
+              <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 16px 0', color: 'var(--accent-4)' }}><Award size={18}/> CodeFury 9.0</h4>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Participated in the 9th Annual National-Level Hackathon organized by IEEE UVCE Computer Society.</p>
+              <div style={{ position: 'absolute', top: 12, right: 12, opacity: 0.1 }}><Shield size={40} /></div>
             </div>
           </div>
         </section>
@@ -636,29 +650,21 @@ export default function PortfolioPage() {
               <p className="contact-desc" style={{ maxWidth: '600px', margin: '0 auto' }}>Open to internships, collaborations, and AI/Web dev opportunities. The network is secure, drop a message.</p>
             </div>
 
-            {/* Cinematic Image */}
-            <motion.div 
-              initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true }}
-              style={{ width: '100%', height: '400px', borderRadius: '16px', overflow: 'hidden', marginBottom: '60px', position: 'relative', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}
-            >
-              <img src="/cyber_contact.jpg" alt="Cyber Contact Terminal" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, var(--bg-main) 2%, transparent 50%)' }} />
-            </motion.div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: '60px', maxWidth: '1000px', margin: '0 auto', width: '100%' }}>
               {/* Left: Contact Form */}
-              <motion.div className="contact-form cyber-border-run" style={{ padding: '20px', borderRadius: '16px', background: 'var(--card-bg)' }} whileHover={{ boxShadow: '0 0 30px rgba(163,0,0,0.15)' }} transition={{ duration: 0.3 }}>
-                <div className="form-row">
+              <motion.div className="contact-form cyber-border-run" style={{ padding: '30px', borderRadius: '16px', background: 'rgba(10, 15, 25, 0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }} whileHover={{ boxShadow: '0 0 30px rgba(163,0,0,0.15)' }} transition={{ duration: 0.3 }}>
+                <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                   <div className="form-group">
-                    <label className="form-label"><User size={10} style={{ marginRight: 5 }} />YOUR NAME</label>
+                    <label className="form-label"><User size={10} style={{ marginRight: 5 }} />NAME</label>
                     <input type="text" className="form-input" placeholder="Your name or organization" />
                   </div>
                   <div className="form-group">
-                    <label className="form-label"><Mail size={10} style={{ marginRight: 5 }} />EMAIL ADDRESS</label>
+                    <label className="form-label"><Mail size={10} style={{ marginRight: 5 }} />EMAIL</label>
                     <input type="email" className="form-input" placeholder="your.email@example.com" />
                   </div>
                 </div>
-                <div className="form-group">
+                <div className="form-group" style={{ marginBottom: '24px' }}>
                   <label className="form-label"><FileText size={10} style={{ marginRight: 5 }} />MESSAGE</label>
                   <textarea className="form-input form-textarea" placeholder="Detail your project or opportunity..." rows={4} />
                 </div>
@@ -679,7 +685,7 @@ export default function PortfolioPage() {
                   { icon: <InstagramIcon />, label: 'Instagram', href: 'https://www.instagram.com/_eshwar__hs_', color: '#e1306c' },
                 ].map((ch) => (
                   <a key={ch.label} href={ch.href} target="_blank" rel="noreferrer"
-                    style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '14px 18px', background: 'var(--card-bg)', border: '1px solid var(--glass-border)', borderLeft: `3px solid ${ch.color}`, borderRadius: '8px', textDecoration: 'none', color: 'var(--text-main)', transition: 'all 0.2s ease' }}
+                    style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', background: 'rgba(10, 15, 25, 0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.05)', borderLeft: `3px solid ${ch.color}`, borderRadius: '12px', textDecoration: 'none', color: 'var(--text-main)', transition: 'all 0.2s ease' }}
                     onMouseEnter={e => (e.currentTarget.style.transform = 'translateX(6px)')}
                     onMouseLeave={e => (e.currentTarget.style.transform = 'translateX(0)')}
                   >
@@ -697,20 +703,40 @@ export default function PortfolioPage() {
 
       </main>
 
-      <footer className="portfolio-footer">
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: '20px' }}>
-          <motion.a whileHover={{ y: -3, scale: 1.1 }} href="https://github.com/eshwarhs170-a11y" target="_blank" rel="noreferrer" style={{ color: 'var(--text-muted)' }} title="GitHub"><GithubIcon size={20} /></motion.a>
-          <motion.a whileHover={{ y: -3, scale: 1.1 }} href="https://www.linkedin.com/in/eshwar-h-s-4b820638a" target="_blank" rel="noreferrer" style={{ color: 'var(--text-muted)' }} title="LinkedIn"><LinkedinIcon size={20} /></motion.a>
-          <motion.a whileHover={{ y: -3, scale: 1.1 }} href="https://www.instagram.com/_eshwar__hs_" target="_blank" rel="noreferrer" style={{ color: 'var(--text-muted)' }} title="Instagram"><InstagramIcon /></motion.a>
-          <motion.a whileHover={{ y: -3, scale: 1.1 }} href="mailto:eshwarhs170@gmail.com" style={{ color: 'var(--text-muted)' }} title="Email"><Mail size={20} /></motion.a>
-          <motion.a whileHover={{ y: -3, scale: 1.1 }} href="/resume.pdf" target="_blank" rel="noreferrer" style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', fontFamily: 'monospace' }} title="Resume"><FileText size={18} /> RESUME</motion.a>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
-          <div className="footer-left"><Folder size={14} /><span>ESHWAR H S — DETECTIVE DOSSIER © 2026</span></div>
-          <motion.div className="footer-status" animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity }}>
-            <span className="live-dot-sm" /> SYSTEM ONLINE
-          </motion.div>
-          <span className="footer-mono">BENGALURU, KA // ALL RIGHTS RESERVED</span>
+      <footer className="portfolio-footer" style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '60px 40px', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(10px)', marginTop: '80px', position: 'relative', zIndex: 10 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '40px', maxWidth: '1200px', margin: '0 auto', alignItems: 'center' }}>
+          
+          <div className="footer-left" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-main)', fontWeight: 'bold', letterSpacing: '2px' }}><Folder size={16} /> ESHWAR H S</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontFamily: 'monospace' }}>DETECTIVE DOSSIER © 2026</div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
+            {[
+              { icon: <GithubIcon size={20} />, href: 'https://github.com/eshwarhs170-a11y' },
+              { icon: <LinkedinIcon size={20} />, href: 'https://www.linkedin.com/in/eshwar-h-s-4b820638a' },
+              { icon: <InstagramIcon />, href: 'https://www.instagram.com/_eshwar__hs_' },
+              { icon: <Mail size={20} />, href: 'mailto:eshwarhs170@gmail.com' }
+            ].map((link, i) => (
+              <motion.a key={i} whileHover={{ y: -5, scale: 1.1, color: '#fff' }} href={link.href} target="_blank" rel="noreferrer" style={{ color: 'var(--text-muted)', transition: 'color 0.3s' }}>
+                {link.icon}
+              </motion.a>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '15px' }}>
+            <motion.a 
+              href="/resume.pdf" target="_blank" rel="noreferrer" 
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '0.9rem', fontFamily: 'monospace', textDecoration: 'none' }} 
+              whileHover={{ background: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.3)', boxShadow: '0 0 15px rgba(255,255,255,0.1)' }}
+            >
+              <FileText size={16} /> SECURE RESUME
+            </motion.a>
+            <motion.div className="footer-status" animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity }} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: '#10b981', fontFamily: 'monospace', letterSpacing: '1px' }}>
+              <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 10px #10b981' }} /> SYSTEM ONLINE
+            </motion.div>
+          </div>
+
         </div>
       </footer>
 
