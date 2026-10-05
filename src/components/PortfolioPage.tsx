@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import CyberVortexCanvas from './CyberVortexCanvas';
+import MatrixRain from './MatrixRain';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import {
   Folder, FileText, User, Mail, Code, Shield, Database,
@@ -118,6 +119,30 @@ function SkillBar({ name, level, delay, icon }: { name: string; level: number; d
 
 function CaseCard({ project, onClick, delay }: { project: ProjectData; onClick: () => void; delay: number }) {
   const [flipped, setFlipped] = useState(false);
+  
+  // Parallax & Spotlight state
+  const mouseX = useMotionValue(0.5);
+  const mouseY = useMotionValue(0.5);
+  
+  // Spring configurations for smooth animation
+  const springConfig = { damping: 20, stiffness: 200, mass: 0.5 };
+  const rotateX = useSpring(useTransform(mouseY, [0, 1], [15, -15]), springConfig);
+  const rotateY = useSpring(useTransform(mouseX, [0, 1], [-15, 15]), springConfig);
+  const spotlightX = useSpring(useTransform(mouseX, [0, 1], [0, 100]), springConfig);
+  const spotlightY = useSpring(useTransform(mouseY, [0, 1], [0, 100]), springConfig);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0.5);
+    mouseY.set(0.5);
+  };
 
   const handleFlip = (e: React.MouseEvent) => {
     // Don't flip if clicking on links
@@ -131,18 +156,36 @@ function CaseCard({ project, onClick, delay }: { project: ProjectData; onClick: 
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay }}
-
       onClick={handleFlip}
-      style={{ cursor: 'pointer' }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ cursor: 'pointer', perspective: 1200 }}
       title={flipped ? 'Click to flip back' : 'Click to see details'}
     >
       <motion.div
         className="flip-card-inner"
         animate={{ rotateY: flipped ? 180 : 0 }}
+        style={{ 
+          rotateX: flipped ? 0 : rotateX, 
+          rotateY: flipped ? 180 : rotateY,
+          transformStyle: 'preserve-3d',
+          width: '100%', height: '100%', position: 'relative'
+        }}
         transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
       >
         {/* ── FRONT ── */}
-        <div className="flip-card-front case-card cyber-border-run">
+        <div className="flip-card-front case-card cyber-border-run" style={{ position: 'relative', overflow: 'hidden' }}>
+          {/* Spotlight Effect Overlay */}
+          <motion.div 
+            style={{
+              position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 5,
+              background: useTransform(
+                [spotlightX, spotlightY], 
+                ([x, y]) => `radial-gradient(circle at ${x}% ${y}%, rgba(239, 68, 68, 0.15) 0%, transparent 60%)`
+              )
+            }} 
+          />
+
           <div style={{ position: 'absolute', top: 14, right: 14, display: 'flex', gap: '6px', zIndex: 10 }}>
             {project.live && (
               <a href={project.live} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
@@ -547,6 +590,7 @@ export default function PortfolioPage() {
 
         <section id="projects" style={{ position: 'relative', overflow: 'hidden', padding: '60px 0' }}>
           {/* Animated Background for Projects Section */}
+          <MatrixRain />
           <div className="cyber-grid-anim" />
 
           <div className="section-header" style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
