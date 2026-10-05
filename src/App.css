@@ -365,3 +365,74 @@ nav a.nav-active {
   padding: 16px 48px; cursor: pointer; transition: all 0.3s ease; border-radius: 3px;
 }
 .enter-btn:hover { background: #a30000; color: #000; }
+
+/* ── ADVANCED EFFECTS & ANIMATIONS ── */
+body, a, button, input, textarea {
+  cursor: crosshair !important;
+}
+
+.glitch-hover {
+  display: inline-block;
+  transition: all 0.2s;
+}
+.glitch-hover:hover {
+  animation: glitch-anim 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+  color: var(--accent-1);
+  text-shadow: 2px 0 var(--accent-2), -2px 0 var(--accent-3);
+}
+
+@keyframes glitch-anim {
+  0% { transform: translate(0) }
+  20% { transform: translate(-2px, 2px) }
+  40% { transform: translate(-2px, -2px) }
+  60% { transform: translate(2px, 2px) }
+  80% { transform: translate(2px, -2px) }
+  100% { transform: translate(0) }
+}
+
+.cyber-border-run {
+  position: relative;
+}
+.cyber-border-run::after {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px; right: -1px; bottom: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-1), var(--accent-2), transparent);
+  background-size: 200% 200%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: border-run 3s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes border-run {
+  0% { background-position: 200% 50%; }
+  100% { background-position: -200% 50%; }
+}
+
+.floating-particles-bg {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none; z-index: 1; overflow: hidden;
+}
+.particle-mote {
+  position: absolute;
+  border-radius: 50%;
+  animation: floatUp linear infinite, glowPulse ease-in-out infinite alternate;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(110vh) translateX(0) scale(0); opacity: 0; }
+  10% { opacity: 0.8; scale: 1; }
+  50% { transform: translateY(50vh) translateX(20px); }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(-10vh) translateX(-20px) scale(0); opacity: 0; }
+}
+
+@keyframes glowPulse {
+  0% { opacity: 0.2; }
+  100% { opacity: 1; box-shadow: 0 0 15px currentColor; }
+}

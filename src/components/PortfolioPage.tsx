@@ -74,22 +74,21 @@ function Counter({ target, suffix = '', decimals = 0 }: { target: number; suffix
 }
 
 function GlitchText({ text }: { text: string }) {
-  return <span>{text}</span>;
+  return <span className="glitch-hover">{text}</span>;
 }
 
 function FloatingParticles() {
-  const particles = useMemo(() => Array.from({ length: 18 }, (_, i) => ({
-    id: i, x: Math.random() * 100, y: Math.random() * 100,
-    size: Math.random() * 3 + 1, duration: Math.random() * 10 + 8, delay: Math.random() * 5,
+  const particles = useMemo(() => Array.from({ length: 40 }, (_, i) => ({
+    id: i, 
+    left: `${Math.random() * 100}vw`,
+    size: `${Math.random() * 4 + 2}px`,
+    duration: `${Math.random() * 15 + 10}s`,
+    delay: `-${Math.random() * 20}s`
   })), []);
   return (
-    <div className="particles-container" aria-hidden>
+    <div className="floating-particles-bg" aria-hidden="true">
       {particles.map((p) => (
-        <motion.div key={p.id} className="particle"
-          style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size }}
-          animate={{ y: [-20, 20, -20], opacity: [0, 0.5, 0], scale: [0, 1, 0] }}
-          transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
-        />
+        <div key={p.id} className="particle-mote" style={{ left: p.left, width: p.size, height: p.size, animationDuration: p.duration, animationDelay: p.delay }} />
       ))}
     </div>
   );
@@ -142,7 +141,7 @@ function CaseCard({ project, onClick, delay }: { project: ProjectData; onClick: 
         transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
       >
         {/* ── FRONT ── */}
-        <div className="flip-card-front case-card">
+        <div className="flip-card-front case-card cyber-border-run">
           <div style={{ position: 'absolute', top: 14, right: 14, display: 'flex', gap: '6px', zIndex: 10 }}>
             {project.live && (
               <a href={project.live} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
@@ -406,6 +405,7 @@ export default function PortfolioPage() {
       </header>
 
       <main className="portfolio-content">
+        <FloatingParticles />
 
         <section id="home">
           <motion.div className="hero-section" style={{ opacity: heroOpacity, scale: heroScale }} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}>
@@ -426,20 +426,6 @@ export default function PortfolioPage() {
                   <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><MapPin size={12} color="#a30000" /> Bengaluru, Karnataka</span>
                   <span style={{ color: 'var(--glass-border)' }}>·</span>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Award size={12} color="#ffd700" /> UVCE · CGPA 9.64</span>
-                </div>
-                <div className="hero-socials" style={{ marginTop: '20px' }}>
-                  <motion.a whileHover={{ y: -5, rotateZ: -10, scale: 1.15, boxShadow: '0 10px 20px rgba(0,0,0,0.4)' }} href="https://github.com/eshwarhs170-a11y" target="_blank" rel="noreferrer" className="social-link" title="GitHub"><GithubIcon size={18} /></motion.a>
-                  <motion.a whileHover={{ y: -5, rotateZ: 10, scale: 1.15, boxShadow: '0 10px 20px rgba(0,0,0,0.4)' }} href="https://www.linkedin.com/in/eshwar-h-s-4b820638a" target="_blank" rel="noreferrer" className="social-link" title="LinkedIn"><LinkedinIcon size={18} /></motion.a>
-                  <motion.a whileHover={{ y: -5, rotateZ: -10, scale: 1.15, boxShadow: '0 10px 20px rgba(0,0,0,0.4)' }} href="https://www.instagram.com/_eshwar__hs_" target="_blank" rel="noreferrer" className="social-link" title="Instagram"><InstagramIcon /></motion.a>
-                  <motion.a whileHover={{ y: -5, rotateZ: 10, scale: 1.15, boxShadow: '0 10px 20px rgba(0,0,0,0.4)' }} href="mailto:eshwarhs170@gmail.com" className="social-link" title="Email"><Mail size={18} /></motion.a>
-                </div>
-                <div style={{ display: 'flex', gap: '12px', marginTop: '24px', flexWrap: 'wrap' }}>
-                  <motion.a whileHover={{ scale: 1.05, boxShadow: '0 0 25px rgba(163,0,0,0.5)', border: '1px solid #ff3333' }} whileTap={{ scale: 0.95 }} href="/resume.pdf" target="_blank" rel="noreferrer" className="contact-btn" style={{ padding: '12px 24px', fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '8px', position: 'relative', overflow: 'hidden' }}>
-                    <FileText size={16} /> DOWNLOAD RESUME
-                  </motion.a>
-                  <motion.a whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.1)' }} whileTap={{ scale: 0.95 }} href="#projects" className="contact-btn" style={{ padding: '12px 24px', fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'transparent', border: '1px solid var(--glass-border)', color: 'var(--text-main)' }}>
-                    <Folder size={16} /> VIEW PROJECTS
-                  </motion.a>
                 </div>
               </div>
               <motion.div className="hero-stamp" animate={{ rotate: [-3, 0, -3], opacity: [0.6, 0.85, 0.6] }} transition={{ duration: 5, repeat: Infinity }}>VERIFIED ENGINEER</motion.div>
@@ -481,20 +467,7 @@ export default function PortfolioPage() {
             </motion.div>
           </motion.div>
 
-          <div className="stats-row">
-            {[
-              { val: 1200, suf: '+', label: 'Users Served', icon: <User size={18} /> },
-              { val: 9.64, suf: '', label: 'CGPA at UVCE', icon: <Award size={18} />, decimals: 2 },
-              { val: 129, suf: 'k+', label: 'Records Processed', icon: <Database size={18} /> },
-              { val: 3, suf: '+', label: 'Projects Shipped', icon: <Cpu size={18} /> },
-            ].map((s, i) => (
-              <motion.div key={i} className="stat-box" whileHover={{ scale: 1.08 }}>
-                <motion.div className="stat-icon" animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 4, delay: i, repeat: Infinity }}>{s.icon}</motion.div>
-                <span className="stat-value"><Counter target={s.val} suffix={s.suf} decimals={s.decimals} /></span>
-                <span className="stat-label">{s.label}</span>
-              </motion.div>
-            ))}
-          </div>
+
         </section>
 
         <section id="skills">
@@ -650,14 +623,31 @@ export default function PortfolioPage() {
           </div>
         </section>
 
-        <section id="contact">
-          <motion.div className="contact-section" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
-            <motion.h2 className="section-title contact-title" style={{ marginBottom: 8 }} animate={{ textShadow: ['0 0 10px #a30000', '0 0 20px #a30000', '0 0 10px #a30000'] }} transition={{ duration: 2, repeat: Infinity }}>Establish Contact</motion.h2>
-            <p className="contact-desc">Open to internships, collaborations, and AI/Web dev opportunities. Drop a message!</p>
+        <section id="contact" style={{ position: 'relative', overflow: 'hidden', padding: '100px 0', marginTop: '60px' }}>
+          {/* Huge Background Text */}
+          <div style={{ position: 'absolute', top: '5%', left: '50%', transform: 'translate(-50%, 0)', fontSize: '18vw', fontWeight: 900, color: 'transparent', WebkitTextStroke: '2px rgba(255,255,255,0.03)', whiteSpace: 'nowrap', zIndex: 0, pointerEvents: 'none', fontFamily: 'Montserrat, sans-serif', letterSpacing: '0.05em' }}>
+            C O N T A C T
+          </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', marginTop: '36px' }}>
+          <motion.div className="contact-section" style={{ position: 'relative', zIndex: 1, background: 'transparent', boxShadow: 'none' }} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '60px' }}>
+              <motion.h2 className="section-title contact-title" style={{ marginBottom: 12, fontSize: '3rem', textAlign: 'center' }} animate={{ textShadow: ['0 0 10px #a30000', '0 0 20px #a30000', '0 0 10px #a30000'] }} transition={{ duration: 2, repeat: Infinity }}>Establish Contact</motion.h2>
+              <p className="contact-desc" style={{ maxWidth: '600px', margin: '0 auto' }}>Open to internships, collaborations, and AI/Web dev opportunities. The network is secure, drop a message.</p>
+            </div>
+
+            {/* Cinematic Image */}
+            <motion.div 
+              initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true }}
+              style={{ width: '100%', height: '400px', borderRadius: '16px', overflow: 'hidden', marginBottom: '60px', position: 'relative', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}
+            >
+              <img src="/cyber_contact.jpg" alt="Cyber Contact Terminal" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, var(--bg-main) 2%, transparent 50%)' }} />
+            </motion.div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
               {/* Left: Contact Form */}
-              <motion.div className="contact-form" whileHover={{ boxShadow: '0 0 30px rgba(163,0,0,0.15)', borderColor: 'var(--accent-1)' }} transition={{ duration: 0.3 }}>
+              <motion.div className="contact-form cyber-border-run" style={{ padding: '20px', borderRadius: '16px', background: 'var(--card-bg)' }} whileHover={{ boxShadow: '0 0 30px rgba(163,0,0,0.15)' }} transition={{ duration: 0.3 }}>
                 <div className="form-row">
                   <div className="form-group">
                     <label className="form-label"><User size={10} style={{ marginRight: 5 }} />YOUR NAME</label>
@@ -708,11 +698,20 @@ export default function PortfolioPage() {
       </main>
 
       <footer className="portfolio-footer">
-        <div className="footer-left"><Folder size={14} /><span>ESHWAR H S — DETECTIVE DOSSIER © 2026</span></div>
-        <motion.div className="footer-status" animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity }}>
-          <span className="live-dot-sm" /> SYSTEM ONLINE
-        </motion.div>
-        <span className="footer-mono">BENGALURU, KA // ALL RIGHTS RESERVED</span>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: '20px' }}>
+          <motion.a whileHover={{ y: -3, scale: 1.1 }} href="https://github.com/eshwarhs170-a11y" target="_blank" rel="noreferrer" style={{ color: 'var(--text-muted)' }} title="GitHub"><GithubIcon size={20} /></motion.a>
+          <motion.a whileHover={{ y: -3, scale: 1.1 }} href="https://www.linkedin.com/in/eshwar-h-s-4b820638a" target="_blank" rel="noreferrer" style={{ color: 'var(--text-muted)' }} title="LinkedIn"><LinkedinIcon size={20} /></motion.a>
+          <motion.a whileHover={{ y: -3, scale: 1.1 }} href="https://www.instagram.com/_eshwar__hs_" target="_blank" rel="noreferrer" style={{ color: 'var(--text-muted)' }} title="Instagram"><InstagramIcon /></motion.a>
+          <motion.a whileHover={{ y: -3, scale: 1.1 }} href="mailto:eshwarhs170@gmail.com" style={{ color: 'var(--text-muted)' }} title="Email"><Mail size={20} /></motion.a>
+          <motion.a whileHover={{ y: -3, scale: 1.1 }} href="/resume.pdf" target="_blank" rel="noreferrer" style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', fontFamily: 'monospace' }} title="Resume"><FileText size={18} /> RESUME</motion.a>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
+          <div className="footer-left"><Folder size={14} /><span>ESHWAR H S — DETECTIVE DOSSIER © 2026</span></div>
+          <motion.div className="footer-status" animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity }}>
+            <span className="live-dot-sm" /> SYSTEM ONLINE
+          </motion.div>
+          <span className="footer-mono">BENGALURU, KA // ALL RIGHTS RESERVED</span>
+        </div>
       </footer>
 
       <AnimatePresence>
