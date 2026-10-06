@@ -1,12 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import CyberVortexCanvas from './CyberVortexCanvas';
 import MatrixRain from './MatrixRain';
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import {
-  Folder, FileText, User, Mail, Code, Shield, Database,
-  ChevronRight, Zap, Globe, Award, Cpu, Wifi,
-  Server, Phone, MapPin, X,
-  ExternalLink, BookOpen, Monitor, Terminal
+  Folder, FileText, User, Mail, Shield, Database,
+  Zap, Globe, Award, X, ExternalLink
 } from 'lucide-react';
 
 
@@ -42,36 +40,49 @@ interface ProjectData {
   live?: string;
 }
 
-function ScrollProgress() {
-  const { scrollYProgress } = useScroll();
-  return <motion.div className="scroll-progress-bar" style={{ scaleX: scrollYProgress, transformOrigin: 'left' }} />;
-}
-
-function Counter({ target, suffix = '', decimals = 0 }: { target: number; suffix?: string; decimals?: number }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-  const [started, setStarted] = useState(false);
-  useEffect(() => {
-    const observer = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !started) {
-        setStarted(true);
-        let start = 0;
-        const step = target / 50;
-        const timer = setInterval(() => {
-          start += step;
-          if (start >= target) { setCount(target); clearInterval(timer); } else { setCount(start); }
-        }, 20);
-      }
-    }, { threshold: 0.5 });
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [started, target]);
-  return <span ref={ref}>{decimals > 0 ? count.toFixed(decimals) : Math.floor(count).toLocaleString()}{suffix}</span>;
-}
-
 function GlitchText({ text }: { text: string }) {
   return <span className="glitch-hover">{text}</span>;
 }
+
+// Same blood-red circle trail as the LandingPage
+function CursorTrail({ mousePos }: { mousePos: { x: number; y: number } }) {
+  const [trail, setTrail] = useState<{ x: number; y: number; id: number }[]>([]);
+  const idRef = useRef(0);
+
+  useEffect(() => {
+    if (mousePos.x < 0) return;
+    const newDot = { x: mousePos.x, y: mousePos.y, id: idRef.current++ };
+    setTrail(prev => [...prev.slice(-18), newDot]);
+  }, [mousePos]);
+
+  return (
+    <>
+      {trail.map((dot, i) => {
+        const age = i / trail.length; // 0 = oldest, 1 = newest
+        return (
+          <div
+            key={dot.id}
+            style={{
+              position: 'fixed',
+              left: dot.x,
+              top: dot.y,
+              width: 6 + age * 6,
+              height: 6 + age * 6,
+              borderRadius: '50%',
+              background: `rgba(163, 0, 0, ${age * 0.7})`,
+              boxShadow: `0 0 ${age * 12}px rgba(163, 0, 0, ${age * 0.5})`,
+              transform: 'translate(-50%, -50%)',
+              pointerEvents: 'none',
+              zIndex: 9999,
+              transition: 'opacity 0.3s ease',
+            }}
+          />
+        );
+      })}
+    </>
+  );
+}
+
 
 function FloatingParticles() {
   const particles = useMemo(() => Array.from({ length: 40 }, (_, i) => ({
@@ -81,6 +92,7 @@ function FloatingParticles() {
     duration: `${Math.random() * 15 + 10}s`,
     delay: `-${Math.random() * 20}s`
   })), []);
+
   return (
     <div className="floating-particles-bg" aria-hidden="true">
       {particles.map((p) => (
@@ -90,146 +102,199 @@ function FloatingParticles() {
   );
 }
 
-function ScanLine() { return <div className="global-scan-line" aria-hidden />; }
-function SkillBar({ name, level, delay, icon }: { name: string; level: number; delay: number; icon?: React.ReactNode }) {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <motion.div className="skill-bar-item"
-      initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay }}
-      onHoverStart={() => setHovered(true)} onHoverEnd={() => setHovered(false)}
-    >
-      <div className="skill-bar-header">
-        <span className="skill-bar-name">{icon && <span className="skill-icon">{icon}</span>}{name}</span>
-        <motion.span className="skill-bar-pct" animate={{ scale: hovered ? 1.2 : 1 }} style={{ color: hovered ? '#ff5500' : 'var(--red)' }}>{level}%</motion.span>
-      </div>
-      <div className="skill-bar-track">
-        <motion.div className="skill-bar-fill" animate={{ width: `${level}%` }} transition={{ duration: 1.2, delay: delay + 0.2, ease: 'easeOut' }} />
-      </div>
-    </motion.div>
-  );
-}
+// Removed ScanLine and SkillBar to fix TS errors
 
 
 
 function CaseCard({ project, index }: { project: ProjectData; index: number }) {
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [flipped, setFlipped] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      style={{ perspective: '1500px', width: '100%', maxWidth: '850px', margin: '0 auto 40px auto' }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.7, delay: index * 0.1 }}
+      style={{ width: '100%', position: 'relative', cursor: 'pointer', perspective: '1200px' }}
+      onClick={() => setFlipped(f => !f)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <motion.div
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.7, type: 'spring', stiffness: 90, damping: 15 }}
-        style={{ 
-          width: '100%', 
-          position: 'relative', 
-          transformStyle: 'preserve-3d', 
-          cursor: 'pointer',
-          display: 'grid'
-        }}
-        onClick={() => setIsFlipped(!isFlipped)}
+        animate={{ rotateY: flipped ? 180 : 0 }}
+        transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+        style={{ width: '100%', position: 'relative', transformStyle: 'preserve-3d' }}
       >
-        {/* ---------------- FRONT OF FLASHCARD ---------------- */}
-        <div style={{ 
-          gridArea: '1 / 1', 
-          backfaceVisibility: 'hidden', 
+        {/* ===== FRONT FACE ===== */}
+        <div style={{
+          backfaceVisibility: 'hidden',
           WebkitBackfaceVisibility: 'hidden',
-          background: '#050810', 
-          borderRadius: '16px', 
+          background: 'rgba(4,6,14,0.97)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: '16px',
           overflow: 'hidden',
-          border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
-          position: 'relative',
+          boxShadow: '0 10px 40px rgba(0,0,0,0.7)',
         }}>
-           {/* FULL IMAGE — no cropping */}
-           <img src={project.image} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
 
-           {/* CLICK TO FLIP BADGE — always visible */}
-           <div style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(239,68,68,0.9)', backdropFilter: 'blur(10px)', padding: '6px 14px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '8px', color: '#fff', fontSize: '0.8rem', fontWeight: 'bold', border: '1px solid rgba(255,255,255,0.2)', boxShadow: '0 4px 20px rgba(239,68,68,0.6)', zIndex: 10 }}>
-              Click to Flip <ExternalLink size={14} />
-           </div>
+          {/* ── BROWSER-STYLE TOP BAR ── */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '12px 18px',
+            background: 'rgba(8,12,24,0.98)',
+            borderBottom: '1px solid rgba(255,255,255,0.07)',
+          }}>
+            {/* Left: traffic dots + case + title */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              {/* macOS-style dots */}
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444', boxShadow: '0 0 6px rgba(239,68,68,0.7)' }} />
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#f59e0b', boxShadow: '0 0 6px rgba(245,158,11,0.5)' }} />
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 6px rgba(34,197,94,0.5)' }} />
+              </div>
+              <div style={{ width: 1, height: 18, background: 'rgba(255,255,255,0.1)' }} />
+              <span style={{ color: '#ef4444', fontSize: '0.65rem', fontFamily: 'monospace', fontWeight: 700 }}>{project.caseNum}</span>
+              <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.7rem' }}>|</span>
+              <span style={{ color: '#fff', fontWeight: 800, fontSize: '0.88rem', letterSpacing: '0.8px', textTransform: 'uppercase' }}>{project.title}</span>
+            </div>
 
-           {/* HOVER OVERLAY — slides up from bottom only on hover */}
-           <motion.div
-             initial={false}
-             animate={{ y: isHovered ? '0%' : '100%', opacity: isHovered ? 1 : 0 }}
-             transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-             style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, rgba(5,8,16,0.98) 0%, rgba(8,12,22,0.92) 100%)', backdropFilter: 'blur(12px)', padding: '28px 32px', borderTop: '1px solid rgba(239,68,68,0.3)' }}
-           >
-             <h3 style={{ margin: '0 0 10px 0', fontSize: '1.7rem', color: '#fff', fontWeight: 900, letterSpacing: '-0.5px' }}>{project.title}</h3>
-             <p style={{ margin: '0 0 16px 0', color: '#94a3b8', fontSize: '0.95rem', lineHeight: 1.5, fontFamily: 'monospace', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-               {project.desc}
-             </p>
-             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-               {project.tags.map(t => (
-                 <span key={t} style={{ border: '1px solid rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.08)', color: '#e2e8f0', padding: '4px 10px', borderRadius: '4px', fontSize: '0.75rem', fontFamily: 'monospace', fontWeight: 600 }}>
-                   {t.toUpperCase()}
-                 </span>
-               ))}
-             </div>
-           </motion.div>
+            {/* Right: Live + Code buttons */}
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {project.live && (
+                <a href={project.live} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
+                  style={{ background: 'rgba(239,68,68,0.92)', padding: '5px 14px', borderRadius: '6px', color: '#fff', fontSize: '0.72rem', fontWeight: 'bold', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <ExternalLink size={11} /> Live
+                </a>
+              )}
+              {project.github && (
+                <a href={project.github} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
+                  style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(8px)', padding: '5px 14px', borderRadius: '6px', color: '#fff', fontSize: '0.72rem', fontWeight: 'bold', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '5px', border: '1px solid rgba(255,255,255,0.12)' }}>
+                  <GithubIcon size={11} /> Code
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* ── IMAGE VIEWPORT ── */}
+          <div style={{ position: 'relative', width: '100%', overflow: 'hidden', background: '#03050d' }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            {/* FILM CORNERS */}
+            {(['top-left','top-right','bottom-left','bottom-right'] as const).map(pos => {
+              const [v, h] = pos.split('-') as ['top'|'bottom','left'|'right'];
+              return <div key={pos} style={{ position: 'absolute', [v]: 10, [h]: 10, width: 18, height: 18,
+                borderTop: v==='top' ? '2px solid rgba(239,68,68,0.7)' : 'none',
+                borderBottom: v==='bottom' ? '2px solid rgba(239,68,68,0.7)' : 'none',
+                borderLeft: h==='left' ? '2px solid rgba(239,68,68,0.7)' : 'none',
+                borderRight: h==='right' ? '2px solid rgba(239,68,68,0.7)' : 'none',
+                zIndex: 10, pointerEvents: 'none' }} />;
+            })}
+
+            {/* SCANLINES */}
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px)', pointerEvents: 'none', zIndex: 5 }} />
+
+            {/* FULL IMAGE */}
+            <img src={project.image} alt={project.title} style={{ width: '100%', height: 'auto', display: 'block' }} />
+
+            {/* HOVER BOTTOM BAR */}
+            <div style={{
+              position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 15,
+              background: 'linear-gradient(to top, rgba(3,5,12,0.98) 40%, rgba(3,5,12,0.7) 75%, transparent)',
+              padding: '28px 20px 14px',
+              transform: isHovered ? 'translateY(0)' : 'translateY(100%)',
+              transition: 'transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94)',
+            }}>
+              <p style={{ margin: 0, color: '#e2e8f0', fontSize: '0.83rem', lineHeight: 1.55, fontFamily: 'monospace' }}>{project.desc}</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '10px' }}>
+                {project.tags.map(t => <span key={t} style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.4)', padding: '2px 8px', borderRadius: '4px', fontSize: '0.67rem', color: '#ef4444', fontFamily: 'monospace' }}>{t}</span>)}
+              </div>
+              <p style={{ margin: '8px 0 0', color: 'rgba(255,255,255,0.28)', fontSize: '0.63rem', fontFamily: 'monospace' }}>[ CLICK TO FLIP & VIEW FULL DETAILS ]</p>
+            </div>
+          </div>
         </div>
 
-        {/* ---------------- BACK OF FLASHCARD ---------------- */}
-        <div style={{ 
-          gridArea: '1 / 1', 
-          backfaceVisibility: 'hidden', 
+
+        {/* ===== BACK FACE ===== */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          backfaceVisibility: 'hidden',
           WebkitBackfaceVisibility: 'hidden',
           transform: 'rotateY(180deg)',
-          background: 'linear-gradient(145deg, #0a0f1a, #0d1222)', 
-          borderRadius: '16px', 
-          border: '1px solid rgba(239, 68, 68, 0.4)',
-          padding: '40px',
-          boxShadow: 'inset 0 0 50px rgba(239, 68, 68, 0.05), 0 10px 40px rgba(0,0,0,0.5)',
-          display: 'flex', flexDirection: 'column'
+          background: 'linear-gradient(160deg, #070d1f 0%, #0a1228 50%, #06090f 100%)',
+          border: '1px solid rgba(239,68,68,0.35)',
+          borderRadius: '16px',
+          overflow: 'hidden',
+          display: 'flex', flexDirection: 'column',
+          boxShadow: '0 0 60px rgba(239,68,68,0.12)',
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' }}>
-            <div>
-              <span style={{ background: '#ef4444', color: '#fff', padding: '6px 12px', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 800, fontFamily: 'monospace' }}>CASE #{project.caseNum}</span>
-              <h3 style={{ margin: '16px 0 6px 0', fontSize: '2rem', color: '#fff', fontWeight: 900 }}>{project.title}</h3>
-              <p style={{ margin: 0, color: '#ef4444', fontFamily: 'monospace', fontSize: '1.05rem' }}>{project.subtitle}</p>
+          {/* ── Top accent bar ── */}
+          <div style={{ height: 3, background: 'linear-gradient(90deg, transparent, #ef4444, #ffd700, #ef4444, transparent)' }} />
+
+          {/* ── Content ── */}
+          <div style={{ flex: 1, padding: '28px 32px', display: 'flex', flexDirection: 'column', gap: '20px', overflowY: 'auto' }}>
+
+            {/* Badges row */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ background: 'linear-gradient(135deg, #a30000, #ef4444)', color: '#fff', fontSize: '0.65rem', padding: '4px 12px', borderRadius: '4px', fontWeight: 800, fontFamily: 'monospace', letterSpacing: '1.5px', boxShadow: '0 0 12px rgba(239,68,68,0.4)' }}>CASE FILE {project.caseNum}</span>
+              <span style={{ color: project.status === 'solved' ? '#22c55e' : '#f59e0b', fontSize: '0.65rem', fontFamily: 'monospace', fontWeight: 700, border: `1px solid ${project.status === 'solved' ? 'rgba(34,197,94,0.5)' : 'rgba(245,158,11,0.5)'}`, padding: '3px 10px', borderRadius: '4px', background: project.status === 'solved' ? 'rgba(34,197,94,0.08)' : 'rgba(245,158,11,0.08)', letterSpacing: '1px' }}>{project.status.toUpperCase()}</span>
             </div>
-            <span className={`status-badge ${project.status}`} style={{ padding: '8px 16px', fontSize: '0.85rem' }}>{project.status.toUpperCase()}</span>
-          </div>
-          
-          <div style={{ background: 'rgba(239,68,68,0.1)', borderLeft: '4px solid #ef4444', padding: '20px', borderRadius: '0 8px 8px 0', marginBottom: '32px' }}>
-             <strong style={{ color: '#fff', fontSize: '1rem', display: 'block', marginBottom: '8px' }}>⚡ IMPACT / RESULT:</strong>
-             <p style={{ margin: 0, color: '#e2e8f0', fontSize: '1.05rem', lineHeight: 1.6 }}>{project.impact}</p>
+
+            {/* Title block */}
+            <div>
+              <h2 style={{ margin: '0 0 6px', fontSize: '2rem', fontWeight: 900, lineHeight: 1.1, background: 'linear-gradient(135deg, #ffffff 40%, #94a3b8 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{project.title}</h2>
+              <p style={{ margin: 0, color: '#38bdf8', fontFamily: 'monospace', fontSize: '0.82rem', letterSpacing: '0.3px' }}>{project.subtitle}</p>
+            </div>
+
+            {/* Impact box */}
+            <div style={{ background: 'linear-gradient(135deg, rgba(163,0,0,0.15), rgba(239,68,68,0.05))', borderLeft: '3px solid #ef4444', borderRadius: '0 8px 8px 0', padding: '14px 18px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#ffd700', boxShadow: '0 0 6px #ffd700' }} />
+                <strong style={{ color: '#ffd700', fontSize: '0.68rem', letterSpacing: '2px', fontFamily: 'monospace' }}>IMPACT</strong>
+              </div>
+              <p style={{ margin: 0, color: '#f1f5f9', fontSize: '0.9rem', lineHeight: 1.6 }}>{project.impact}</p>
+            </div>
+
+            {/* Tech breakdown */}
+            <div>
+              <p style={{ margin: '0 0 10px', color: 'rgba(255,255,255,0.35)', fontSize: '0.63rem', fontFamily: 'monospace', letterSpacing: '2px' }}>TECHNICAL BREAKDOWN</p>
+              <ul style={{ padding: 0, margin: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {project.fullDetails.map((d, idx) => (
+                  <li key={idx} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', color: '#cbd5e1', fontSize: '0.85rem', lineHeight: 1.6 }}>
+                    <span style={{ color: '#ef4444', fontWeight: 700, fontSize: '0.7rem', marginTop: '4px', flexShrink: 0 }}>▸</span>
+                    {d}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Tags */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {project.tags.map((t, i) => (
+                <span key={t} style={{
+                  background: i % 3 === 0 ? 'rgba(239,68,68,0.1)' : i % 3 === 1 ? 'rgba(56,189,248,0.08)' : 'rgba(255,215,0,0.07)',
+                  border: `1px solid ${i % 3 === 0 ? 'rgba(239,68,68,0.3)' : i % 3 === 1 ? 'rgba(56,189,248,0.25)' : 'rgba(255,215,0,0.2)'}`,
+                  padding: '3px 10px', borderRadius: '4px', fontSize: '0.72rem',
+                  color: i % 3 === 0 ? '#ef4444' : i % 3 === 1 ? '#38bdf8' : '#fcd34d',
+                  fontFamily: 'monospace'
+                }}>{t}</span>
+              ))}
+            </div>
           </div>
 
-          <div style={{ flex: 1 }}>
-            <h4 style={{ color: '#94a3b8', fontSize: '1rem', marginBottom: '16px', fontFamily: 'monospace', letterSpacing: '2px' }}>TECHNICAL DOSSIER</h4>
-            <ul style={{ margin: 0, paddingLeft: '20px', color: '#cbd5e1', lineHeight: 1.8, fontSize: '1.05rem' }}>
-              {project.fullDetails.map((detail, i) => <li key={i} style={{ marginBottom: '12px' }}>{detail}</li>)}
-            </ul>
-          </div>
-
-          <div style={{ display: 'flex', gap: '16px', marginTop: '40px' }} onClick={(e) => e.stopPropagation()}>
-             {project.live && (
-               <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href={project.live} target="_blank" rel="noreferrer" style={{ background: '#ef4444', color: '#fff', padding: '14px 28px', borderRadius: '8px', fontWeight: 800, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 5px 20px rgba(239,68,68,0.4)' }}>
-                 <ExternalLink size={18} /> OPEN LIVE PLATFORM
-               </motion.a>
-             )}
-             {project.github && (
-               <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href={project.github} target="_blank" rel="noreferrer" style={{ background: 'rgba(255,255,255,0.05)', color: '#fff', padding: '14px 28px', borderRadius: '8px', fontWeight: 800, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(255,255,255,0.2)' }}>
-                 <GithubIcon size={18} /> ACCESS SOURCE CODE
-               </motion.a>
-             )}
+          {/* ── Bottom CTA bar ── */}
+          <div style={{ padding: '16px 32px 24px', borderTop: '1px solid rgba(255,255,255,0.06)', background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              {project.github && <a href={project.github} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()} style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)', padding: '8px 18px', borderRadius: '8px', color: '#e2e8f0', fontSize: '0.8rem', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', transition: 'background 0.2s' }}><GithubIcon size={14} /> Repository</a>}
+              {project.live && <a href={project.live} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()} style={{ background: 'linear-gradient(135deg, rgba(239,68,68,0.9), rgba(185,28,28,0.9))', border: '1px solid rgba(239,68,68,0.5)', padding: '8px 18px', borderRadius: '8px', color: '#fff', fontSize: '0.8rem', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 0 16px rgba(239,68,68,0.3)' }}><ExternalLink size={14} /> Live Demo</a>}
+            </div>
+            <p style={{ margin: 0, color: 'rgba(255,255,255,0.22)', fontSize: '0.62rem', fontFamily: 'monospace' }}>[ CLICK TO FLIP BACK ]</p>
           </div>
         </div>
       </motion.div>
     </motion.div>
   );
 }
-
 
 function ProjectModal({ project, onClose }: { project: ProjectData; onClose: () => void }) {
   return (
@@ -280,15 +345,14 @@ export default function PortfolioPage() {
   const [activeSection, setActiveSection] = useState('home');
   const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
   const [contactVisible, setContactVisible] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
 
-  const { scrollY } = useScroll();
-  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.3]);
-  const heroScale = useTransform(scrollY, [0, 400], [1, 0.96]);
   const springX = useSpring(useMotionValue(0), { stiffness: 60, damping: 20 });
   const springY = useSpring(useMotionValue(0), { stiffness: 60, damping: 20 });
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
       const cx = window.innerWidth / 2; const cy = window.innerHeight / 2;
       springX.set((e.clientX - cx) / cx * 8); springY.set((e.clientY - cy) / cy * 5);
     };
@@ -343,26 +407,7 @@ export default function PortfolioPage() {
     }
   ];
 
-  const skillBars = [
-    { name: 'C / C++ / Java', level: 90, icon: <Server size={12} /> },
-    { name: 'JavaScript / Node.js', level: 92, icon: <Zap size={12} /> },
-    { name: 'React / Vite / Tailwind', level: 94, icon: <Globe size={12} /> },
-    { name: 'MongoDB / Firebase', level: 86, icon: <Database size={12} /> },
-    { name: 'Google Gemini API & AI', level: 88, icon: <Cpu size={12} /> },
-    { name: 'Git / GitHub / VS Code', level: 85, icon: <Wifi size={12} /> },
-  ];
-
-  const skillsList = [
-    'C', 'C++', 'Java', 'JavaScript', 'React', 'Vite', 'Tailwind CSS',
-    'Node.js', 'Vercel Serverless', 'MongoDB Atlas', 'Firebase / Firestore',
-    'Google Gemini API', 'Web Speech API', 'Git', 'GitHub', 'VS Code', 'Data Structures',
-  ];
-
-  const education = [
-    { year: '2025 – 2029', degree: 'B.E. in Computer Science & Engineering', institution: 'University Visvesvaraya College of Engineering (UVCE), Bengaluru', detail: 'Currently in 2nd Year. CGPA: 9.64 / 10.0', grade: '9.64', icon: <Award size={18} />, color: '#a30000', image: '/uvce.jpg' },
-    { year: '2023 – 2025', degree: 'Pre-University (Science — PCMB)', institution: 'Presidency PU College, Bengaluru', detail: 'Karnataka State Board. Percentage: 98.17%', grade: '98.17%', icon: <BookOpen size={18} />, color: '#3b82f6', image: '/presidency.png' },
-    { year: '2023', degree: 'Secondary School (SSLC)', institution: 'Venus International School', detail: 'Percentage: 98.04%', grade: '98.04%', icon: <FileText size={18} />, color: '#10b981', image: '/venus.jpg' },
-  ];
+  // Removed skillBars, skillsList, education as they are unused right now
 
   const navLinks = [
     { href: '#home', label: 'Home', id: 'home' },
@@ -417,68 +462,192 @@ export default function PortfolioPage() {
 
       <main className="portfolio-content">
         <FloatingParticles />
+        <CursorTrail mousePos={mousePos} />
 
-        <section id="home">
-          <motion.div className="hero-section" style={{ opacity: heroOpacity, scale: heroScale }} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}>
-            <div className="hero-text" style={{ position: 'relative' }}>
-              <motion.div className="redacted-label" animate={{ opacity: [0.6, 1, 0.6] }} transition={{ duration: 3, repeat: Infinity }}>
-                ▲ FULL-STACK & AI DEVELOPER
+        <section id="home" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '100px 0 100px', overflow: 'hidden' }}>
+          {/* Background Cyber Elements */}
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
+            {/* Grid */}
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(239,68,68,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(239,68,68,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', maskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, transparent 70%)', WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, transparent 70%)' }} />
+            {/* Huge Watermark */}
+            <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 0.02, scale: 1 }} transition={{ duration: 2 }} style={{ position: 'absolute', top: '10%', right: '-10%', fontSize: '25vw', fontWeight: 900, color: '#fff', whiteSpace: 'nowrap', userSelect: 'none', fontFamily: 'monospace' }}>DOSSIER</motion.div>
+          </div>
+
+          <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1fr 450px', gap: '140px', width: '100%', maxWidth: '1400px', padding: '0 40px', alignItems: 'center' }}>
+            
+            {/* ── LEFT: TERMINAL TEXT ── */}
+            <div className="hero-text" style={{ position: 'relative', zIndex: 10 }}>
+              
+              {/* Status Bar */}
+              <motion.div 
+                initial={{ opacity: 0, width: 0 }} 
+                animate={{ opacity: 1, width: 'auto' }} 
+                transition={{ duration: 0.8, ease: 'circOut' }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', padding: '6px 16px', borderRadius: '100px', marginBottom: '24px', overflow: 'hidden', whiteSpace: 'nowrap' }}
+              >
+                <motion.div animate={{ opacity: [1, 0.2, 1] }} transition={{ duration: 1.5, repeat: Infinity }} style={{ width: 8, height: 8, borderRadius: '50%', background: '#ef4444', boxShadow: '0 0 10px #ef4444' }} />
+                <span style={{ color: '#ef4444', fontSize: '0.75rem', fontWeight: 800, letterSpacing: '2px', fontFamily: 'monospace' }}>AGENT ACTIVE // READY FOR ASSIGNMENT</span>
               </motion.div>
-              <motion.h1 className="hero-name" initial={{ opacity: 0, x: -100, rotateY: 45 }} animate={{ opacity: 1, x: 0, rotateY: 0 }} transition={{ duration: 1, type: 'spring', bounce: 0.4 }}><GlitchText text="Eshwar H S" /></motion.h1>
-              <motion.h2 className="hero-role" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.4 }}>Developer &amp; AI Engineer</motion.h2>
-              <p className="hero-bio">
-                Every complex problem leaves a trail. I follow the evidence — and build the solution.
-                Specializing in <strong>Full-Stack Development</strong> and <strong>AI Integration</strong>,
-                turning real-world challenges into production-ready applications.
-              </p>
-              <div className="hero-actions">
-                <div className="hero-status"><span className="live-dot" /> Open for Internships &amp; Dev Roles</div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><MapPin size={12} color="#a30000" /> Bengaluru, Karnataka</span>
-                  <span style={{ color: 'var(--glass-border)' }}>·</span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Award size={12} color="#ffd700" /> UVCE · CGPA 9.64</span>
-                </div>
+
+              {/* Title */}
+              <div style={{ position: 'relative', marginBottom: '16px' }}>
+                <motion.h1 
+                  initial={{ opacity: 0, y: 20 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                  style={{ fontSize: '4.5rem', fontWeight: 900, lineHeight: 1.1, margin: 0, color: '#fff', textTransform: 'uppercase', letterSpacing: '-1px' }}
+                >
+                  <GlitchText text="Eshwar H S" />
+                </motion.h1>
+                <motion.h2 
+                  initial={{ opacity: 0, x: -20 }} 
+                  animate={{ opacity: 1, x: 0 }} 
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  style={{ fontSize: '1.8rem', fontWeight: 300, color: '#94a3b8', margin: '8px 0 0', display: 'flex', alignItems: 'center', gap: '12px' }}
+                >
+                  <span style={{ color: '#ef4444' }}>&lt;</span>
+                  Full-Stack & AI Engineer
+                  <span style={{ color: '#ef4444' }}>/&gt;</span>
+                </motion.h2>
               </div>
-              <motion.div className="hero-stamp" animate={{ rotate: [-3, 0, -3], opacity: [0.6, 0.85, 0.6] }} transition={{ duration: 5, repeat: Infinity }}>VERIFIED ENGINEER</motion.div>
+
+              {/* Bio with typing effect */}
+              <motion.div 
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 1 }}
+                style={{ background: 'rgba(4,6,14,0.6)', borderLeft: '3px solid #ef4444', padding: '20px 24px', borderRadius: '0 12px 12px 0', marginBottom: '36px', backdropFilter: 'blur(10px)' }}
+              >
+                <p style={{ margin: 0, fontSize: '1.1rem', color: '#cbd5e1', lineHeight: 1.8, fontFamily: 'monospace' }}>
+                  Every complex problem leaves a trail. I follow the evidence — and build the solution.<br/><br/>
+                  Specializing in <strong style={{ color: '#fff', textShadow: '0 0 10px rgba(255,255,255,0.3)' }}>Full-Stack Architecture</strong> and <strong style={{ color: '#38bdf8', textShadow: '0 0 10px rgba(56,189,248,0.3)' }}>AI Integration</strong>, I turn real-world chaos into production-ready intelligence.
+                </p>
+              </motion.div>
+
+              {/* Action Buttons */}
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+                <a href="#projects" style={{ 
+                  background: 'linear-gradient(135deg, #ef4444, #b91c1c)', color: '#fff', padding: '14px 28px', borderRadius: '8px', 
+                  fontSize: '0.88rem', fontWeight: 800, textDecoration: 'none', letterSpacing: '1px', textTransform: 'uppercase',
+                  boxShadow: '0 10px 30px -10px rgba(239,68,68,0.8)', border: '1px solid rgba(255,255,255,0.2)',
+                  display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.3s' 
+                }}>
+                  Access Dossier <span style={{ fontFamily: 'monospace' }}>_&gt;</span>
+                </a>
+                <a href="#contact" style={{ 
+                  background: 'rgba(255,255,255,0.03)', color: '#fff', padding: '14px 28px', borderRadius: '8px', 
+                  fontSize: '0.88rem', fontWeight: 800, textDecoration: 'none', letterSpacing: '1px', textTransform: 'uppercase',
+                  border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)',
+                  display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.3s' 
+                }}>
+                  <Shield size={16} /> Secure Comms
+                </a>
+              </motion.div>
+
             </div>
 
-            <motion.div className="id-card" style={{ rotateX: springY, rotateY: springX, transformStyle: 'preserve-3d' }} whileHover={{ scale: 1.05 }} transition={{ type: 'spring', stiffness: 200 }}>
-              <div className="id-card-top">
-                <span className="id-card-label">DEVELOPER PORTFOLIO</span>
-                <span className="id-card-level">CSE // UVCE</span>
-              </div>
-              <div className="id-photo" style={{ padding: 0, overflow: 'hidden', background: 'none', height: '200px', position: 'relative' }}>
-                <img src="/id_photo.jpg" alt="Eshwar H S" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center', display: 'block' }} />
-                <div className="id-scan-line" />
-                <div className="id-corner id-corner-tl" />
-                <div className="id-corner id-corner-br" />
+            {/* ── RIGHT: ADVANCED 3D ID CARD ── */}
+            <motion.div 
+              style={{ rotateX: springY, rotateY: springX, transformStyle: 'preserve-3d', perspective: '1000px' }} 
+              initial={{ opacity: 0, scale: 0.8, rotateY: -30 }}
+              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+              transition={{ duration: 1.2, type: 'spring' }}
+            >
+              <div style={{ 
+                background: 'linear-gradient(160deg, rgba(10,15,30,0.95), rgba(4,6,12,0.98))',
+                border: '1px solid rgba(239,68,68,0.3)',
+                borderRadius: '24px', padding: '8px',
+                boxShadow: '0 30px 60px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.05), 0 0 40px rgba(239,68,68,0.15)',
+                position: 'relative', overflow: 'hidden'
+              }}>
+                {/* Holographic overlay */}
                 <motion.div 
-                  style={{ position: 'absolute', inset: 0, background: 'rgba(163,0,0,0.2)', mixBlendMode: 'color-burn', pointerEvents: 'none' }}
-                  animate={{ opacity: [0, 0.4, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                  style={{ position: 'absolute', inset: 0, background: 'linear-gradient(125deg, transparent 20%, rgba(255,255,255,0.1) 40%, rgba(239,68,68,0.1) 60%, transparent 80%)', backgroundSize: '200% 200%', pointerEvents: 'none', mixBlendMode: 'screen' }}
+                  animate={{ backgroundPosition: ['0% 0%', '200% 200%'] }} transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
                 />
-                <svg style={{ position: 'absolute', bottom: '5px', right: '5px', opacity: 0.4, pointerEvents: 'none' }} width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d4a017" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/>
-                  <path d="M12 16v-4"/>
-                  <path d="M12 8h.01"/>
-                  <path d="M8 12a4 4 0 0 1 8 0"/>
-                </svg>
-              </div>
-              <div className="id-card-details">
-                <p><strong>NAME:</strong> Eshwar H S</p>
-                <p><strong>ROLE:</strong> Full-Stack &amp; AI Developer</p>
-                <p><strong>STATUS:</strong> <span className="id-active">● ACTIVE // 2ND YEAR</span></p>
-                <p><strong>SPECIALTY:</strong> AI Integration &amp; Web Apps</p>
-                <p><strong>BASE:</strong> Bengaluru, Karnataka</p>
-              </div>
-              <div className="id-card-footer-row">
-                <div className="id-barcode">||| || |||| | || ||| || |||| | || ||| || ||</div>
-                <motion.div className="id-hologram" animate={{ opacity: [0.3, 0.8, 0.3], rotate: [0, 360] }} transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}>◈</motion.div>
+                
+                <div style={{ background: 'rgba(3,5,12,0.9)', borderRadius: '16px', padding: '24px', border: '1px solid rgba(255,255,255,0.05)', position: 'relative', zIndex: 1 }}>
+                  {/* Header */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+                    <div>
+                      <h3 style={{ margin: 0, color: '#ef4444', fontSize: '0.85rem', fontWeight: 900, letterSpacing: '2px', fontFamily: 'monospace' }}>DEPARTMENT OF INTELLIGENCE</h3>
+                      <p style={{ margin: '4px 0 0', color: '#94a3b8', fontSize: '0.65rem', letterSpacing: '1px', fontFamily: 'monospace' }}>AUTHORIZATION LEVEL: OMEGA</p>
+                    </div>
+                    <Shield size={24} color="rgba(239,68,68,0.8)" style={{ filter: 'drop-shadow(0 0 8px rgba(239,68,68,0.5))' }} />
+                  </div>
+
+                  {/* Photo & Main Info */}
+                  <div style={{ display: 'flex', gap: '20px', marginBottom: '24px' }}>
+                    <div style={{ width: '130px', flexShrink: 0, position: 'relative' }}>
+                      <div style={{ width: '100%', aspectRatio: '3/4', borderRadius: '8px', overflow: 'hidden', border: '2px solid rgba(239,68,68,0.5)', position: 'relative', background: '#000' }}>
+                        
+                        {/* Animated Image with Blur Effects */}
+                        <motion.img 
+                          src="/id_photo.jpg" 
+                          alt="Eshwar H S" 
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} 
+                          animate={{ 
+                            filter: [
+                              'contrast(1.2) grayscale(0.2) blur(0px)', 
+                              'contrast(1.2) grayscale(0.2) blur(0px)', 
+                              'contrast(1.5) grayscale(1) blur(4px)', 
+                              'contrast(1.5) grayscale(1) blur(8px)', 
+                              'contrast(1.2) grayscale(0.2) blur(0px)'
+                            ],
+                            opacity: [1, 1, 0.8, 0.8, 1]
+                          }}
+                          transition={{ duration: 6, repeat: Infinity, times: [0, 0.4, 0.5, 0.9, 1] }}
+                        />
+                        
+                        {/* Dot-Dot (Halftone) Overlay */}
+                        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(0,0,0,0.4) 1px, transparent 1px)', backgroundSize: '3px 3px', pointerEvents: 'none', zIndex: 1 }} />
+                        
+                        {/* Scanning Laser */}
+                        <motion.div animate={{ top: ['0%', '100%', '0%'] }} transition={{ duration: 3, repeat: Infinity, ease: 'linear' }} style={{ position: 'absolute', left: 0, right: 0, height: 2, background: '#ef4444', boxShadow: '0 0 10px #ef4444, 0 0 20px #ef4444', zIndex: 2 }} />
+                        
+                        {/* Corner brackets */}
+                        <div style={{ position: 'absolute', top: 4, left: 4, width: 10, height: 10, borderTop: '2px solid #ef4444', borderLeft: '2px solid #ef4444', zIndex: 3 }} />
+                        <div style={{ position: 'absolute', bottom: 4, right: 4, width: 10, height: 10, borderBottom: '2px solid #ef4444', borderRight: '2px solid #ef4444', zIndex: 3 }} />
+                      </div>
+                      <div style={{ textAlign: 'center', marginTop: '8px', color: '#ef4444', fontSize: '0.6rem', fontFamily: 'monospace', letterSpacing: '2px' }}>ID: EHS-001</div>
+                    </div>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '12px' }}>
+                      <div>
+                        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem', fontFamily: 'monospace' }}>OPERATIVE NAME</span>
+                        <div style={{ color: '#fff', fontSize: '1.4rem', fontWeight: 900, letterSpacing: '1px', textTransform: 'uppercase' }}>Eshwar H S</div>
+                      </div>
+                      <div>
+                        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem', fontFamily: 'monospace' }}>DESIGNATION</span>
+                        <div style={{ color: '#38bdf8', fontSize: '0.9rem', fontWeight: 700, fontFamily: 'monospace' }}>Full-Stack / AI</div>
+                      </div>
+                      <div>
+                        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem', fontFamily: 'monospace' }}>BASE OF OPERATIONS</span>
+                        <div style={{ color: '#e2e8f0', fontSize: '0.9rem', fontWeight: 700, fontFamily: 'monospace' }}>Bengaluru, IND</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Stats Footer */}
+                  <div style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: '16px' }}>
+                      <div>
+                        <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.55rem', fontFamily: 'monospace', marginBottom: '2px' }}>AFFILIATION</div>
+                        <div style={{ color: '#ffd700', fontSize: '0.75rem', fontWeight: 700, fontFamily: 'monospace' }}>UVCE CS</div>
+                      </div>
+                      <div>
+                        <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.55rem', fontFamily: 'monospace', marginBottom: '2px' }}>RATING</div>
+                        <div style={{ color: '#22c55e', fontSize: '0.75rem', fontWeight: 700, fontFamily: 'monospace' }}>9.64 CGPA</div>
+                      </div>
+                    </div>
+                    {/* Barcode */}
+                    <div style={{ fontFamily: 'monospace', color: 'rgba(255,255,255,0.3)', fontSize: '1.2rem', letterSpacing: '-1px' }}>
+                      ||||| ||| | ||
+                    </div>
+                  </div>
+                </div>
               </div>
             </motion.div>
-          </motion.div>
 
-
+          </div>
         </section>
 
         <section id="skills" style={{ overflow: 'hidden' }}>
@@ -506,6 +675,15 @@ export default function PortfolioPage() {
                   style={{ position: 'absolute', top: `${(i * 13) % 100}%`, left: `${(i * 31) % 100}%`, width: `${(i % 3) + 1}px`, height: `${(i % 3) + 1}px`, background: i % 6 === 0 ? '#ef4444' : '#fff', borderRadius: '50%', boxShadow: `0 0 ${(i % 3) + 2}px ${i % 6 === 0 ? '#ef4444' : '#fff'}` }}
                 />
               ))}
+              {/* Dynamic Shooting Stars */}
+              {[...Array(5)].map((_, i) => (
+                <div key={`shooting-star-${i}`} className="shooting-star" style={{
+                  top: `${Math.random() * 50}%`,
+                  left: `${Math.random() * 100}%`,
+                  animationDelay: `${i * 3.5}s`,
+                  animationDuration: `${Math.random() * 2 + 3}s`
+                }} />
+              ))}
             </div>
 
             {/* Center reference — everything orbits this point */}
@@ -524,39 +702,55 @@ export default function PortfolioPage() {
                 }} />
               ))}
 
-              {/* ORBIT 1 — Core: C++, JS, HTML/CSS — radius 130 */}
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-                style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0 }}
-              >
+              {/* ORBIT 1 — Tools: Git, GitHub, Vercel — radius 130 */}
+              <div style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0, animation: 'orbit-cw 40s linear infinite' }}>
                 {[
-                  { name: 'C++', angle: 0, color: '#00b4d8', icon: <span style={{ color:'#00b4d8', fontWeight:900, fontSize:'1rem', fontFamily:'monospace' }}>C++</span> },
-                  { name: 'JavaScript', angle: 120, color: '#f7df1e', icon: <span style={{ color:'#f7df1e', fontWeight:900, fontSize:'1rem', fontFamily:'monospace' }}>JS</span> },
-                  { name: 'HTML/CSS', angle: 240, color: '#e34f26', icon: <span style={{ color:'#e34f26', fontWeight:900, fontSize:'1rem', fontFamily:'monospace' }}>{'</>'}</span> },
+                  { name: 'Git', angle: 100, color: '#f05032', icon: <svg width="24" height="24" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#f05032"/><path fill="#fff" d="M27.3 14.7l-10-10a1.9 1.9 0 0 0-2.7 0l-2.1 2.1 2.7 2.7a2.3 2.3 0 0 1 2.9 2.9l2.6 2.6a2.3 2.3 0 1 1-1.4 1.4l-2.4-2.4v6.3a2.3 2.3 0 1 1-1.9 0v-6.4a2.3 2.3 0 0 1-1.2-3l-2.7-2.6-7.2 7.2a1.9 1.9 0 0 0 0 2.7l10 10a1.9 1.9 0 0 0 2.7 0l10-10a1.9 1.9 0 0 0 0-2.8z"/></svg> },
+                  { name: 'GitHub', angle: 220, color: '#e2e8f0', icon: <GithubIcon size={24} /> },
+                  { name: 'Vercel', angle: 340, color: '#ffffff', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2L22 19.7H2L12 2z"/></svg> },
                 ].map(p => {
                   const rad = (p.angle * Math.PI) / 180;
                   return (
                     <div key={p.name} style={{ position: 'absolute', left: Math.cos(rad) * 130, top: Math.sin(rad) * 130, width: 0, height: 0 }}>
-                      <motion.div animate={{ rotate: -360 }} transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-                        style={{ position: 'absolute', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-                        <motion.div whileHover={{ scale: 1.2, boxShadow: `0 0 30px ${p.color}` }}
-                          style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(5,8,16,0.95)', border: `2.5px solid ${p.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 20px ${p.color}55`, cursor: 'default', zIndex: 10 }}>
-                          {p.icon}
-                        </motion.div>
-                        <div style={{ fontSize: '0.72rem', fontFamily: 'monospace', fontWeight: 800, color: '#fff', background: 'rgba(5,8,16,0.9)', padding: '3px 8px', borderRadius: '4px', whiteSpace: 'nowrap', border: `1px solid ${p.color}55` }}>{p.name}</div>
-                      </motion.div>
+                      <div style={{ position: 'absolute', transform: 'translate(-50%, -50%)' }}>
+                        <div className="planet-wrapper" style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'orbit-ccw 40s linear infinite' }}>
+                          <motion.div whileHover={{ scale: 1.2, boxShadow: `0 0 30px ${p.color}` }}
+                            style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(5,8,16,0.95)', border: `2.5px solid ${p.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 20px ${p.color}55`, cursor: 'default', zIndex: 10 }}>
+                            {p.icon}
+                          </motion.div>
+                          <div className="planet-label" style={{ position: 'absolute', top: '100%', marginTop: '8px', fontSize: '0.72rem', fontFamily: 'monospace', fontWeight: 800, color: '#fff', background: 'rgba(5,8,16,0.9)', padding: '3px 8px', borderRadius: '4px', whiteSpace: 'nowrap', border: `1px solid ${p.color}55`, zIndex: 20 }}>{p.name}</div>
+                        </div>
+                      </div>
                     </div>
                   );
                 })}
-              </motion.div>
+              </div>
 
-              {/* ORBIT 2 — Web Tech: React, Node.js, Tailwind, REST APIs — radius 240 */}
-              <motion.div
-                animate={{ rotate: -360 }}
-                transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-                style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0 }}
-              >
+              {/* ORBIT 2 — Databases: MongoDB, Firebase — radius 240 */}
+              <div style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0, animation: 'orbit-ccw 60s linear infinite' }}>
+                {[
+                  { name: 'MongoDB', angle: 15, color: '#47a248', icon: <Database size={24} color="#47a248" /> },
+                  { name: 'Firebase', angle: 195, color: '#ffca28', icon: <Database size={24} color="#ffca28" /> },
+                ].map(p => {
+                  const rad = (p.angle * Math.PI) / 180;
+                  return (
+                    <div key={p.name} style={{ position: 'absolute', left: Math.cos(rad) * 240, top: Math.sin(rad) * 240, width: 0, height: 0 }}>
+                      <div style={{ position: 'absolute', transform: 'translate(-50%, -50%)' }}>
+                        <div className="planet-wrapper" style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'orbit-cw 60s linear infinite' }}>
+                          <motion.div whileHover={{ scale: 1.2, boxShadow: `0 0 30px ${p.color}` }}
+                            style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(5,8,16,0.95)', border: `2.5px solid ${p.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 20px ${p.color}55`, cursor: 'default', zIndex: 10 }}>
+                            {p.icon}
+                          </motion.div>
+                          <div className="planet-label" style={{ position: 'absolute', top: '100%', marginTop: '8px', fontSize: '0.72rem', fontFamily: 'monospace', fontWeight: 800, color: '#fff', background: 'rgba(5,8,16,0.9)', padding: '3px 8px', borderRadius: '4px', whiteSpace: 'nowrap', border: `1px solid ${p.color}55`, zIndex: 20 }}>{p.name}</div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* ORBIT 3 — Web Tech: React, Node.js, Tailwind, REST APIs — radius 350 */}
+              <div style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0, animation: 'orbit-cw 80s linear infinite' }}>
                 {[
                   { name: 'React', angle: 60, color: '#61dafb', icon: <svg width="26" height="26" viewBox="0 0 100 100"><circle cx="50" cy="50" r="11" fill="#61dafb"/><ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5"/><ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5" transform="rotate(60 50 50)"/><ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5" transform="rotate(120 50 50)"/></svg> },
                   { name: 'Node.js', angle: 150, color: '#68a063', icon: <svg width="26" height="26" viewBox="0 0 256 289"><path fill="#68a063" d="M128 0L0 74v141l128 74 128-74V74z"/><path fill="#fff" d="M128 25l103 59.5v119L128 263 25 183.5v-119z"/><path fill="#68a063" d="M128 230l80-46v-92l-80 46z"/></svg> },
@@ -565,72 +759,55 @@ export default function PortfolioPage() {
                 ].map(p => {
                   const rad = (p.angle * Math.PI) / 180;
                   return (
-                    <div key={p.name} style={{ position: 'absolute', left: Math.cos(rad) * 240, top: Math.sin(rad) * 240, width: 0, height: 0 }}>
-                      <motion.div animate={{ rotate: 360 }} transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-                        style={{ position: 'absolute', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-                        <motion.div whileHover={{ scale: 1.2, boxShadow: `0 0 30px ${p.color}` }}
-                          style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(5,8,16,0.95)', border: `2.5px solid ${p.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 20px ${p.color}55`, cursor: 'default' }}>
-                          {p.icon}
-                        </motion.div>
-                        <div style={{ fontSize: '0.72rem', fontFamily: 'monospace', fontWeight: 800, color: '#fff', background: 'rgba(5,8,16,0.9)', padding: '3px 8px', borderRadius: '4px', whiteSpace: 'nowrap', border: `1px solid ${p.color}55` }}>{p.name}</div>
-                      </motion.div>
-                    </div>
-                  );
-                })}
-              </motion.div>
-
-              {/* ORBIT 3 — Databases: MongoDB, Firebase — radius 350 */}
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 80, repeat: Infinity, ease: 'linear' }}
-                style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0 }}
-              >
-                {[
-                  { name: 'MongoDB', angle: 15, color: '#47a248', icon: <Database size={24} color="#47a248" /> },
-                  { name: 'Firebase', angle: 195, color: '#ffca28', icon: <Database size={24} color="#ffca28" /> },
-                ].map(p => {
-                  const rad = (p.angle * Math.PI) / 180;
-                  return (
                     <div key={p.name} style={{ position: 'absolute', left: Math.cos(rad) * 350, top: Math.sin(rad) * 350, width: 0, height: 0 }}>
-                      <motion.div animate={{ rotate: -360 }} transition={{ duration: 80, repeat: Infinity, ease: 'linear' }}
-                        style={{ position: 'absolute', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-                        <motion.div whileHover={{ scale: 1.2, boxShadow: `0 0 30px ${p.color}` }}
-                          style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(5,8,16,0.95)', border: `2.5px solid ${p.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 20px ${p.color}55`, cursor: 'default' }}>
-                          {p.icon}
-                        </motion.div>
-                        <div style={{ fontSize: '0.72rem', fontFamily: 'monospace', fontWeight: 800, color: '#fff', background: 'rgba(5,8,16,0.9)', padding: '3px 8px', borderRadius: '4px', whiteSpace: 'nowrap', border: `1px solid ${p.color}55` }}>{p.name}</div>
-                      </motion.div>
+                      <div style={{ position: 'absolute', transform: 'translate(-50%, -50%)' }}>
+                        <div className="planet-wrapper" style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'orbit-ccw 80s linear infinite' }}>
+                          <motion.div whileHover={{ scale: 1.2, boxShadow: `0 0 30px ${p.color}` }}
+                            style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(5,8,16,0.95)', border: `2.5px solid ${p.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 20px ${p.color}55`, cursor: 'default', zIndex: 10 }}>
+                            {p.icon}
+                          </motion.div>
+                          <div className="planet-label" style={{ position: 'absolute', top: '100%', marginTop: '8px', fontSize: '0.72rem', fontFamily: 'monospace', fontWeight: 800, color: '#fff', background: 'rgba(5,8,16,0.9)', padding: '3px 8px', borderRadius: '4px', whiteSpace: 'nowrap', border: `1px solid ${p.color}55`, zIndex: 20 }}>{p.name}</div>
+                        </div>
+                      </div>
                     </div>
                   );
                 })}
-              </motion.div>
+              </div>
 
-              {/* ORBIT 4 — Tools: Git, GitHub, Vercel — radius 460 */}
-              <motion.div
-                animate={{ rotate: -360 }}
-                transition={{ duration: 100, repeat: Infinity, ease: 'linear' }}
-                style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0 }}
-              >
+              {/* ORBIT 4 — Core: C++, JS, HTML/CSS — radius 460 */}
+              <div style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0, animation: 'orbit-ccw 100s linear infinite' }}>
                 {[
-                  { name: 'Git', angle: 100, color: '#f05032', icon: <svg width="24" height="24" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#f05032"/><path fill="#fff" d="M27.3 14.7l-10-10a1.9 1.9 0 0 0-2.7 0l-2.1 2.1 2.7 2.7a2.3 2.3 0 0 1 2.9 2.9l2.6 2.6a2.3 2.3 0 1 1-1.4 1.4l-2.4-2.4v6.3a2.3 2.3 0 1 1-1.9 0v-6.4a2.3 2.3 0 0 1-1.2-3l-2.7-2.6-7.2 7.2a1.9 1.9 0 0 0 0 2.7l10 10a1.9 1.9 0 0 0 2.7 0l10-10a1.9 1.9 0 0 0 0-2.8z"/></svg> },
-                  { name: 'GitHub', angle: 220, color: '#e2e8f0', icon: <GithubIcon size={24} /> },
-                  { name: 'Vercel', angle: 340, color: '#ffffff', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2L22 19.7H2L12 2z"/></svg> },
+                  { name: 'C++', angle: 0, color: '#00b4d8', icon: <span style={{ color:'#00b4d8', fontWeight:900, fontSize:'1rem', fontFamily:'monospace' }}>C++</span> },
+                  { name: 'JavaScript', angle: 120, color: '#f7df1e', icon: <span style={{ color:'#f7df1e', fontWeight:900, fontSize:'1rem', fontFamily:'monospace' }}>JS</span> },
+                  { name: 'HTML/CSS', angle: 240, color: '#e34f26', icon: <span style={{ color:'#e34f26', fontWeight:900, fontSize:'1rem', fontFamily:'monospace' }}>{'</>'}</span> },
                 ].map(p => {
                   const rad = (p.angle * Math.PI) / 180;
                   return (
                     <div key={p.name} style={{ position: 'absolute', left: Math.cos(rad) * 460, top: Math.sin(rad) * 460, width: 0, height: 0 }}>
-                      <motion.div animate={{ rotate: 360 }} transition={{ duration: 100, repeat: Infinity, ease: 'linear' }}
-                        style={{ position: 'absolute', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-                        <motion.div whileHover={{ scale: 1.2, boxShadow: `0 0 30px ${p.color}` }}
-                          style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(5,8,16,0.95)', border: `2.5px solid ${p.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 20px ${p.color}44`, cursor: 'default' }}>
-                          {p.icon}
-                        </motion.div>
-                        <div style={{ fontSize: '0.72rem', fontFamily: 'monospace', fontWeight: 800, color: '#fff', background: 'rgba(5,8,16,0.9)', padding: '3px 8px', borderRadius: '4px', whiteSpace: 'nowrap', border: `1px solid ${p.color}44` }}>{p.name}</div>
-                      </motion.div>
+                      <div style={{ position: 'absolute', transform: 'translate(-50%, -50%)' }}>
+                        <div className="planet-wrapper" style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'orbit-cw 100s linear infinite' }}>
+                          <motion.div whileHover={{ scale: 1.2, boxShadow: `0 0 30px ${p.color}` }}
+                            style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(5,8,16,0.95)', border: `2.5px solid ${p.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 20px ${p.color}55`, cursor: 'default', zIndex: 10 }}>
+                            {p.icon}
+                          </motion.div>
+                          <div className="planet-label" style={{ position: 'absolute', top: '100%', marginTop: '8px', fontSize: '0.72rem', fontFamily: 'monospace', fontWeight: 800, color: '#fff', background: 'rgba(5,8,16,0.9)', padding: '3px 8px', borderRadius: '4px', whiteSpace: 'nowrap', border: `1px solid ${p.color}55`, zIndex: 20 }}>{p.name}</div>
+                        </div>
+                      </div>
                     </div>
                   );
                 })}
-              </motion.div>
+              </div>
+
+              <style>{`
+                @keyframes orbit-cw {
+                  from { transform: rotate(0deg); }
+                  to { transform: rotate(360deg); }
+                }
+                @keyframes orbit-ccw {
+                  from { transform: rotate(0deg); }
+                  to { transform: rotate(-360deg); }
+                }
+              `}</style>
 
               {/* CENTER — SKILLS SUN */}
               <motion.div
@@ -638,12 +815,11 @@ export default function PortfolioPage() {
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                 style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10, borderRadius: '50%' }}
               >
-                <motion.div whileHover={{ scale: 1.15, rotate: 90 }} transition={{ type: 'spring', stiffness: 300 }}
+                <motion.div
                   style={{ background: 'linear-gradient(135deg, #1a0005, #0f0f1a)', border: '2px solid rgba(239,68,68,0.8)', borderRadius: '50%', width: '90px', height: '90px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'inset 0 0 20px rgba(239,68,68,0.3)', cursor: 'default' }}>
-                  <motion.div animate={{ rotate: -360 }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-                    style={{ fontSize: '0.8rem', fontWeight: 900, fontFamily: 'monospace', letterSpacing: '2px', color: '#ef4444', textShadow: '0 0 10px rgba(239,68,68,0.8)' }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 900, fontFamily: 'monospace', letterSpacing: '2px', color: '#ef4444', textShadow: '0 0 10px rgba(239,68,68,0.8)' }}>
                     SKILLS
-                  </motion.div>
+                  </div>
                 </motion.div>
                 
                 {/* Floating orbit ring around the center */}
@@ -658,7 +834,10 @@ export default function PortfolioPage() {
 
 
 
-        <section id="projects" style={{ position: 'relative', overflow: 'hidden', padding: '60px 0' }}>
+        <section id="projects" style={{ position: 'relative', overflow: 'hidden', padding: '60px 0 80px', background: 'rgba(3,5,12,0.97)' }}>
+          {/* Dynamic Laser Scanner */}
+          <div className="scanner-laser" style={{ animationDelay: '2s', animationDuration: '6s' }} />
+
           {/* Animated Background for Projects Section */}
           <MatrixRain />
           <div className="cyber-grid-anim" />
@@ -671,19 +850,48 @@ export default function PortfolioPage() {
             </span>
           </div>
 
-          {/* Horizontal scroll carousel */}
-          <style>{`
-            .projects-scroll::-webkit-scrollbar { height: 6px; }
-            .projects-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 3px; }
-            .projects-scroll::-webkit-scrollbar-thumb { background: rgba(239,68,68,0.5); border-radius: 3px; }
-            .projects-scroll::-webkit-scrollbar-thumb:hover { background: rgba(239,68,68,0.8); }
-          `}</style>
-          <div className="projects-scroll" style={{ display: 'flex', flexDirection: 'row', gap: '32px', overflowX: 'auto', overflowY: 'visible', paddingBottom: '20px', position: 'relative', zIndex: 2, scrollSnapType: 'x mandatory' }}>
-            {projects.map((p, i) => <div key={p.caseNum} style={{ flexShrink: 0, width: '520px', scrollSnapAlign: 'start' }}><CaseCard project={p} index={i} /></div>)}
+          {/* Vertical stack with separator between cards */}
+          <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', gap: '0', padding: '0 40px', maxWidth: '1300px', margin: '0 auto' }}>
+            {projects.map((p, i) => (
+              <>
+                <CaseCard key={p.caseNum} project={p} index={i} />
+                {i < projects.length - 1 && (
+                  <motion.div
+                    key={`sep-${i}`}
+                    initial={{ opacity: 0, scaleX: 0 }}
+                    whileInView={{ opacity: 1, scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8, ease: 'easeOut' }}
+                    style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 0', gap: 0 }}
+                  >
+                    {/* Left line */}
+                    <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, rgba(239,68,68,0.8))' }} />
+                    {/* Center ornament */}
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: 120, flexShrink: 0 }}>
+                      {/* Outer glow ring */}
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                        style={{ position: 'absolute', width: 56, height: 56, border: '1px solid rgba(239,68,68,0.4)', borderRadius: '50%', borderTopColor: 'transparent' }}
+                      />
+                      {/* Diamond */}
+                      <div style={{ width: 18, height: 18, background: 'rgba(239,68,68,0.9)', transform: 'rotate(45deg)', boxShadow: '0 0 20px rgba(239,68,68,0.8), 0 0 40px rgba(239,68,68,0.4)', zIndex: 2 }} />
+                      {/* Case label */}
+                      <span style={{ position: 'absolute', top: '100%', marginTop: 10, color: 'rgba(239,68,68,0.7)', fontSize: '0.62rem', fontFamily: 'monospace', fontWeight: 700, letterSpacing: '2px', whiteSpace: 'nowrap' }}>CASE {projects[i + 1]?.caseNum}</span>
+                    </div>
+                    {/* Right line */}
+                    <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(239,68,68,0.8))' }} />
+                  </motion.div>
+                )}
+              </>
+            ))}
           </div>
         </section>
 
-        <section id="education" style={{ padding: '60px 0' }}>
+        <section id="education" style={{ position: 'relative', overflow: 'hidden', padding: '60px 0' }}>
+          {/* Dynamic Laser Scanner */}
+          <div className="scanner-laser" />
+
           <motion.div className="section-header" style={{ marginBottom: '40px' }} initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, type: 'spring' }}>
             <h2 className="section-title edu-title">Education</h2>
             <span className="section-count">3 RECORDS</span>
@@ -836,21 +1044,98 @@ export default function PortfolioPage() {
         </section>
 
 
-        <section id="certifications">
-          <div className="section-header">
-            <h2 className="section-title edu-title">Declassified Records // Certifications & Achievements</h2>
-            <span className="section-count">2 FILES FOUND</span>
+        <section id="certifications" style={{ position: 'relative', overflow: 'hidden', padding: '60px 0' }}>
+          <div className="section-header" style={{ marginBottom: '40px' }}>
+            <h2 className="section-title edu-title" style={{ color: '#fff', fontSize: '2.4rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px', textShadow: '0 0 20px rgba(239,68,68,0.5)' }}>Declassified Records // Achievements</h2>
+            <span className="section-count" style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.4)', color: '#ef4444', padding: '4px 12px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 'bold' }}>2 FILES FOUND</span>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
-            <div className="case-card" style={{ padding: '24px', borderLeft: '4px solid var(--accent-3)' }}>
-              <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 16px 0', color: 'var(--accent-3)' }}><Zap size={18}/> NammaUGNEET Impact</h4>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Adopted by 1,200+ NEET UG aspirants as a real-time college predictor during Karnataka's 2026 counselling season.</p>
-            </div>
-            <div className="case-card" style={{ padding: '24px' }}>
-              <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 16px 0', color: 'var(--accent-4)' }}><Award size={18}/> CodeFury 9.0</h4>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Participated in the 9th Annual National-Level Hackathon organized by IEEE UVCE Computer Society.</p>
-              <div style={{ position: 'absolute', top: 12, right: 12, opacity: 0.1 }}><Shield size={40} /></div>
-            </div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '30px' }}>
+            
+            {/* ── CARD 1: NammaUGNEET Impact ── */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              style={{ position: 'relative', background: 'rgba(4,6,14,0.95)', borderRadius: '16px', overflow: 'hidden', cursor: 'default' }}
+            >
+              {/* Animated glowing border */}
+              <div style={{ position: 'absolute', inset: 0, padding: '2px', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(34,197,94,0.6), rgba(34,197,94,0.1), transparent)', WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', pointerEvents: 'none' }} />
+              
+              {/* Inner content */}
+              <div style={{ position: 'relative', padding: '32px', zIndex: 2 }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#22c55e', boxShadow: '0 0 20px rgba(34,197,94,0.2)' }}>
+                      <Zap size={22} />
+                    </div>
+                    <div>
+                      <h4 style={{ margin: '0 0 4px', fontSize: '1.3rem', fontWeight: 800, color: '#fff', letterSpacing: '0.5px' }}>NammaUGNEET Impact</h4>
+                      <span style={{ color: '#22c55e', fontSize: '0.75rem', fontFamily: 'monospace', fontWeight: 700, letterSpacing: '1px' }}>HIGH ADOPTION RATE</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <p style={{ margin: '0 0 24px', fontSize: '0.95rem', color: '#94a3b8', lineHeight: 1.6 }}>Adopted by <strong style={{ color: '#fff' }}>1,200+ NEET UG aspirants</strong> as a real-time college predictor during Karnataka's 2026 counselling season.</p>
+                
+                {/* Visual data bar */}
+                <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center', gap: '15px' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                      <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.65rem', fontFamily: 'monospace' }}>ADOPTION METRIC</span>
+                      <span style={{ color: '#22c55e', fontSize: '0.7rem', fontWeight: 'bold', fontFamily: 'monospace' }}>SUCCESS</span>
+                    </div>
+                    <div style={{ width: '100%', height: 4, background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
+                      <motion.div initial={{ width: 0 }} whileInView={{ width: '100%' }} transition={{ duration: 1.5, delay: 0.3 }} style={{ height: '100%', background: '#22c55e', boxShadow: '0 0 10px #22c55e' }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Background grid */}
+              <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '20px 20px', zIndex: 0 }} />
+            </motion.div>
+
+            {/* ── CARD 2: CodeFury 9.0 ── */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              style={{ position: 'relative', background: 'rgba(4,6,14,0.95)', borderRadius: '16px', overflow: 'hidden', cursor: 'default' }}
+            >
+              {/* Animated glowing border */}
+              <div style={{ position: 'absolute', inset: 0, padding: '2px', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(245,158,11,0.6), rgba(245,158,11,0.1), transparent)', WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', pointerEvents: 'none' }} />
+              
+              {/* Inner content */}
+              <div style={{ position: 'relative', padding: '32px', zIndex: 2 }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f59e0b', boxShadow: '0 0 20px rgba(245,158,11,0.2)' }}>
+                      <Award size={22} />
+                    </div>
+                    <div>
+                      <h4 style={{ margin: '0 0 4px', fontSize: '1.3rem', fontWeight: 800, color: '#fff', letterSpacing: '0.5px' }}>CodeFury 9.0</h4>
+                      <span style={{ color: '#f59e0b', fontSize: '0.75rem', fontFamily: 'monospace', fontWeight: 700, letterSpacing: '1px' }}>NATIONAL HACKATHON</span>
+                    </div>
+                  </div>
+                  <Shield size={32} color="rgba(245,158,11,0.2)" />
+                </div>
+                
+                <p style={{ margin: '0 0 24px', fontSize: '0.95rem', color: '#94a3b8', lineHeight: 1.6 }}>Participated in the <strong style={{ color: '#fff' }}>9th Annual National-Level Hackathon</strong> organized by IEEE UVCE Computer Society.</p>
+                
+                {/* Tech tags */}
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <span style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '4px 10px', borderRadius: '6px', fontSize: '0.7rem', color: '#cbd5e1', fontFamily: 'monospace' }}>COMPETITIVE CODING</span>
+                  <span style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '4px 10px', borderRadius: '6px', fontSize: '0.7rem', color: '#cbd5e1', fontFamily: 'monospace' }}>IEEE UVCE</span>
+                </div>
+              </div>
+              
+              {/* Background grid */}
+              <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '20px 20px', zIndex: 0 }} />
+            </motion.div>
+
           </div>
         </section>
 

@@ -64,7 +64,6 @@ function CursorTrail({ mousePos }: { mousePos: { x: number; y: number } }) {
 
 export default function LandingPage({ onEnter }: Props) {
   const [typedText, setTypedText] = useState("");
-  const [showButton, setShowButton] = useState(false);
   const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
   const [isTyping, setIsTyping] = useState(true);
   const [activePhraseIdx, setActivePhraseIdx] = useState(0);
@@ -95,8 +94,8 @@ export default function LandingPage({ onEnter }: Props) {
         timeoutId = setTimeout(type, fullText.charAt(idx - 1) === '.' ? 600 : 65);
       } else {
         setIsTyping(false);
-        // Automatically enter immediately when typing finishes
-        onEnter();
+        // Automatically enter after a short delay
+        setTimeout(() => onEnter(), 800);
       }
     };
     const init = setTimeout(type, 500);
@@ -117,11 +116,7 @@ export default function LandingPage({ onEnter }: Props) {
     }
   }, [isTyping]);
 
-  const playVoiceBriefing = () => {
-    const voiceAudio = new Audio('/voice.mp3');
-    voiceAudio.volume = 1;
-    voiceAudio.play().catch(() => {});
-  };
+  // Voice briefing removed since it auto-enters
 
 
   return (
@@ -138,13 +133,38 @@ export default function LandingPage({ onEnter }: Props) {
       {/* Always-visible ambient glow — no mouse needed to see this */}
       <div className="ambient-light" />
 
+      {/* Massive Background Marquee / Floating Lines */}
+      <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', opacity: 0.15 }}>
+        <motion.div
+          animate={{ x: [0, -1000] }}
+          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+          style={{ whiteSpace: 'nowrap', fontSize: '10vw', fontWeight: 900, color: '#fff', fontFamily: 'monospace', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '20px' }}
+        >
+          ESHWAR H S • FULL-STACK DEVELOPER • AI ENGINEER • ESHWAR H S • FULL-STACK DEVELOPER • AI ENGINEER •
+        </motion.div>
+        <motion.div
+          animate={{ x: [-1000, 0] }}
+          transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
+          style={{ whiteSpace: 'nowrap', fontSize: '8vw', fontWeight: 900, color: 'transparent', WebkitTextStroke: '2px rgba(255,255,255,0.8)', fontFamily: 'serif', letterSpacing: '2px', textTransform: 'uppercase', fontStyle: 'italic', marginBottom: '20px' }}
+        >
+          PROBLEM SOLVER • CONTINUOUS LEARNER • INNOVATOR • PROBLEM SOLVER • CONTINUOUS LEARNER • INNOVATOR •
+        </motion.div>
+        <motion.div
+          animate={{ x: [0, -1000] }}
+          transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+          style={{ whiteSpace: 'nowrap', fontSize: '7vw', fontWeight: 800, color: '#ef4444', fontFamily: 'monospace', letterSpacing: '6px', textTransform: 'uppercase' }}
+        >
+          BUILDING INTELLIGENT SYSTEMS • DIGITAL CRAFTSMAN • BUILDING INTELLIGENT SYSTEMS • DIGITAL CRAFTSMAN •
+        </motion.div>
+      </div>
+
       {/* Dark vignette only at the EDGES — centre is visible */}
-      <div className="edge-vignette" />
+      <div className="edge-vignette" style={{ zIndex: 2 }} />
 
       {/* Spotlight that ADDS light where mouse is — not hides everything */}
       <motion.div
         className="mouse-spotlight"
-        style={{ left: springX, top: springY }}
+        style={{ left: springX, top: springY, zIndex: 3 }}
       />
 
       {/* Evidence markers */}
@@ -192,7 +212,7 @@ export default function LandingPage({ onEnter }: Props) {
       </div>
 
       {/* Main card */}
-      <div className="landing-center">
+      <div className="landing-center" style={{ zIndex: 10 }}>
         <Tilt
           perspective={900}
           glareEnable={true}
@@ -230,46 +250,7 @@ export default function LandingPage({ onEnter }: Props) {
               <span>CLEARANCE: TS</span>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', marginTop: 36, opacity: showButton ? 1 : 0, pointerEvents: showButton ? 'auto' : 'none', transition: 'opacity 0.5s' }}>
-              <motion.button
-                className="enter-btn"
-                style={{ position: 'relative', overflow: 'hidden', padding: '16px 24px', width: '100%' }}
-                whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(163, 0, 0, 0.6)' }}
-                whileTap={{ scale: 0.97 }}
-                onClick={onEnter}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#a30000' }}>
-                    <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/>
-                    <path d="M12 16v-4"/>
-                    <path d="M12 8h.01"/>
-                    <path d="M8 12a4 4 0 0 1 8 0"/>
-                  </svg>
-                  <span style={{ fontSize: '0.9rem', letterSpacing: '2px' }}>OPEN THE ARCHIVE</span>
-                </div>
-                <motion.div 
-                  style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '3px', background: '#d4a017', boxShadow: '0 0 10px #d4a017', opacity: 0.8 }}
-                  animate={{ y: [0, 50, 0] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' }}
-                />
-              </motion.button>
-
-              <motion.button
-                style={{ 
-                  background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', 
-                  fontFamily: 'monospace', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '6px', 
-                  cursor: 'pointer', padding: '4px 10px' 
-                }}
-                whileHover={{ color: '#d4a017' }}
-                onClick={playVoiceBriefing}
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                </svg>
-                PLAY AUDIO BRIEFING
-              </motion.button>
-            </div>
+            {/* Buttons removed for auto-enter */}
           </div>
         </Tilt>
       </div>
