@@ -9,13 +9,7 @@ import {
   ExternalLink, BookOpen, Monitor, Terminal
 } from 'lucide-react';
 
-const InstagramIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-  </svg>
-);
+
 import ThemeToggle from './ThemeToggle';
 import { useTheme } from '../context/ThemeContext';
 
@@ -117,171 +111,118 @@ function SkillBar({ name, level, delay, icon }: { name: string; level: number; d
 
 
 
-function CaseCard({ project, onClick, delay }: { project: ProjectData; onClick: () => void; delay: number }) {
-  const [flipped, setFlipped] = useState(false);
-  
-  // Parallax & Spotlight state
-  const mouseX = useMotionValue(0.5);
-  const mouseY = useMotionValue(0.5);
-  
-  // Spring configurations for smooth animation
-  const springConfig = { damping: 20, stiffness: 200, mass: 0.5 };
-  const rotateX = useSpring(useTransform(mouseY, [0, 1], [15, -15]), springConfig);
-  const rotateY = useSpring(useTransform(mouseX, [0, 1], [-15, 15]), springConfig);
-  const spotlightX = useSpring(useTransform(mouseX, [0, 1], [0, 100]), springConfig);
-  const spotlightY = useSpring(useTransform(mouseY, [0, 1], [0, 100]), springConfig);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-    mouseX.set(x);
-    mouseY.set(y);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(0.5);
-    mouseY.set(0.5);
-  };
-
-  const handleFlip = (e: React.MouseEvent) => {
-    // Don't flip if clicking on links
-    if ((e.target as HTMLElement).closest('a')) return;
-    setFlipped(f => !f);
-  };
+function CaseCard({ project, index }: { project: ProjectData; index: number }) {
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <motion.div
-      className="flip-card-container"
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay }}
-      onClick={handleFlip}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ cursor: 'pointer', perspective: 1200 }}
-      title={flipped ? 'Click to flip back' : 'Click to see details'}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      style={{ perspective: '1500px', width: '100%', maxWidth: '850px', margin: '0 auto 40px auto' }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <motion.div
-        className="flip-card-inner"
-        animate={{ rotateY: flipped ? 180 : 0 }}
+        animate={{ rotateY: isFlipped ? 180 : 0 }}
+        transition={{ duration: 0.7, type: 'spring', stiffness: 90, damping: 15 }}
         style={{ 
-          rotateX: flipped ? 0 : rotateX, 
-          rotateY: flipped ? 180 : rotateY,
-          transformStyle: 'preserve-3d',
-          width: '100%', height: '100%', position: 'relative'
+          width: '100%', 
+          position: 'relative', 
+          transformStyle: 'preserve-3d', 
+          cursor: 'pointer',
+          display: 'grid'
         }}
-        transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+        onClick={() => setIsFlipped(!isFlipped)}
       >
-        {/* ── FRONT ── */}
-        <div className="flip-card-front case-card cyber-border-run" style={{ position: 'relative', overflow: 'hidden' }}>
-          {/* Spotlight Effect Overlay */}
-          <motion.div 
-            style={{
-              position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 5,
-              background: useTransform(
-                [spotlightX, spotlightY], 
-                ([x, y]) => `radial-gradient(circle at ${x}% ${y}%, rgba(239, 68, 68, 0.15) 0%, transparent 60%)`
-              )
-            }} 
-          />
+        {/* ---------------- FRONT OF FLASHCARD ---------------- */}
+        <div style={{ 
+          gridArea: '1 / 1', 
+          backfaceVisibility: 'hidden', 
+          WebkitBackfaceVisibility: 'hidden',
+          background: '#050810', 
+          borderRadius: '16px', 
+          overflow: 'hidden',
+          border: '1px solid rgba(255,255,255,0.08)',
+          boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
+          position: 'relative',
+        }}>
+           {/* FULL IMAGE — no cropping */}
+           <img src={project.image} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
 
-          <div style={{ position: 'absolute', top: 14, right: 14, display: 'flex', gap: '6px', zIndex: 10 }}>
-            {project.live && (
-              <a href={project.live} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
-                style={{ background: 'rgba(163,0,0,0.85)', color: '#fff', padding: '3px 8px', borderRadius: '4px', fontSize: '0.65rem', textDecoration: 'none', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #ff3333' }}>
-                <ExternalLink size={10} /> LIVE
-              </a>
-            )}
-            {project.github && (
-              <a href={project.github} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
-                style={{ background: 'rgba(10,10,10,0.85)', color: '#fff', padding: '3px 8px', borderRadius: '4px', fontSize: '0.65rem', textDecoration: 'none', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid rgba(255,255,255,0.3)' }}>
-                <GithubIcon size={10} /> CODE
-              </a>
-            )}
-          </div>
+           {/* CLICK TO FLIP BADGE — always visible */}
+           <div style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(239,68,68,0.9)', backdropFilter: 'blur(10px)', padding: '6px 14px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '8px', color: '#fff', fontSize: '0.8rem', fontWeight: 'bold', border: '1px solid rgba(255,255,255,0.2)', boxShadow: '0 4px 20px rgba(239,68,68,0.6)', zIndex: 10 }}>
+              Click to Flip <ExternalLink size={14} />
+           </div>
 
-          <div className="case-num" style={{ fontSize: '1rem', fontFamily: 'monospace', color: 'var(--text-muted)', marginBottom: '8px' }}>{project.caseNum}</div>
-          <div className="case-card-header" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-            <motion.div className="case-icon" animate={{ rotate: flipped ? 0 : [0, 5, -5, 0] }} transition={{ duration: 3, repeat: Infinity }}>
-              {project.icon}
-            </motion.div>
-            <span className={`status-badge ${project.status}`}>{project.status.toUpperCase()}</span>
-          </div>
-
-          {project.image && (
-            <div style={{ margin: '10px 0', borderRadius: '6px', overflow: 'hidden', height: '180px', position: 'relative', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <img src={project.image} alt="" style={{ position: 'absolute', top: '-10%', left: '-10%', width: '120%', height: '120%', objectFit: 'cover', filter: 'blur(8px) brightness(0.25)', zIndex: 0 }} aria-hidden />
-              <img src={project.image} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'contain', position: 'relative', zIndex: 1 }} />
-              <div style={{ position: 'absolute', bottom: 5, right: 6, background: 'rgba(0,0,0,0.75)', padding: '2px 7px', borderRadius: '3px', fontSize: '0.6rem', color: '#ffd700', fontFamily: 'monospace', zIndex: 2 }}>EVIDENCE EXHIBIT</div>
-            </div>
-          )}
-
-          <h4 style={{ margin: '10px 0 6px' }}>{project.title}</h4>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '8px' }}>{project.desc}</p>
-          <div style={{ fontSize: '0.75rem', color: 'var(--red)', fontWeight: 600, marginBottom: '10px' }}>⚡ {project.impact}</div>
-          <div className="case-tags" style={{ marginBottom: '12px' }}>{project.tags.slice(0, 3).map(t => <span key={t} className="case-tag">{t}</span>)}</div>
-
-          {/* Flip hint */}
-          <motion.div
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'monospace', marginTop: 'auto' }}
-            animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity }}
-          >
-            <span style={{ fontSize: '1rem' }}>↩</span> CLICK TO FLIP — VIEW FULL DOSSIER
-          </motion.div>
+           {/* HOVER OVERLAY — slides up from bottom only on hover */}
+           <motion.div
+             initial={false}
+             animate={{ y: isHovered ? '0%' : '100%', opacity: isHovered ? 1 : 0 }}
+             transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+             style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, rgba(5,8,16,0.98) 0%, rgba(8,12,22,0.92) 100%)', backdropFilter: 'blur(12px)', padding: '28px 32px', borderTop: '1px solid rgba(239,68,68,0.3)' }}
+           >
+             <h3 style={{ margin: '0 0 10px 0', fontSize: '1.7rem', color: '#fff', fontWeight: 900, letterSpacing: '-0.5px' }}>{project.title}</h3>
+             <p style={{ margin: '0 0 16px 0', color: '#94a3b8', fontSize: '0.95rem', lineHeight: 1.5, fontFamily: 'monospace', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+               {project.desc}
+             </p>
+             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+               {project.tags.map(t => (
+                 <span key={t} style={{ border: '1px solid rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.08)', color: '#e2e8f0', padding: '4px 10px', borderRadius: '4px', fontSize: '0.75rem', fontFamily: 'monospace', fontWeight: 600 }}>
+                   {t.toUpperCase()}
+                 </span>
+               ))}
+             </div>
+           </motion.div>
         </div>
 
-        {/* ── BACK ── */}
-        <div className="flip-card-back case-card" style={{ background: 'linear-gradient(145deg, rgba(10, 15, 24, 0.8), rgba(17, 24, 39, 0.8))', borderColor: 'rgba(163,0,0,0.5)' }}>
-          {/* Flip back hint */}
-          <motion.div
-            onClick={e => { e.stopPropagation(); setFlipped(false); }}
-            style={{ position: 'absolute', top: 12, right: 12, fontSize: '0.65rem', fontFamily: 'monospace', color: '#a30000', cursor: 'pointer', border: '1px solid #a30000', padding: '3px 8px', borderRadius: '4px' }}
-            whileHover={{ scale: 1.1 }}
-          >
-            ← BACK
-          </motion.div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-            <span style={{ background: '#a30000', color: '#fff', fontSize: '0.65rem', padding: '3px 8px', borderRadius: '3px', fontWeight: 'bold', fontFamily: 'monospace' }}>CASE FILE {project.caseNum}</span>
-            <span className={`status-badge ${project.status}`}>{project.status.toUpperCase()}</span>
+        {/* ---------------- BACK OF FLASHCARD ---------------- */}
+        <div style={{ 
+          gridArea: '1 / 1', 
+          backfaceVisibility: 'hidden', 
+          WebkitBackfaceVisibility: 'hidden',
+          transform: 'rotateY(180deg)',
+          background: 'linear-gradient(145deg, #0a0f1a, #0d1222)', 
+          borderRadius: '16px', 
+          border: '1px solid rgba(239, 68, 68, 0.4)',
+          padding: '40px',
+          boxShadow: 'inset 0 0 50px rgba(239, 68, 68, 0.05), 0 10px 40px rgba(0,0,0,0.5)',
+          display: 'flex', flexDirection: 'column'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' }}>
+            <div>
+              <span style={{ background: '#ef4444', color: '#fff', padding: '6px 12px', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 800, fontFamily: 'monospace' }}>CASE #{project.caseNum}</span>
+              <h3 style={{ margin: '16px 0 6px 0', fontSize: '2rem', color: '#fff', fontWeight: 900 }}>{project.title}</h3>
+              <p style={{ margin: 0, color: '#ef4444', fontFamily: 'monospace', fontSize: '1.05rem' }}>{project.subtitle}</p>
+            </div>
+            <span className={`status-badge ${project.status}`} style={{ padding: '8px 16px', fontSize: '0.85rem' }}>{project.status.toUpperCase()}</span>
+          </div>
+          
+          <div style={{ background: 'rgba(239,68,68,0.1)', borderLeft: '4px solid #ef4444', padding: '20px', borderRadius: '0 8px 8px 0', marginBottom: '32px' }}>
+             <strong style={{ color: '#fff', fontSize: '1rem', display: 'block', marginBottom: '8px' }}>⚡ IMPACT / RESULT:</strong>
+             <p style={{ margin: 0, color: '#e2e8f0', fontSize: '1.05rem', lineHeight: 1.6 }}>{project.impact}</p>
           </div>
 
-          <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#fff', marginBottom: '4px' }}>{project.title}</h4>
-          <p style={{ color: '#00ffcc', fontFamily: 'monospace', fontSize: '0.75rem', marginBottom: '14px' }}>{project.subtitle}</p>
-
-          <div style={{ background: 'rgba(163,0,0,0.12)', borderLeft: '3px solid #a30000', padding: '8px 12px', borderRadius: '4px', marginBottom: '14px' }}>
-            <div style={{ color: '#ffd700', fontSize: '0.7rem', fontWeight: 700, marginBottom: '4px' }}>⚡ IMPACT</div>
-            <p style={{ margin: 0, color: '#f1f5f9', fontSize: '0.82rem' }}>{project.impact}</p>
+          <div style={{ flex: 1 }}>
+            <h4 style={{ color: '#94a3b8', fontSize: '1rem', marginBottom: '16px', fontFamily: 'monospace', letterSpacing: '2px' }}>TECHNICAL DOSSIER</h4>
+            <ul style={{ margin: 0, paddingLeft: '20px', color: '#cbd5e1', lineHeight: 1.8, fontSize: '1.05rem' }}>
+              {project.fullDetails.map((detail, i) => <li key={i} style={{ marginBottom: '12px' }}>{detail}</li>)}
+            </ul>
           </div>
 
-          <div style={{ marginBottom: '14px' }}>
-            <div style={{ color: 'var(--text-muted)', fontSize: '0.7rem', fontFamily: 'monospace', letterSpacing: '1px', marginBottom: '8px' }}>KEY EVIDENCE</div>
-            {project.fullDetails?.map((d, i) => (
-              <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '6px', fontSize: '0.78rem', color: '#cbd5e1' }}>
-                <span style={{ color: '#a30000', flexShrink: 0 }}>▸</span>
-                <span>{d}</span>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
-            {project.tags.map(t => <span key={t} className="case-tag" style={{ fontSize: '0.65rem' }}>{t}</span>)}
-          </div>
-
-          <div style={{ display: 'flex', gap: '10px', marginTop: 'auto' }}>
-            {project.live && (
-              <a href={project.live} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
-                style={{ flex: 1, background: '#a30000', color: '#fff', padding: '9px', borderRadius: '6px', fontSize: '0.75rem', textDecoration: 'none', fontFamily: 'monospace', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', border: '1px solid #ff3333' }}>
-                <ExternalLink size={12} /> LIVE DEMO
-              </a>
-            )}
-            {project.github && (
-              <a href={project.github} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
-                style={{ flex: 1, background: 'rgba(255,255,255,0.07)', color: '#fff', padding: '9px', borderRadius: '6px', fontSize: '0.75rem', textDecoration: 'none', fontFamily: 'monospace', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', border: '1px solid rgba(255,255,255,0.2)' }}>
-                <GithubIcon size={12} /> SOURCE CODE
-              </a>
-            )}
+          <div style={{ display: 'flex', gap: '16px', marginTop: '40px' }} onClick={(e) => e.stopPropagation()}>
+             {project.live && (
+               <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href={project.live} target="_blank" rel="noreferrer" style={{ background: '#ef4444', color: '#fff', padding: '14px 28px', borderRadius: '8px', fontWeight: 800, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 5px 20px rgba(239,68,68,0.4)' }}>
+                 <ExternalLink size={18} /> OPEN LIVE PLATFORM
+               </motion.a>
+             )}
+             {project.github && (
+               <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href={project.github} target="_blank" rel="noreferrer" style={{ background: 'rgba(255,255,255,0.05)', color: '#fff', padding: '14px 28px', borderRadius: '8px', fontWeight: 800, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(255,255,255,0.2)' }}>
+                 <GithubIcon size={18} /> ACCESS SOURCE CODE
+               </motion.a>
+             )}
           </div>
         </div>
       </motion.div>
@@ -436,6 +377,17 @@ export default function PortfolioPage() {
       {/* Full-screen animated background — fades in at contact section */}
       <CyberVortexCanvas visible={contactVisible} />
 
+      {/* Galaxy Background - Behind Everything */}
+      <div className="galaxy-bg">
+        <div className="galaxy-core"></div>
+        <div className="galaxy-arm galaxy-arm-1"></div>
+        <div className="galaxy-arm galaxy-arm-2"></div>
+        <div className="galaxy-arm galaxy-arm-3"></div>
+        <div className="nebula nebula-1"></div>
+        <div className="nebula nebula-2"></div>
+        <div className="nebula nebula-3"></div>
+      </div>
+
       <header className="portfolio-header">
         <div className="header-brand">
           <motion.div whileHover={{ rotateY: 180, scale: 1.2 }} transition={{ duration: 0.4 }} style={{ display: 'flex', alignItems: 'center' }}>
@@ -529,63 +481,181 @@ export default function PortfolioPage() {
 
         </section>
 
-        <section id="skills">
-          <motion.div className="section-header" style={{ marginBottom: '40px' }} initial={{ opacity: 0, y: 30, rotateX: 20 }} whileInView={{ opacity: 1, y: 0, rotateX: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+        <section id="skills" style={{ overflow: 'hidden' }}>
+          <motion.div className="section-header" style={{ marginBottom: '50px' }} initial={{ opacity: 0, y: 30, rotateX: 20 }} whileInView={{ opacity: 1, y: 0, rotateX: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
             <h2 className="section-title skills-title">Arsenal // Technical Skills</h2>
             <span className="section-count">SYSTEM PROFILING COMPLETE</span>
           </motion.div>
 
-          {/* Evidence Wire Board */}
-          <div className="evidence-board">
-            {[
-              {
-                label: 'LANGUAGES', color: '#3b82f6',
-                skills: ['C', 'C++', 'JavaScript (ES6)', 'HTML5 / CSS3'],
-              },
-              {
-                label: 'WEB TECH', color: '#a30000',
-                skills: ['React.js', 'Node.js', 'Tailwind CSS', 'REST APIs'],
-              },
-              {
-                label: 'DATA & AI', color: '#10b981',
-                skills: ['MongoDB', 'Firebase', 'Gemini AI API', 'Web Speech API'],
-              },
-              {
-                label: 'TOOLS', color: '#d4a017',
-                skills: ['Git', 'GitHub', 'VS Code', 'Vercel'],
-              },
-            ].map((cat) => (
-              <div key={cat.label} className="evidence-column">
-                {/* Column header pin */}
-                <div className="evidence-col-header" style={{ borderColor: cat.color, color: cat.color }}>
-                  <div className="evidence-pin" style={{ background: cat.color }} />
-                  {cat.label}
-                </div>
-                {/* Vertical line */}
-                <div className="evidence-col-line" style={{ background: `linear-gradient(to bottom, ${cat.color}, transparent)` }} />
-                {/* Skill tags */}
-                <div className="evidence-tags">
-                  {cat.skills.map((skill, si) => (
-                    <motion.div
-                      key={skill}
-                      className="evidence-tag"
-                      style={{ '--tag-color': cat.color } as any}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: si * 0.08 }}
-                      whileHover={{ scale: 1.07, boxShadow: `0 0 18px ${cat.color}66`, borderColor: cat.color }}
-                    >
-                      <span className="evidence-tag-dot" style={{ background: cat.color }} />
-                      {skill}
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            ))}
+          {/* ===== SOLAR SYSTEM — Proper flat circular orbits ===== */}
+          <div style={{
+            position: 'relative',
+            width: '100%',
+            height: '1000px',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            {/* Galaxy starfield */}
+            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+              {[...Array(80)].map((_, i) => (
+                <motion.div key={`star-${i}`}
+                  animate={{ opacity: [0.1, 0.8, 0.1] }}
+                  transition={{ duration: 2 + (i % 5), repeat: Infinity, delay: i * 0.04 }}
+                  style={{ position: 'absolute', top: `${(i * 13) % 100}%`, left: `${(i * 31) % 100}%`, width: `${(i % 3) + 1}px`, height: `${(i % 3) + 1}px`, background: i % 6 === 0 ? '#ef4444' : '#fff', borderRadius: '50%', boxShadow: `0 0 ${(i % 3) + 2}px ${i % 6 === 0 ? '#ef4444' : '#fff'}` }}
+                />
+              ))}
+            </div>
+
+            {/* Center reference — everything orbits this point */}
+            <div style={{ position: 'relative', width: '1000px', height: '1000px', flexShrink: 0 }}>
+
+              {/* ORBIT RINGS — static, always fully visible */}
+              {[130, 240, 350, 460].map((r, i) => (
+                <div key={`ring-${i}`} style={{
+                  position: 'absolute', top: '50%', left: '50%',
+                  width: r * 2, height: r * 2,
+                  marginTop: -r, marginLeft: -r,
+                  borderRadius: '50%',
+                  border: '2px dashed rgba(239,68,68,0.55)',
+                  boxShadow: '0 0 20px rgba(239,68,68,0.2)',
+                  pointerEvents: 'none',
+                }} />
+              ))}
+
+              {/* ORBIT 1 — Core: C++, JS, HTML/CSS — radius 130 */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+                style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0 }}
+              >
+                {[
+                  { name: 'C++', angle: 0, color: '#00b4d8', icon: <span style={{ color:'#00b4d8', fontWeight:900, fontSize:'1rem', fontFamily:'monospace' }}>C++</span> },
+                  { name: 'JavaScript', angle: 120, color: '#f7df1e', icon: <span style={{ color:'#f7df1e', fontWeight:900, fontSize:'1rem', fontFamily:'monospace' }}>JS</span> },
+                  { name: 'HTML/CSS', angle: 240, color: '#e34f26', icon: <span style={{ color:'#e34f26', fontWeight:900, fontSize:'1rem', fontFamily:'monospace' }}>{'</>'}</span> },
+                ].map(p => {
+                  const rad = (p.angle * Math.PI) / 180;
+                  return (
+                    <div key={p.name} style={{ position: 'absolute', left: Math.cos(rad) * 130, top: Math.sin(rad) * 130, width: 0, height: 0 }}>
+                      <motion.div animate={{ rotate: -360 }} transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+                        style={{ position: 'absolute', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                        <motion.div whileHover={{ scale: 1.2, boxShadow: `0 0 30px ${p.color}` }}
+                          style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(5,8,16,0.95)', border: `2.5px solid ${p.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 20px ${p.color}55`, cursor: 'default', zIndex: 10 }}>
+                          {p.icon}
+                        </motion.div>
+                        <div style={{ fontSize: '0.72rem', fontFamily: 'monospace', fontWeight: 800, color: '#fff', background: 'rgba(5,8,16,0.9)', padding: '3px 8px', borderRadius: '4px', whiteSpace: 'nowrap', border: `1px solid ${p.color}55` }}>{p.name}</div>
+                      </motion.div>
+                    </div>
+                  );
+                })}
+              </motion.div>
+
+              {/* ORBIT 2 — Web Tech: React, Node.js, Tailwind, REST APIs — radius 240 */}
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+                style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0 }}
+              >
+                {[
+                  { name: 'React', angle: 60, color: '#61dafb', icon: <svg width="26" height="26" viewBox="0 0 100 100"><circle cx="50" cy="50" r="11" fill="#61dafb"/><ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5"/><ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5" transform="rotate(60 50 50)"/><ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5" transform="rotate(120 50 50)"/></svg> },
+                  { name: 'Node.js', angle: 150, color: '#68a063', icon: <svg width="26" height="26" viewBox="0 0 256 289"><path fill="#68a063" d="M128 0L0 74v141l128 74 128-74V74z"/><path fill="#fff" d="M128 25l103 59.5v119L128 263 25 183.5v-119z"/><path fill="#68a063" d="M128 230l80-46v-92l-80 46z"/></svg> },
+                  { name: 'Tailwind', angle: 240, color: '#38bdf8', icon: <svg width="26" height="26" viewBox="0 0 54 33"><path fill="#38bdf8" d="M27.5 0c-7.3 0-11.8 3.6-13.6 10.8 2.7-3.6 5.9-4.9 9.6-4 2 .5 3.5 2 5.1 3.6 2.7 2.7 5.7 5.8 12.4 5.8 7.3 0 11.8-3.6 13.6-10.8-2.7 3.6-5.9 4.9-9.6 4-2-.5-3.5-2-5.1-3.6-2.7-2.7-5.7-5.8-12.4-5.8zM13.8 16.2c-7.3 0-11.8 3.6-13.6 10.8 2.7-3.6 5.9-4.9 9.6-4 2 .5 3.5 2 5.1 3.6 2.7 2.7 5.7 5.8 12.4 5.8 7.3 0 11.8-3.6 13.6-10.8-2.7 3.6-5.9 4.9-9.6 4-2-.5-3.5-2-5.1-3.6-2.7-2.7-5.7-5.8-12.4-5.8z"/></svg> },
+                  { name: 'REST APIs', angle: 330, color: '#ff6b35', icon: <Globe size={22} color="#ff6b35" /> },
+                ].map(p => {
+                  const rad = (p.angle * Math.PI) / 180;
+                  return (
+                    <div key={p.name} style={{ position: 'absolute', left: Math.cos(rad) * 240, top: Math.sin(rad) * 240, width: 0, height: 0 }}>
+                      <motion.div animate={{ rotate: 360 }} transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+                        style={{ position: 'absolute', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                        <motion.div whileHover={{ scale: 1.2, boxShadow: `0 0 30px ${p.color}` }}
+                          style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(5,8,16,0.95)', border: `2.5px solid ${p.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 20px ${p.color}55`, cursor: 'default' }}>
+                          {p.icon}
+                        </motion.div>
+                        <div style={{ fontSize: '0.72rem', fontFamily: 'monospace', fontWeight: 800, color: '#fff', background: 'rgba(5,8,16,0.9)', padding: '3px 8px', borderRadius: '4px', whiteSpace: 'nowrap', border: `1px solid ${p.color}55` }}>{p.name}</div>
+                      </motion.div>
+                    </div>
+                  );
+                })}
+              </motion.div>
+
+              {/* ORBIT 3 — Databases: MongoDB, Firebase — radius 350 */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 80, repeat: Infinity, ease: 'linear' }}
+                style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0 }}
+              >
+                {[
+                  { name: 'MongoDB', angle: 15, color: '#47a248', icon: <Database size={24} color="#47a248" /> },
+                  { name: 'Firebase', angle: 195, color: '#ffca28', icon: <Database size={24} color="#ffca28" /> },
+                ].map(p => {
+                  const rad = (p.angle * Math.PI) / 180;
+                  return (
+                    <div key={p.name} style={{ position: 'absolute', left: Math.cos(rad) * 350, top: Math.sin(rad) * 350, width: 0, height: 0 }}>
+                      <motion.div animate={{ rotate: -360 }} transition={{ duration: 80, repeat: Infinity, ease: 'linear' }}
+                        style={{ position: 'absolute', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                        <motion.div whileHover={{ scale: 1.2, boxShadow: `0 0 30px ${p.color}` }}
+                          style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(5,8,16,0.95)', border: `2.5px solid ${p.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 20px ${p.color}55`, cursor: 'default' }}>
+                          {p.icon}
+                        </motion.div>
+                        <div style={{ fontSize: '0.72rem', fontFamily: 'monospace', fontWeight: 800, color: '#fff', background: 'rgba(5,8,16,0.9)', padding: '3px 8px', borderRadius: '4px', whiteSpace: 'nowrap', border: `1px solid ${p.color}55` }}>{p.name}</div>
+                      </motion.div>
+                    </div>
+                  );
+                })}
+              </motion.div>
+
+              {/* ORBIT 4 — Tools: Git, GitHub, Vercel — radius 460 */}
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 100, repeat: Infinity, ease: 'linear' }}
+                style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0 }}
+              >
+                {[
+                  { name: 'Git', angle: 100, color: '#f05032', icon: <svg width="24" height="24" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#f05032"/><path fill="#fff" d="M27.3 14.7l-10-10a1.9 1.9 0 0 0-2.7 0l-2.1 2.1 2.7 2.7a2.3 2.3 0 0 1 2.9 2.9l2.6 2.6a2.3 2.3 0 1 1-1.4 1.4l-2.4-2.4v6.3a2.3 2.3 0 1 1-1.9 0v-6.4a2.3 2.3 0 0 1-1.2-3l-2.7-2.6-7.2 7.2a1.9 1.9 0 0 0 0 2.7l10 10a1.9 1.9 0 0 0 2.7 0l10-10a1.9 1.9 0 0 0 0-2.8z"/></svg> },
+                  { name: 'GitHub', angle: 220, color: '#e2e8f0', icon: <GithubIcon size={24} /> },
+                  { name: 'Vercel', angle: 340, color: '#ffffff', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2L22 19.7H2L12 2z"/></svg> },
+                ].map(p => {
+                  const rad = (p.angle * Math.PI) / 180;
+                  return (
+                    <div key={p.name} style={{ position: 'absolute', left: Math.cos(rad) * 460, top: Math.sin(rad) * 460, width: 0, height: 0 }}>
+                      <motion.div animate={{ rotate: 360 }} transition={{ duration: 100, repeat: Infinity, ease: 'linear' }}
+                        style={{ position: 'absolute', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                        <motion.div whileHover={{ scale: 1.2, boxShadow: `0 0 30px ${p.color}` }}
+                          style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(5,8,16,0.95)', border: `2.5px solid ${p.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 20px ${p.color}44`, cursor: 'default' }}>
+                          {p.icon}
+                        </motion.div>
+                        <div style={{ fontSize: '0.72rem', fontFamily: 'monospace', fontWeight: 800, color: '#fff', background: 'rgba(5,8,16,0.9)', padding: '3px 8px', borderRadius: '4px', whiteSpace: 'nowrap', border: `1px solid ${p.color}44` }}>{p.name}</div>
+                      </motion.div>
+                    </div>
+                  );
+                })}
+              </motion.div>
+
+              {/* CENTER — SKILLS SUN */}
+              <motion.div
+                animate={{ boxShadow: ['0 0 20px rgba(239,68,68,0.4)', '0 0 60px rgba(239,68,68,0.8)', '0 0 20px rgba(239,68,68,0.4)'] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10, borderRadius: '50%' }}
+              >
+                <motion.div whileHover={{ scale: 1.15, rotate: 90 }} transition={{ type: 'spring', stiffness: 300 }}
+                  style={{ background: 'linear-gradient(135deg, #1a0005, #0f0f1a)', border: '2px solid rgba(239,68,68,0.8)', borderRadius: '50%', width: '90px', height: '90px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'inset 0 0 20px rgba(239,68,68,0.3)', cursor: 'default' }}>
+                  <motion.div animate={{ rotate: -360 }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+                    style={{ fontSize: '0.8rem', fontWeight: 900, fontFamily: 'monospace', letterSpacing: '2px', color: '#ef4444', textShadow: '0 0 10px rgba(239,68,68,0.8)' }}>
+                    SKILLS
+                  </motion.div>
+                </motion.div>
+                
+                {/* Floating orbit ring around the center */}
+                <motion.div animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: 'linear' }} style={{ position: 'absolute', inset: -15, border: '1px solid rgba(239,68,68,0.5)', borderRadius: '50%', borderTopColor: 'transparent', borderBottomColor: 'transparent', pointerEvents: 'none' }} />
+              </motion.div>
+
+            </div>
           </div>
 
+
         </section>
+
 
 
         <section id="projects" style={{ position: 'relative', overflow: 'hidden', padding: '60px 0' }}>
@@ -601,67 +671,170 @@ export default function PortfolioPage() {
             </span>
           </div>
 
-          <div className="cases-grid" style={{ position: 'relative', zIndex: 2 }}>
-            {projects.map((p, i) => <CaseCard key={p.caseNum} project={p} delay={0} onClick={() => setSelectedProject(p)} />)}
+          {/* Horizontal scroll carousel */}
+          <style>{`
+            .projects-scroll::-webkit-scrollbar { height: 6px; }
+            .projects-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 3px; }
+            .projects-scroll::-webkit-scrollbar-thumb { background: rgba(239,68,68,0.5); border-radius: 3px; }
+            .projects-scroll::-webkit-scrollbar-thumb:hover { background: rgba(239,68,68,0.8); }
+          `}</style>
+          <div className="projects-scroll" style={{ display: 'flex', flexDirection: 'row', gap: '32px', overflowX: 'auto', overflowY: 'visible', paddingBottom: '20px', position: 'relative', zIndex: 2, scrollSnapType: 'x mandatory' }}>
+            {projects.map((p, i) => <div key={p.caseNum} style={{ flexShrink: 0, width: '520px', scrollSnapAlign: 'start' }}><CaseCard project={p} index={i} /></div>)}
           </div>
         </section>
 
-        <section id="education">
-          <motion.div className="section-header" initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, type: 'spring' }}>
-            <h2 className="section-title edu-title">Background Check // Education</h2>
-            <span className="section-count">3 RECORDS FOUND</span>
+        <section id="education" style={{ padding: '60px 0' }}>
+          <motion.div className="section-header" style={{ marginBottom: '40px' }} initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, type: 'spring' }}>
+            <h2 className="section-title edu-title">Education</h2>
+            <span className="section-count">3 RECORDS</span>
           </motion.div>
-          <div className="timeline">
-            {education.map((item, i) => (
-              <motion.div key={i} className="timeline-item" whileHover={{ x: 12, scale: 1.01 }} initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: i * 0.2 }}>
-                <div className="timeline-year">{item.year}</div>
-                <motion.div className="timeline-dot" style={{ borderColor: item.color, background: `${item.color}22` }} whileHover={{ scale: 1.3, boxShadow: `0 0 15px ${item.color}` }}>
-                  <div className="timeline-dot-icon" style={{ color: item.color }}>{item.icon}</div>
-                </motion.div>
-                <div className="timeline-body">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
-                    <h4>{item.degree}</h4>
-                    <span style={{ background: `${item.color}22`, border: `1px solid ${item.color}66`, color: item.color, padding: '2px 10px', borderRadius: '3px', fontSize: '0.78rem', fontFamily: 'monospace', fontWeight: 'bold', whiteSpace: 'nowrap' }}>{item.grade}</span>
-                  </div>
-                  <span className="timeline-place">{item.institution}</span>
-                  <p>{item.detail}</p>
-                  
-                  {item.image && (
-                    <div className="edu-image-container" style={{ marginTop: '16px', borderRadius: '6px', overflow: 'hidden', height: '240px', position: 'relative', border: `1px solid ${item.color}55`, background: 'rgba(0,0,0,0.85)' }}>
-                      {/* Grid overlay */}
-                      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundImage: `linear-gradient(${item.color}15 1px, transparent 1px), linear-gradient(90deg, ${item.color}15 1px, transparent 1px)`, backgroundSize: '30px 30px', zIndex: 0 }} />
-                      
-                      {/* Actual uncropped image */}
-                      <img src={item.image} alt={item.institution} style={{ width: '100%', height: '100%', objectFit: 'contain', position: 'relative', zIndex: 1 }} />
-                      
-                      {/* Crosshairs & UI Overlays on the sides */}
-                      <div style={{ position: 'absolute', top: '10%', left: '5%', width: '25px', height: '25px', borderTop: `2px solid ${item.color}`, borderLeft: `2px solid ${item.color}`, zIndex: 2, opacity: 0.7 }} />
-                      <div style={{ position: 'absolute', bottom: '10%', right: '5%', width: '25px', height: '25px', borderBottom: `2px solid ${item.color}`, borderRight: `2px solid ${item.color}`, zIndex: 2, opacity: 0.7 }} />
-                      
-                      <div style={{ position: 'absolute', top: '40%', left: '3%', display: 'flex', flexDirection: 'column', gap: '4px', zIndex: 2 }}>
-                        {[...Array(6)].map((_, i) => <div key={i} style={{ width: i % 2 === 0 ? '24px' : '14px', height: '2px', background: `${item.color}55` }} />)}
-                      </div>
-                      
-                      <div style={{ position: 'absolute', top: '50%', right: '3%', transform: 'translateY(-50%)', fontFamily: 'monospace', fontSize: '0.65rem', color: 'var(--text-main)', textAlign: 'right', zIndex: 2, textShadow: '0 0 10px rgba(0,0,0,0.8)' }}>
-                        <div>LAT: 12.9716 N</div>
-                        <div>LNG: 77.5946 E</div>
-                        <div style={{ marginTop: '8px' }}>TARGET: {item.grade}</div>
-                      </div>
 
-                      <div style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(0,0,0,0.85)', padding: '4px 10px', borderRadius: '4px', fontSize: '0.65rem', color: '#d4a017', fontFamily: 'monospace', border: '1px solid rgba(212,160,23,0.5)', zIndex: 2 }}>
-                        LOCATION SURVEILLANCE
-                      </div>
-                      <svg style={{ position: 'absolute', bottom: '10px', left: '10px', opacity: 0.4, zIndex: 2 }} width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={item.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                      </svg>
-                      <div className="scan-line-horizontal" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: item.color, opacity: 0.6, boxShadow: `0 0 10px ${item.color}`, zIndex: 2 }} />
-                    </div>
-                  )}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '28px' }}>
+            {[
+              {
+                year: '2025 – 2029', degree: 'B.Tech in Computer Science & Engineering',
+                short: 'B.TECH CSE', institution: 'UVCE, Bengaluru',
+                grade: '9.64', gradeLabel: 'CGPA', color: '#ff3333', accentLight: '#ff6666',
+                image: '/uvce.jpg', status: 'ACTIVE',
+              },
+              {
+                year: '2023 – 2025', degree: 'Pre-University (Science — PCMB)',
+                short: 'PUC', institution: 'Presidency PU College, Sira',
+                grade: '98.17%', gradeLabel: 'SCORE', color: '#3b82f6', accentLight: '#60a5fa',
+                image: '/presidency.png', status: 'COMPLETED',
+              },
+              {
+                year: '2023', degree: 'Secondary School (SSLC)',
+                short: 'SSLC', institution: 'Jnanavardhaka Vidya Mandira, Chelur',
+                grade: '98.04%', gradeLabel: 'SCORE', color: '#10b981', accentLight: '#34d399',
+                image: '/venus.jpg', status: 'COMPLETED',
+              },
+            ].map((item, i) => (
+              <div key={i} style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
+                <motion.div
+                  initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.15, type: 'spring', stiffness: 90 }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                style={{
+                  position: 'relative',
+                  borderRadius: '20px',
+                  overflow: 'hidden',
+                  background: 'rgba(8, 12, 24, 0.9)',
+                  border: `1px solid ${item.color}44`,
+                  boxShadow: `0 4px 30px rgba(0,0,0,0.4)`,
+                  backdropFilter: 'blur(16px)',
+                  cursor: 'default',
+                  transition: 'box-shadow 0.35s ease',
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 20px 50px rgba(0,0,0,0.6), 0 0 40px ${item.color}33`)}
+                onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 4px 30px rgba(0,0,0,0.4)')}
+              >
+                {/* Animated top gradient bar */}
+                <motion.div
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.4 }}
+                  style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: `linear-gradient(90deg, transparent, ${item.color}, ${item.accentLight}, ${item.color}, transparent)`, zIndex: 2 }}
+                />
+
+                {/* Background glow blob */}
+                <div style={{ position: 'absolute', top: '-30%', right: '-20%', width: '200px', height: '200px', borderRadius: '50%', background: `radial-gradient(circle, ${item.color}18 0%, transparent 70%)`, pointerEvents: 'none', zIndex: 0 }} />
+
+                {/* Content */}
+                <div style={{ position: 'relative', zIndex: 1, padding: '36px 30px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+
+                  {/* Status chip */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                    <motion.span
+                      animate={{ opacity: item.status === 'ACTIVE' ? [0.6, 1, 0.6] : 1 }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                      style={{ fontSize: '0.6rem', fontFamily: 'monospace', fontWeight: 700, letterSpacing: '2px', color: item.color, background: `${item.color}18`, border: `1px solid ${item.color}44`, padding: '2px 8px', borderRadius: '4px' }}
+                    >
+                      {item.status === 'ACTIVE' && <span style={{ marginRight: 4 }}>●</span>}{item.status}
+                    </motion.span>
+                    <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '1px' }}>{item.year}</span>
+                  </div>
+
+                  {/* Image with glowing ring */}
+                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                    <motion.div
+                      animate={{ boxShadow: [`0 0 0 3px ${item.color}33`, `0 0 0 6px ${item.color}22`, `0 0 0 3px ${item.color}33`] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
+                      style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', border: `2px solid ${item.color}88`, background: '#0a0f1a', flexShrink: 0 }}
+                    >
+                      <img src={item.image} alt={item.institution} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </motion.div>
+                  </div>
+
+                  {/* Short label */}
+                  <div style={{ textAlign: 'center', fontSize: '0.72rem', fontFamily: 'monospace', color: item.color, letterSpacing: '3px', fontWeight: 700, marginBottom: '10px' }}>{item.short}</div>
+
+                  {/* Degree */}
+                  <div style={{ textAlign: 'center', fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)', lineHeight: 1.4, marginBottom: '10px' }}>{item.degree}</div>
+
+                  {/* Institution */}
+                  <div style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'monospace', marginBottom: '24px' }}>{item.institution}</div>
+
+                  {/* Spacer to push grade down */}
+                  <div style={{ flex: 1 }} />
+
+                  {/* Divider */}
+                  <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${item.color}55, transparent)`, marginBottom: '16px' }} />
+
+                  {/* Grade */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '0.6rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '2px' }}>{item.gradeLabel}</span>
+                    <motion.span
+                      animate={{ textShadow: [`0 0 8px ${item.color}`, `0 0 16px ${item.color}`, `0 0 8px ${item.color}`] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                      style={{ fontSize: '1.7rem', fontWeight: 900, fontFamily: 'monospace', color: item.color }}
+                    >
+                      {item.grade}
+                    </motion.span>
+                  </div>
                 </div>
+
+                {/* Bottom corner decoration */}
+                <div style={{ position: 'absolute', bottom: 0, left: 0, width: '40px', height: '40px', borderRight: `1px solid ${item.color}33`, borderTop: `1px solid ${item.color}33`, borderRadius: '0 8px 0 0', opacity: 0.6 }} />
+                <div style={{ position: 'absolute', bottom: 0, right: 0, width: '40px', height: '40px', borderLeft: `1px solid ${item.color}33`, borderTop: `1px solid ${item.color}33`, borderRadius: '8px 0 0 0', opacity: 0.6 }} />
               </motion.div>
+
+              {/* Premium Connecting Data Stream */}
+              {i < 2 && (
+                <div
+                  style={{
+                    position: 'absolute', top: '50%', right: '-28px', transform: 'translateY(-50%)',
+                    width: '28px', height: '2px', zIndex: 0, overflow: 'hidden'
+                  }}
+                >
+                  {/* Track line */}
+                  <div style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.05)' }} />
+                  
+                  {/* Glowing data packet traveling across */}
+                  <motion.div
+                    animate={{ x: ['-100%', '200%'], opacity: [0, 1, 0] }}
+                    transition={{ duration: 1.2, repeat: Infinity, ease: 'linear', delay: i * 0.4 }}
+                    style={{
+                      position: 'absolute', top: '-1px', bottom: '-1px', width: '14px',
+                      background: `linear-gradient(90deg, transparent, ${item.color}, transparent)`,
+                      filter: `drop-shadow(0 0 6px ${item.color})`
+                    }}
+                  />
+                  
+                  {/* Pulsing end nodes */}
+                  <div style={{ position: 'absolute', left: 0, top: '-1.5px', width: '5px', height: '5px', borderRadius: '50%', background: item.color, boxShadow: `0 0 8px ${item.color}` }} />
+                  <div style={{ position: 'absolute', right: 0, top: '-1.5px', width: '5px', height: '5px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)' }} />
+                </div>
+              )}
+            </div>
             ))}
           </div>
         </section>
+
 
         <section id="certifications">
           <div className="section-header">
@@ -682,68 +855,172 @@ export default function PortfolioPage() {
         </section>
 
         <section id="contact" style={{ position: 'relative', overflow: 'hidden', padding: '100px 0', marginTop: '60px' }}>
+          {/* Custom Styles for high-josh inputs */}
+          <style>{`
+            .cyber-input {
+              background: rgba(255,255,255,0.03);
+              border: 1px solid rgba(255,255,255,0.1);
+              color: #fff;
+              padding: 16px 18px;
+              border-radius: 12px;
+              transition: all 0.3s ease;
+              font-family: monospace;
+              font-size: 0.95rem;
+              outline: none;
+              width: 100%;
+              box-sizing: border-box;
+            }
+            .cyber-input:focus {
+              background: rgba(239, 68, 68, 0.05);
+              border-color: #ef4444;
+              box-shadow: 0 0 25px rgba(239, 68, 68, 0.4), inset 0 0 15px rgba(239, 68, 68, 0.2);
+            }
+            .cyber-input::placeholder {
+              color: rgba(255,255,255,0.3);
+            }
+            .cyber-channel {
+              position: relative;
+              overflow: hidden;
+            }
+            .cyber-channel::after {
+              content: '';
+              position: absolute;
+              top: 0; left: -150%; width: 50%; height: 100%;
+              background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+              transform: skewX(-20deg);
+              transition: all 0.6s ease;
+            }
+            .cyber-channel:hover::after {
+              left: 200%;
+            }
+          `}</style>
+
           {/* Huge Background Text */}
           <div style={{ position: 'absolute', top: '5%', left: '50%', transform: 'translate(-50%, 0)', fontSize: '18vw', fontWeight: 900, color: 'transparent', WebkitTextStroke: '2px rgba(255,255,255,0.03)', whiteSpace: 'nowrap', zIndex: 0, pointerEvents: 'none', fontFamily: 'Montserrat, sans-serif', letterSpacing: '0.05em' }}>
             C O N T A C T
           </div>
 
-          <motion.div className="contact-section" style={{ position: 'relative', zIndex: 1, background: 'transparent', boxShadow: 'none' }} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
-            
+          {/* Animated rings in background */}
+          <motion.div
+            animate={{ scale: [1, 1.08, 1], opacity: [0.04, 0.1, 0.04] }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ position: 'absolute', top: '50%', left: '30%', transform: 'translate(-50%, -50%)', width: '500px', height: '500px', borderRadius: '50%', border: '1px solid #ef4444', zIndex: 0, pointerEvents: 'none' }}
+          />
+          <motion.div
+            animate={{ scale: [1, 1.12, 1], opacity: [0.03, 0.07, 0.03] }}
+            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+            style={{ position: 'absolute', top: '50%', left: '30%', transform: 'translate(-50%, -50%)', width: '700px', height: '700px', borderRadius: '50%', border: '1px solid #3b82f6', zIndex: 0, pointerEvents: 'none' }}
+          />
+
+          <motion.div className="contact-section" style={{ position: 'relative', zIndex: 1, background: 'transparent', boxShadow: 'none', maxWidth: '1400px', margin: '0 auto', padding: '0 40px' }} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
+
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '60px' }}>
-              <motion.h2 className="section-title contact-title" style={{ marginBottom: 12, fontSize: '3rem', textAlign: 'center' }} animate={{ textShadow: ['0 0 10px #a30000', '0 0 20px #a30000', '0 0 10px #a30000'] }} transition={{ duration: 2, repeat: Infinity }}>Establish Contact</motion.h2>
-              <p className="contact-desc" style={{ maxWidth: '600px', margin: '0 auto' }}>Open to internships, collaborations, and AI/Web dev opportunities. The network is secure, drop a message.</p>
+              <motion.h2 className="section-title contact-title" style={{ marginBottom: 12, fontSize: '3.5rem', textAlign: 'center' }} animate={{ textShadow: ['0 0 10px #ef4444', '0 0 25px #ef4444', '0 0 10px #ef4444'] }} transition={{ duration: 2, repeat: Infinity }}>Establish Contact</motion.h2>
+              <p className="contact-desc" style={{ maxWidth: '520px', margin: '0 auto', fontSize: '1.1rem', fontStyle: 'italic', lineHeight: 1.6, color: '#94a3b8' }}>
+                "Open to internships, collaborations &amp; AI/Web dev opportunities. Drop a message."
+              </p>
             </div>
 
+            <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '40px', width: '100%', alignItems: 'stretch' }}>
+              {/* Left: Contact Form — compact & wide */}
+              <motion.div
+                style={{ padding: '32px 36px', borderRadius: '24px', background: 'rgba(10, 15, 24, 0.8)', backdropFilter: 'blur(24px)', border: '1px solid rgba(239,68,68,0.3)', boxShadow: '0 20px 60px rgba(0,0,0,0.8), inset 0 0 60px rgba(239,68,68,0.05)', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+                whileHover={{ boxShadow: '0 20px 60px rgba(0,0,0,0.8), 0 0 50px rgba(239,68,68,0.15), inset 0 0 60px rgba(239,68,68,0.1)' }}
+                transition={{ duration: 0.4 }}
+              >
+                {/* Animated top bar */}
+                <motion.div
+                  animate={{ opacity: [0.4, 1, 0.4], scaleX: [0.7, 1, 0.7] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  style={{ position: 'absolute', top: 0, left: '5%', width: '90%', height: '1px', background: 'linear-gradient(to right, transparent, #a30000, #ff4444, #a30000, transparent)' }}
+                />
+                {/* Grid overlay bg */}
+                <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(163,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(163,0,0,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: '60px', maxWidth: '1000px', margin: '0 auto', width: '100%' }}>
-              {/* Left: Contact Form */}
-              <motion.div className="contact-form cyber-border-run" style={{ padding: '30px', borderRadius: '16px', background: 'rgba(10, 15, 25, 0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }} whileHover={{ boxShadow: '0 0 30px rgba(163,0,0,0.15)' }} transition={{ duration: 0.3 }}>
-                <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                  <div className="form-group">
-                    <label className="form-label"><User size={10} style={{ marginRight: 5 }} />NAME</label>
-                    <input type="text" className="form-input" placeholder="Your name or organization" />
+                <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  {/* 2-col row: NAME + EMAIL */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                    <div>
+                      <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: '#ef4444', fontWeight: 800 }}><User size={12} /> NAME</label>
+                      <input type="text" className="cyber-input" placeholder="Your name" />
+                    </div>
+                    <div>
+                      <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: '#ef4444', fontWeight: 800 }}><Mail size={12} /> EMAIL</label>
+                      <input type="email" className="cyber-input" placeholder="your.email@example.com" />
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label className="form-label"><Mail size={10} style={{ marginRight: 5 }} />EMAIL</label>
-                    <input type="email" className="form-input" placeholder="your.email@example.com" />
+
+                  {/* TOPIC */}
+                  <div style={{ marginBottom: '20px' }}>
+                    <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: '#ef4444', fontWeight: 800 }}><FileText size={12} /> TOPIC</label>
+                    <input type="text" className="cyber-input" placeholder="What's this about?" />
                   </div>
+
+                  {/* MESSAGE — flex grow to fill remaining space */}
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', marginBottom: '24px' }}>
+                    <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: '#ef4444', fontWeight: 800 }}><FileText size={12} /> MESSAGE</label>
+                    <textarea className="cyber-input" placeholder="Detail your project or opportunity..." style={{ flex: 1, resize: 'none', minHeight: '120px' }} />
+                  </div>
+
+                  <motion.button className="form-submit" 
+                    style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '16px', borderRadius: '12px', fontSize: '1rem', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 10px 30px rgba(239, 68, 68, 0.4)' }}
+                    whileHover={{ scale: 1.02, boxShadow: '0 10px 40px rgba(239, 68, 68, 0.6)' }} whileTap={{ scale: 0.98 }}
+                    onClick={(e) => { e.preventDefault(); alert('Transmission sent! Eshwar will respond shortly.'); }}
+                  >
+                    <Zap size={18} /> TRANSMIT SIGNAL
+                  </motion.button>
                 </div>
-                <div className="form-group" style={{ marginBottom: '24px' }}>
-                  <label className="form-label"><FileText size={10} style={{ marginRight: 5 }} />MESSAGE</label>
-                  <textarea className="form-input form-textarea" placeholder="Detail your project or opportunity..." rows={4} />
-                </div>
-                <motion.button className="form-submit" whileHover={{ scale: 1.04, boxShadow: '0 0 40px var(--red-glow)' }} whileTap={{ scale: 0.97 }}
-                  onClick={(e) => { e.preventDefault(); alert('Transmission sent! Eshwar will respond shortly.'); }}
-                >
-                  <Zap size={14} style={{ marginRight: 8 }} /> TRANSMIT SIGNAL
-                </motion.button>
               </motion.div>
 
-              {/* Right: Direct Channels */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', justifyContent: 'center' }}>
-                <div style={{ fontSize: '0.7rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '2px', marginBottom: '4px' }}>— DIRECT CHANNELS —</div>
-                {[
-                  { icon: <Mail size={18} />, label: 'Email', href: 'mailto:eshwarhs170@gmail.com', color: '#3b82f6' },
-                  { icon: <GithubIcon size={18} />, label: 'GitHub', href: 'https://github.com/eshwarhs170-a11y', color: '#e2e8f0' },
-                  { icon: <LinkedinIcon size={18} />, label: 'LinkedIn', href: 'https://www.linkedin.com/in/eshwar-h-s-4b820638a', color: '#0a66c2' },
-                  { icon: <InstagramIcon />, label: 'Instagram', href: 'https://www.instagram.com/_eshwar__hs_', color: '#e1306c' },
-                ].map((ch) => (
-                  <a key={ch.label} href={ch.href} target="_blank" rel="noreferrer"
-                    style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', background: 'rgba(10, 15, 25, 0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.05)', borderLeft: `3px solid ${ch.color}`, borderRadius: '12px', textDecoration: 'none', color: 'var(--text-main)', transition: 'all 0.2s ease' }}
-                    onMouseEnter={e => (e.currentTarget.style.transform = 'translateX(6px)')}
-                    onMouseLeave={e => (e.currentTarget.style.transform = 'translateX(0)')}
-                  >
-                    <span style={{ color: ch.color }}>{ch.icon}</span>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: '1.1rem', fontWeight: 800, fontFamily: 'monospace', letterSpacing: '2px' }}>{ch.label.toUpperCase()}</div>
-                    </div>
-                    <ExternalLink size={14} style={{ marginLeft: 'auto', color: 'var(--text-muted)', opacity: 0.5 }} />
-                  </a>
-                ))}
+              {/* Right: Direct Channels — stretched to same height */}
+              <div style={{ padding: '32px 30px', borderRadius: '24px', background: 'rgba(10, 15, 24, 0.8)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 20px 60px rgba(0,0,0,0.8), inset 0 0 60px rgba(255,255,255,0.02)', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
+                {/* Animated top bar */}
+                <motion.div
+                  animate={{ opacity: [0.3, 0.8, 0.3], scaleX: [0.7, 1, 0.7] }}
+                  transition={{ duration: 4, repeat: Infinity, delay: 1 }}
+                  style={{ position: 'absolute', top: 0, left: '5%', width: '90%', height: '1px', background: 'linear-gradient(to right, transparent, #3b82f6, #0a66c2, #3b82f6, transparent)' }}
+                />
+
+                {/* Header */}
+                <div style={{ marginBottom: '32px' }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 800, fontFamily: 'monospace', color: '#94a3b8', letterSpacing: '4px', textAlign: 'center', marginBottom: '8px' }}>— DIRECT CHANNELS —</div>
+                  <div style={{ height: '1px', background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent)' }} />
+                </div>
+
+                {/* Channels — evenly spaced to fill height */}
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', gap: '16px' }}>
+                  {[
+                    { icon: <Mail size={24} />, label: 'EMAIL', value: 'eshwarhs170@gmail.com', href: 'mailto:eshwarhs170@gmail.com', color: '#ef4444' }, // changed email color to match theme!
+                    { icon: <GithubIcon size={24} />, label: 'GITHUB', value: 'github.com/eshwarhs170-a11y', href: 'https://github.com/eshwarhs170-a11y', color: '#fff' },
+                    { icon: <LinkedinIcon size={24} />, label: 'LINKEDIN', value: 'linkedin.com/in/eshwar-h-s', href: 'https://www.linkedin.com/in/eshwar-h-s-4b820638a', color: '#0a66c2' },
+                  ].map((ch) => (
+                    <motion.a
+                      key={ch.label}
+                      href={ch.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="cyber-channel"
+                      whileHover={{ scale: 1.02, boxShadow: `0 0 30px ${ch.color}33`, borderColor: ch.color }}
+                      style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '20px 24px', background: `linear-gradient(135deg, rgba(255,255,255,0.03), ${ch.color}11)`, border: `1px solid rgba(255,255,255,0.08)`, borderLeft: `4px solid ${ch.color}`, borderRadius: '16px', textDecoration: 'none', color: 'var(--text-main)', transition: 'all 0.3s ease', flex: 1 }}
+                    >
+                      <motion.span
+                        style={{ color: ch.color, filter: `drop-shadow(0 0 12px ${ch.color}99)`, flexShrink: 0 }}
+                        animate={{ scale: [1, 1.15, 1] }}
+                        transition={{ duration: 2.5, repeat: Infinity, delay: Math.random() }}
+                      >{ch.icon}</motion.span>
+                      <div style={{ flex: 1, overflow: 'hidden' }}>
+                        <div style={{ fontSize: '0.75rem', fontWeight: 900, fontFamily: 'monospace', letterSpacing: '3px', color: ch.color, marginBottom: '6px' }}>{ch.label}</div>
+                        <div style={{ fontSize: '0.95rem', color: '#f1f5f9', fontFamily: 'monospace', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ch.value}</div>
+                      </div>
+                      <ExternalLink size={16} style={{ color: ch.color, opacity: 0.6, flexShrink: 0 }} />
+                    </motion.a>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
         </section>
+
 
       </main>
 
@@ -759,7 +1036,6 @@ export default function PortfolioPage() {
             {[
               { icon: <GithubIcon size={20} />, href: 'https://github.com/eshwarhs170-a11y' },
               { icon: <LinkedinIcon size={20} />, href: 'https://www.linkedin.com/in/eshwar-h-s-4b820638a' },
-              { icon: <InstagramIcon />, href: 'https://www.instagram.com/_eshwar__hs_' },
               { icon: <Mail size={20} />, href: 'mailto:eshwarhs170@gmail.com' }
             ].map((link, i) => (
               <motion.a key={i} whileHover={{ y: -5, scale: 1.1, color: '#fff' }} href={link.href} target="_blank" rel="noreferrer" style={{ color: 'var(--text-muted)', transition: 'color 0.3s' }}>

@@ -95,9 +95,8 @@ export default function LandingPage({ onEnter }: Props) {
         timeoutId = setTimeout(type, fullText.charAt(idx - 1) === '.' ? 600 : 65);
       } else {
         setIsTyping(false);
-        setTimeout(() => setShowButton(true), 800);
-        // Auto-open the archive 2 seconds after the button appears
-        setTimeout(() => onEnter(), 800 + 2000);
+        // Automatically enter immediately when typing finishes
+        onEnter();
       }
     };
     const init = setTimeout(type, 500);
