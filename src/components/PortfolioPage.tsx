@@ -44,15 +44,20 @@ function GlitchText({ text }: { text: string }) {
   return <span className="glitch-hover">{text}</span>;
 }
 
-// Same blood-red circle trail as the LandingPage
+// Same blood-red circle trail as the LandingPage — clears when cursor stops
 function CursorTrail({ mousePos }: { mousePos: { x: number; y: number } }) {
   const [trail, setTrail] = useState<{ x: number; y: number; id: number }[]>([]);
   const idRef = useRef(0);
+  const clearTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (mousePos.x < 0) return;
     const newDot = { x: mousePos.x, y: mousePos.y, id: idRef.current++ };
     setTrail(prev => [...prev.slice(-18), newDot]);
+
+    // Clear trail 400ms after cursor stops moving
+    if (clearTimer.current) clearTimeout(clearTimer.current);
+    clearTimer.current = setTimeout(() => setTrail([]), 400);
   }, [mousePos]);
 
   return (
@@ -1058,7 +1063,8 @@ export default function PortfolioPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              style={{ position: 'relative', background: 'rgba(4,6,14,0.95)', borderRadius: '16px', overflow: 'hidden', cursor: 'default' }}
+              whileHover={{ scale: 1.02, y: -5, boxShadow: '0 20px 50px rgba(34,197,94,0.2)' }}
+              style={{ position: 'relative', background: 'rgba(4,6,14,0.95)', borderRadius: '16px', overflow: 'hidden', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.05)' }}
             >
               {/* Animated glowing border */}
               <div style={{ position: 'absolute', inset: 0, padding: '2px', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(34,197,94,0.6), rgba(34,197,94,0.1), transparent)', WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', pointerEvents: 'none' }} />
@@ -1093,8 +1099,12 @@ export default function PortfolioPage() {
                 </div>
               </div>
               
-              {/* Background grid */}
-              <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '20px 20px', zIndex: 0 }} />
+              {/* Animated Background grid */}
+              <motion.div 
+                animate={{ backgroundPosition: ['0px 0px', '20px 20px'] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+                style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '20px 20px', zIndex: 0 }} 
+              />
             </motion.div>
 
             {/* ── CARD 2: CodeFury 9.0 ── */}
@@ -1103,7 +1113,8 @@ export default function PortfolioPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              style={{ position: 'relative', background: 'rgba(4,6,14,0.95)', borderRadius: '16px', overflow: 'hidden', cursor: 'default' }}
+              whileHover={{ scale: 1.02, y: -5, boxShadow: '0 20px 50px rgba(245,158,11,0.2)' }}
+              style={{ position: 'relative', background: 'rgba(4,6,14,0.95)', borderRadius: '16px', overflow: 'hidden', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.05)' }}
             >
               {/* Animated glowing border */}
               <div style={{ position: 'absolute', inset: 0, padding: '2px', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(245,158,11,0.6), rgba(245,158,11,0.1), transparent)', WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', pointerEvents: 'none' }} />
@@ -1132,8 +1143,12 @@ export default function PortfolioPage() {
                 </div>
               </div>
               
-              {/* Background grid */}
-              <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '20px 20px', zIndex: 0 }} />
+              {/* Animated Background grid */}
+              <motion.div 
+                animate={{ backgroundPosition: ['0px 0px', '20px 20px'] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+                style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '20px 20px', zIndex: 0 }} 
+              />
             </motion.div>
 
           </div>
