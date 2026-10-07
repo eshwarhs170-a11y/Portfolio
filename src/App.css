@@ -132,26 +132,226 @@
 }
 
 [data-theme='light'] {
-  --red: #d32f2f;
-  --red-glow: rgba(211, 47, 47, 0.15);
-  --off-white: #111111;
-  --muted: #666666;
-  --glass-bg: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(0, 0, 0, 0.12);
-  --card-bg: #ffffff;
-  --body-bg: #f4f1ea; /* Crisp warm paper */
-  --header-bg: rgba(244, 241, 234, 0.85);
-  --text-main: #111827;
-  --text-muted: #6b7280;
-  --text-secondary: #374151;
-  --text-tertiary: #9ca3af;
-  --section-border: rgba(0, 0, 0, 0.08);
-  --accent-1: #d32f2f; 
-  --accent-2: #2563eb; 
-  --accent-3: #059669; 
-  --accent-4: #d97706;
-  --accent-5: #7c3aed;
+  --red: #c0392b;
+  --red-glow: rgba(192, 57, 43, 0.18);
+  --off-white: #1a1a2e;
+  --muted: #555566;
+  --glass-bg: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --body-bg: #e8eaf0;
+  --header-bg: rgba(232, 234, 240, 0.95);
+  --text-main: #0f1117;
+  --text-muted: #5a5a72;
+  --text-secondary: #2d2d3a;
+  --text-tertiary: #8888aa;
+  --section-border: rgba(0, 0, 0, 0.1);
+  --accent-1: #c0392b;
+  --accent-2: #1d4ed8;
+  --accent-3: #047857;
+  --accent-4: #b45309;
+  --accent-5: #6d28d9;
 }
+
+/* ====== LIGHT MODE GLOBAL OVERRIDES ====== */
+/* Fix galaxy background for light mode */
+[data-theme='light'] .galaxy-bg { display: none; }
+[data-theme='light'] body,
+[data-theme='light'] .portfolio-page {
+  background: linear-gradient(135deg, #e8eaf0 0%, #f0e8f0 50%, #e8f0f8 100%);
+}
+
+/* Header */
+[data-theme='light'] .portfolio-header {
+  background: rgba(232, 234, 240, 0.95) !important;
+  border-bottom: 1px solid rgba(0,0,0,0.1) !important;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+}
+[data-theme='light'] nav a { color: #5a5a72; }
+[data-theme='light'] nav a:hover { background: rgba(0,0,0,0.06); color: #0f1117; }
+[data-theme='light'] nav a.nav-active { background: #c0392b; color: #fff; }
+
+/* Sections */
+[data-theme='light'] section {
+  background: transparent !important;
+}
+
+/* Bento / skill cards */
+[data-theme='light'] .bento-card {
+  background: rgba(255,255,255,0.85) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  color: #0f1117;
+}
+
+/* Evidence board */
+[data-theme='light'] .evidence-board {
+  background: rgba(255,255,255,0.85) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+[data-theme='light'] .evidence-column {
+  border-right-color: rgba(0,0,0,0.08) !important;
+}
+[data-theme='light'] .evidence-tag {
+  background: rgba(0,0,0,0.04) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+  color: #0f1117 !important;
+}
+
+/* Project CaseCards */
+[data-theme='light'] #projects {
+  background: rgba(232,234,240,0.6) !important;
+}
+[data-theme='light'] #projects .section-title { color: #0f1117; }
+
+/* Flip cards */
+[data-theme='light'] .flip-card-front,
+[data-theme='light'] .flip-card-back {
+  background: rgba(255,255,255,0.9) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  color: #0f1117;
+}
+
+/* Case card (project card) dark overrides */
+[data-theme='light'] .case-card {
+  background: rgba(255,255,255,0.9) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+[data-theme='light'] .case-tag {
+  background: rgba(0,0,0,0.05) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+  color: #2d2d3a !important;
+}
+
+/* Education section */
+[data-theme='light'] #education {
+  background: transparent !important;
+}
+
+/* Contact section */
+[data-theme='light'] #contact {
+  background: transparent !important;
+}
+[data-theme='light'] .cyber-input,
+[data-theme='light'] .form-input {
+  background: rgba(255,255,255,0.9) !important;
+  border-color: rgba(0,0,0,0.15) !important;
+  color: #0f1117 !important;
+}
+[data-theme='light'] .cyber-input::placeholder,
+[data-theme='light'] .form-input::placeholder { color: #8888aa !important; }
+[data-theme='light'] .cyber-input:focus,
+[data-theme='light'] .form-input:focus {
+  border-color: #c0392b !important;
+  box-shadow: 0 0 0 3px rgba(192,57,43,0.12) !important;
+}
+
+/* Footer */
+[data-theme='light'] .portfolio-footer {
+  background: rgba(220,222,235,0.9) !important;
+  border-top-color: rgba(0,0,0,0.12) !important;
+  color: #5a5a72;
+}
+
+/* MatrixRain — hide in light mode */
+[data-theme='light'] canvas { opacity: 0.06 !important; filter: hue-rotate(200deg) saturate(0.5); }
+
+/* Cyber grid anim */
+[data-theme='light'] .cyber-grid-anim {
+  background-image:
+    linear-gradient(rgba(192,57,43,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(192,57,43,0.06) 1px, transparent 1px);
+}
+
+/* Glowing orbs — muted for light */
+[data-theme='light'] #projects > div[style*='blur'] {
+  opacity: 0.4;
+}
+
+/* Section count badges */
+[data-theme='light'] .section-count {
+  background: rgba(192,57,43,0.1) !important;
+  border-color: rgba(192,57,43,0.3) !important;
+  color: #c0392b !important;
+}
+
+/* ── HERO section light mode ── */
+[data-theme='light'] .hero-text h1,
+[data-theme='light'] .hero-text .hero-name { color: #0f1117 !important; }
+
+[data-theme='light'] .hero-text h2 { color: #5a5a72 !important; }
+
+/* Bio card */
+[data-theme='light'] .hero-text .hero-bio-card,
+[data-theme='light'] #home div[style*="rgba(4,6,14"] {
+  background: rgba(255,255,255,0.8) !important;
+  border-color: rgba(192,57,43,0.5) !important;
+}
+[data-theme='light'] #home p[style*="color: '#cbd5e1'"],
+[data-theme='light'] #home p { color: #2d2d3a !important; }
+
+/* Watermark */
+[data-theme='light'] #home div[style*="DOSSIER"] { color: #0f1117 !important; opacity: 0.03 !important; }
+
+/* Secondary button (Secure Comms) */
+[data-theme='light'] #home a[href="#contact"] {
+  background: rgba(0,0,0,0.06) !important;
+  border-color: rgba(0,0,0,0.15) !important;
+  color: #0f1117 !important;
+}
+
+/* ── BROWSER-STYLE project card TOP BAR ── */
+[data-theme='light'] div[style*="rgba(4,6,14,0.97)"],
+[data-theme='light'] div[style*="rgba(8,12,24,0.98)"] {
+  background: rgba(245,246,255,0.98) !important;
+}
+/* Browser bar border */
+[data-theme='light'] div[style*="rgba(8,12,24)"] {
+  background: rgba(240,241,250,0.98) !important;
+}
+
+/* PROJECT card itself */
+[data-theme='light'] div[style*="rgba(4,6,14,0.97)"] {
+  background: #fff !important;
+  border-color: rgba(0,0,0,0.1) !important;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.12) !important;
+}
+
+/* Contact form + channel cards */
+[data-theme='light'] div[style*="rgba(10, 15, 24"],
+[data-theme='light'] div[style*="rgba(10,15,24"],
+[data-theme='light'] div[style*="rgba(10, 14, 23"] {
+  background: rgba(255,255,255,0.88) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+
+/* Channel links */
+[data-theme='light'] a[style*="rgba(255,255,255,0.03)"],
+[data-theme='light'] a[style*="rgba(255,255,255, 0.03)"] {
+  background: rgba(0,0,0,0.03) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+[data-theme='light'] a[style*="rgba(255,255,255,0.08)"] {
+  background: rgba(0,0,0,0.04) !important;
+}
+
+/* Education cards */
+[data-theme='light'] div[style*="rgba(8, 12, 24, 0.9)"] {
+  background: rgba(255,255,255,0.92) !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+}
+
+/* Text that is #fff / white — override to dark in light mode */
+[data-theme='light'] span[style*="color: '#fff'"],
+[data-theme='light'] div[style*="color: '#fff'"],
+[data-theme='light'] p[style*="color: '#fff'"] { color: #0f1117 !important; }
+
+/* Scrollbar */
+[data-theme='light'] ::-webkit-scrollbar-track { background: #e8eaf0; }
+[data-theme='light'] ::-webkit-scrollbar-thumb { background: rgba(192,57,43,0.3); }
+[data-theme='light'] ::-webkit-scrollbar-thumb:hover { background: rgba(192,57,43,0.5); }
 
 html, body {
   width: 100%; min-height: 100%;
@@ -813,22 +1013,45 @@ body, a, button, input, textarea {
   z-index: 1;
 }
 
+/* ── ENHANCED BACKGROUND EFFECTS ── */
+.cyber-grid-anim {
+  position: absolute;
+  inset: -100% 0 -100% 0; /* Cover extra area for moving */
+  pointer-events: none;
+  z-index: 1;
+  background-image: 
+    linear-gradient(rgba(239, 68, 68, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(239, 68, 68, 0.08) 1px, transparent 1px);
+  background-size: 60px 60px;
+  transform: perspective(600px) rotateX(60deg) scale(1.5) translateY(0);
+  transform-origin: center;
+  animation: gridMove 10s linear infinite;
+  mask-image: radial-gradient(ellipse at center, black 10%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 10%, transparent 70%);
+}
+
+@keyframes gridMove {
+  0% { transform: perspective(600px) rotateX(60deg) scale(1.5) translateY(0); }
+  100% { transform: perspective(600px) rotateX(60deg) scale(1.5) translateY(60px); }
+}
+
 @keyframes scanLine {
-  0% { top: -10%; opacity: 0; }
+  0% { top: -20%; opacity: 0; }
   10% { opacity: 1; }
   90% { opacity: 1; }
-  100% { top: 110%; opacity: 0; }
+  100% { top: 120%; opacity: 0; }
 }
 
 .scanner-laser {
   position: absolute;
   left: 0;
   right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.8), transparent);
-  box-shadow: 0 0 20px rgba(239, 68, 68, 0.6), 0 0 40px rgba(239, 68, 68, 0.4);
-  animation: scanLine 8s ease-in-out infinite;
-  z-index: 10;
+  height: 250px;
+  background: linear-gradient(to bottom, transparent, rgba(239,68,68,0.03) 60%, rgba(239,68,68,0.25) 95%, rgba(255,255,255,0.8) 100%);
+  border-bottom: 2px solid #ef4444;
+  box-shadow: 0 15px 40px rgba(239,68,68,0.5), 0 0 10px rgba(255,255,255,0.5);
+  animation: scanLine 8s linear infinite;
+  z-index: 5;
   pointer-events: none;
 }
 

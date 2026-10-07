@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import CyberVortexCanvas from './CyberVortexCanvas';
 import MatrixRain from './MatrixRain';
+import CyberProfileImage from './CyberProfileImage';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import {
   Folder, FileText, User, Mail, Shield, Database,
@@ -549,107 +550,14 @@ export default function PortfolioPage() {
 
             </div>
 
-            {/* ── RIGHT: ADVANCED 3D ID CARD ── */}
+            {/* ── RIGHT: CYBER PROFILE IMAGE ── */}
             <motion.div 
-              style={{ rotateX: springY, rotateY: springX, transformStyle: 'preserve-3d', perspective: '1000px' }} 
+              style={{ rotateX: springY, rotateY: springX, transformStyle: 'preserve-3d', perspective: '1000px', display: 'flex', justifyContent: 'center' }} 
               initial={{ opacity: 0, scale: 0.8, rotateY: -30 }}
               animate={{ opacity: 1, scale: 1, rotateY: 0 }}
               transition={{ duration: 1.2, type: 'spring' }}
             >
-              <div style={{ 
-                background: 'linear-gradient(160deg, rgba(10,15,30,0.95), rgba(4,6,12,0.98))',
-                border: '1px solid rgba(239,68,68,0.3)',
-                borderRadius: '24px', padding: '8px',
-                boxShadow: '0 30px 60px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.05), 0 0 40px rgba(239,68,68,0.15)',
-                position: 'relative', overflow: 'hidden'
-              }}>
-                {/* Holographic overlay */}
-                <motion.div 
-                  style={{ position: 'absolute', inset: 0, background: 'linear-gradient(125deg, transparent 20%, rgba(255,255,255,0.1) 40%, rgba(239,68,68,0.1) 60%, transparent 80%)', backgroundSize: '200% 200%', pointerEvents: 'none', mixBlendMode: 'screen' }}
-                  animate={{ backgroundPosition: ['0% 0%', '200% 200%'] }} transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-                />
-                
-                <div style={{ background: 'rgba(3,5,12,0.9)', borderRadius: '16px', padding: '24px', border: '1px solid rgba(255,255,255,0.05)', position: 'relative', zIndex: 1 }}>
-                  {/* Header */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
-                    <div>
-                      <h3 style={{ margin: 0, color: '#ef4444', fontSize: '0.85rem', fontWeight: 900, letterSpacing: '2px', fontFamily: 'monospace' }}>DEPARTMENT OF INTELLIGENCE</h3>
-                      <p style={{ margin: '4px 0 0', color: '#94a3b8', fontSize: '0.65rem', letterSpacing: '1px', fontFamily: 'monospace' }}>AUTHORIZATION LEVEL: OMEGA</p>
-                    </div>
-                    <Shield size={24} color="rgba(239,68,68,0.8)" style={{ filter: 'drop-shadow(0 0 8px rgba(239,68,68,0.5))' }} />
-                  </div>
-
-                  {/* Photo & Main Info */}
-                  <div style={{ display: 'flex', gap: '20px', marginBottom: '24px' }}>
-                    <div style={{ width: '130px', flexShrink: 0, position: 'relative' }}>
-                      <div style={{ width: '100%', aspectRatio: '3/4', borderRadius: '8px', overflow: 'hidden', border: '2px solid rgba(239,68,68,0.5)', position: 'relative', background: '#000' }}>
-                        
-                        {/* Animated Image with Blur Effects */}
-                        <motion.img 
-                          src="/id_photo.jpg" 
-                          alt="Eshwar H S" 
-                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} 
-                          animate={{ 
-                            filter: [
-                              'contrast(1.2) grayscale(0.2) blur(0px)', 
-                              'contrast(1.2) grayscale(0.2) blur(0px)', 
-                              'contrast(1.5) grayscale(1) blur(4px)', 
-                              'contrast(1.5) grayscale(1) blur(8px)', 
-                              'contrast(1.2) grayscale(0.2) blur(0px)'
-                            ],
-                            opacity: [1, 1, 0.8, 0.8, 1]
-                          }}
-                          transition={{ duration: 6, repeat: Infinity, times: [0, 0.4, 0.5, 0.9, 1] }}
-                        />
-                        
-                        {/* Dot-Dot (Halftone) Overlay */}
-                        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(0,0,0,0.4) 1px, transparent 1px)', backgroundSize: '3px 3px', pointerEvents: 'none', zIndex: 1 }} />
-                        
-                        {/* Scanning Laser */}
-                        <motion.div animate={{ top: ['0%', '100%', '0%'] }} transition={{ duration: 3, repeat: Infinity, ease: 'linear' }} style={{ position: 'absolute', left: 0, right: 0, height: 2, background: '#ef4444', boxShadow: '0 0 10px #ef4444, 0 0 20px #ef4444', zIndex: 2 }} />
-                        
-                        {/* Corner brackets */}
-                        <div style={{ position: 'absolute', top: 4, left: 4, width: 10, height: 10, borderTop: '2px solid #ef4444', borderLeft: '2px solid #ef4444', zIndex: 3 }} />
-                        <div style={{ position: 'absolute', bottom: 4, right: 4, width: 10, height: 10, borderBottom: '2px solid #ef4444', borderRight: '2px solid #ef4444', zIndex: 3 }} />
-                      </div>
-                      <div style={{ textAlign: 'center', marginTop: '8px', color: '#ef4444', fontSize: '0.6rem', fontFamily: 'monospace', letterSpacing: '2px' }}>ID: EHS-001</div>
-                    </div>
-                    
-                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '12px' }}>
-                      <div>
-                        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem', fontFamily: 'monospace' }}>OPERATIVE NAME</span>
-                        <div style={{ color: '#fff', fontSize: '1.4rem', fontWeight: 900, letterSpacing: '1px', textTransform: 'uppercase' }}>Eshwar H S</div>
-                      </div>
-                      <div>
-                        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem', fontFamily: 'monospace' }}>DESIGNATION</span>
-                        <div style={{ color: '#38bdf8', fontSize: '0.9rem', fontWeight: 700, fontFamily: 'monospace' }}>Full-Stack / AI</div>
-                      </div>
-                      <div>
-                        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem', fontFamily: 'monospace' }}>BASE OF OPERATIONS</span>
-                        <div style={{ color: '#e2e8f0', fontSize: '0.9rem', fontWeight: 700, fontFamily: 'monospace' }}>Bengaluru, IND</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Stats Footer */}
-                  <div style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', gap: '16px' }}>
-                      <div>
-                        <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.55rem', fontFamily: 'monospace', marginBottom: '2px' }}>AFFILIATION</div>
-                        <div style={{ color: '#ffd700', fontSize: '0.75rem', fontWeight: 700, fontFamily: 'monospace' }}>UVCE CS</div>
-                      </div>
-                      <div>
-                        <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.55rem', fontFamily: 'monospace', marginBottom: '2px' }}>RATING</div>
-                        <div style={{ color: '#22c55e', fontSize: '0.75rem', fontWeight: 700, fontFamily: 'monospace' }}>9.64 CGPA</div>
-                      </div>
-                    </div>
-                    {/* Barcode */}
-                    <div style={{ fontFamily: 'monospace', color: 'rgba(255,255,255,0.3)', fontSize: '1.2rem', letterSpacing: '-1px' }}>
-                      ||||| ||| | ||
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <CyberProfileImage src="/id_photo.jpg" />
             </motion.div>
 
           </div>
@@ -840,8 +748,12 @@ export default function PortfolioPage() {
 
 
         <section id="projects" style={{ position: 'relative', overflow: 'hidden', padding: '60px 0 80px', background: 'rgba(3,5,12,0.97)' }}>
+          {/* Glowing Orbs for ambient background lighting */}
+          <div style={{ position: 'absolute', top: '10%', left: '-10%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(239,68,68,0.1) 0%, transparent 70%)', filter: 'blur(50px)', zIndex: 0, pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', bottom: '10%', right: '-10%', width: '800px', height: '800px', background: 'radial-gradient(circle, rgba(239,68,68,0.08) 0%, transparent 70%)', filter: 'blur(60px)', zIndex: 0, pointerEvents: 'none' }} />
+
           {/* Dynamic Laser Scanner */}
-          <div className="scanner-laser" style={{ animationDelay: '2s', animationDuration: '6s' }} />
+          {/* scanner removed */}
 
           {/* Animated Background for Projects Section */}
           <MatrixRain />
@@ -856,7 +768,7 @@ export default function PortfolioPage() {
           </div>
 
           {/* Vertical stack with separator between cards */}
-          <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', gap: '0', padding: '0 40px', maxWidth: '1300px', margin: '0 auto' }}>
+          <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', gap: '0', padding: '0 40px', maxWidth: '900px', margin: '0 auto' }}>
             {projects.map((p, i) => (
               <>
                 <CaseCard key={p.caseNum} project={p} index={i} />
@@ -1324,37 +1236,51 @@ export default function PortfolioPage() {
 
       </main>
 
-      <footer className="portfolio-footer" style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '60px 40px', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(10px)', marginTop: '80px', position: 'relative', zIndex: 10 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '40px', maxWidth: '1200px', margin: '0 auto', alignItems: 'center' }}>
+      <footer className="portfolio-footer" style={{ borderTop: '2px solid rgba(239,68,68,0.3)', padding: '40px', background: 'linear-gradient(to bottom, rgba(5,7,12,0.9), rgba(0,0,0,1))', position: 'relative', zIndex: 10 }}>
+        
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '30px' }}>
           
-          <div className="footer-left" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-main)', fontWeight: 'bold', letterSpacing: '2px' }}><Folder size={16} /> ESHWAR H S</div>
-            <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontFamily: 'monospace' }}>DETECTIVE DOSSIER © 2026</div>
+          {/* Left: Brand & Copyright */}
+          <div className="footer-left" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#fff', fontWeight: 900, letterSpacing: '3px', fontSize: '1.2rem' }}>
+              <Folder size={18} color="#ef4444" /> ESHWAR H S
+            </div>
+            <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem', fontFamily: 'monospace', letterSpacing: '1px' }}>
+              DETECTIVE DOSSIER © 2026
+            </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
+          {/* Middle: Enhanced Socials */}
+          <div style={{ display: 'flex', gap: '16px' }}>
             {[
-              { icon: <GithubIcon size={20} />, href: 'https://github.com/eshwarhs170-a11y' },
-              { icon: <LinkedinIcon size={20} />, href: 'https://www.linkedin.com/in/eshwar-h-s-4b820638a' },
-              { icon: <Mail size={20} />, href: 'mailto:eshwarhs170@gmail.com' }
+              { icon: <GithubIcon size={18} />, href: 'https://github.com/eshwarhs170-a11y', color: '#fff' },
+              { icon: <LinkedinIcon size={18} />, href: 'https://www.linkedin.com/in/eshwar-h-s-4b820638a', color: '#0a66c2' },
+              { icon: <Mail size={18} />, href: 'mailto:eshwarhs170@gmail.com', color: '#ef4444' }
             ].map((link, i) => (
-              <motion.a key={i} whileHover={{ y: -5, scale: 1.1, color: '#fff' }} href={link.href} target="_blank" rel="noreferrer" style={{ color: 'var(--text-muted)', transition: 'color 0.3s' }}>
+              <motion.a 
+                key={i} 
+                whileHover={{ y: -4, scale: 1.1, backgroundColor: `${link.color}22`, borderColor: link.color, color: link.color, boxShadow: `0 0 12px ${link.color}44` }} 
+                href={link.href} target="_blank" rel="noreferrer" 
+                style={{ color: 'rgba(255,255,255,0.5)', transition: 'all 0.3s', padding: '10px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
                 {link.icon}
               </motion.a>
             ))}
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '15px' }}>
+          {/* Right: Actions & Status */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+            <motion.div className="footer-status" animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 2, repeat: Infinity }} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#10b981', fontFamily: 'monospace', letterSpacing: '1px', fontWeight: 800 }}>
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 8px #10b981' }} /> ONLINE
+            </motion.div>
+
             <motion.a 
               href="/resume.pdf" target="_blank" rel="noreferrer" 
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '0.9rem', fontFamily: 'monospace', textDecoration: 'none' }} 
-              whileHover={{ background: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.3)', boxShadow: '0 0 15px rgba(255,255,255,0.1)' }}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: 'linear-gradient(135deg, rgba(239,68,68,0.1), rgba(0,0,0,0))', border: '1px solid rgba(239,68,68,0.4)', borderRadius: '6px', color: '#fff', fontSize: '0.8rem', fontFamily: 'monospace', textDecoration: 'none', fontWeight: 800, letterSpacing: '1px' }} 
+              whileHover={{ background: 'rgba(239,68,68,0.2)', borderColor: '#ef4444', boxShadow: '0 0 15px rgba(239,68,68,0.3)', scale: 1.05 }}
             >
-              <FileText size={16} /> SECURE RESUME
+              <FileText size={16} /> DECRYPT RESUME
             </motion.a>
-            <motion.div className="footer-status" animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity }} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: '#10b981', fontFamily: 'monospace', letterSpacing: '1px' }}>
-              <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 10px #10b981' }} /> SYSTEM ONLINE
-            </motion.div>
           </div>
 
         </div>
@@ -1363,6 +1289,68 @@ export default function PortfolioPage() {
       <AnimatePresence>
         {selectedProject && <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />}
       </AnimatePresence>
+      <ScrollToTopButton />
     </motion.div>
+  );
+}
+
+function ScrollToTopButton() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.scrollY > 500) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  return (
+    <AnimatePresence>
+      {isVisible && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0.5, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.5, y: 20 }}
+          onClick={scrollToTop}
+          style={{
+            position: 'fixed',
+            bottom: '40px',
+            right: '40px',
+            zIndex: 9999,
+            background: 'rgba(239, 68, 68, 0.1)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(239, 68, 68, 0.4)',
+            color: '#ef4444',
+            width: '45px',
+            height: '45px',
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: '0 0 20px rgba(239, 68, 68, 0.2)'
+          }}
+          whileHover={{ scale: 1.1, background: 'rgba(239, 68, 68, 0.2)', boxShadow: '0 0 25px rgba(239, 68, 68, 0.4)' }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 15l-6-6-6 6"/>
+          </svg>
+        </motion.button>
+      )}
+    </AnimatePresence>
   );
 }

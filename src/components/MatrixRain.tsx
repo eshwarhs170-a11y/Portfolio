@@ -22,10 +22,12 @@ export default function MatrixRain() {
     }
 
     const draw = () => {
-      ctx.fillStyle = 'rgba(10, 14, 23, 0.05)';
+      ctx.fillStyle = 'rgba(3, 5, 12, 0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = '#0f0';
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = '#ef4444';
+      ctx.fillStyle = '#ef4444';
       ctx.font = fontSize + 'px monospace';
 
       for (let i = 0; i < drops.length; i++) {
@@ -63,7 +65,7 @@ export default function MatrixRain() {
         width: '100%',
         height: '100%',
         zIndex: 0,
-        opacity: 0.15,
+        opacity: 0.35,
         pointerEvents: 'none'
       }}
     />
