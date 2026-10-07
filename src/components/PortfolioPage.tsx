@@ -519,12 +519,30 @@ export default function PortfolioPage() {
 
               {/* Bio with typing effect */}
               <motion.div 
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 1 }}
-                style={{ background: 'rgba(4,6,14,0.6)', borderLeft: '3px solid #ef4444', padding: '20px 24px', borderRadius: '0 12px 12px 0', marginBottom: '36px', backdropFilter: 'blur(10px)' }}
+                initial={{ opacity: 0, rotateX: -8, y: 16 }} 
+                animate={{ opacity: 1, rotateX: 0, y: 0 }} 
+                transition={{ delay: 0.6, duration: 1 }}
+                style={{ 
+                  background: theme === 'light' 
+                    ? 'linear-gradient(135deg, rgba(255,255,255,0.8), rgba(245,248,255,0.6))'
+                    : 'linear-gradient(135deg, rgba(15,20,40,0.85), rgba(5,8,20,0.7))',
+                  padding: '28px 32px',
+                  borderRadius: '0 16px 16px 0',
+                  marginBottom: '36px',
+                  backdropFilter: 'blur(20px)',
+                  border: theme === 'light' ? '1px solid rgba(255,255,255,1)' : '1px solid rgba(255,255,255,0.06)',
+                  borderLeft: '4px solid #ef4444',
+                  boxShadow: theme === 'light'
+                    ? '4px 8px 30px rgba(0,0,0,0.06), inset 0 2px 5px rgba(255,255,255,1)'
+                    : '4px 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)',
+                  transform: 'perspective(1000px) rotateX(1deg)',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
               >
-                <p style={{ margin: 0, fontSize: '1.1rem', color: '#cbd5e1', lineHeight: 1.8, fontFamily: 'monospace' }}>
+                <p style={{ margin: 0, fontSize: '1.05rem', color: theme === 'light' ? '#2d2d3a' : '#cbd5e1', lineHeight: 1.8, fontFamily: 'monospace' }}>
                   Every complex problem leaves a trail. I follow the evidence — and build the solution.<br/><br/>
-                  Specializing in <strong style={{ color: '#fff', textShadow: '0 0 10px rgba(255,255,255,0.3)' }}>Full-Stack Architecture</strong> and <strong style={{ color: '#38bdf8', textShadow: '0 0 10px rgba(56,189,248,0.3)' }}>AI Integration</strong>, I turn real-world chaos into production-ready intelligence.
+                  Specializing in <strong style={{ color: theme === 'light' ? '#0f1117' : '#fff' }}>Full-Stack Architecture</strong> and <strong style={{ color: '#38bdf8' }}>AI Integration</strong>, I turn real-world chaos into production-ready intelligence.
                 </p>
               </motion.div>
 
@@ -1202,9 +1220,9 @@ export default function PortfolioPage() {
                 {/* Channels — evenly spaced to fill height */}
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', gap: '16px' }}>
                   {[
-                    { icon: <Mail size={24} />, label: 'EMAIL', value: 'eshwarhs170@gmail.com', href: 'mailto:eshwarhs170@gmail.com', color: '#ef4444' }, // changed email color to match theme!
-                    { icon: <GithubIcon size={24} />, label: 'GITHUB', value: 'github.com/eshwarhs170-a11y', href: 'https://github.com/eshwarhs170-a11y', color: '#fff' },
-                    { icon: <LinkedinIcon size={24} />, label: 'LINKEDIN', value: 'linkedin.com/in/eshwar-h-s', href: 'https://www.linkedin.com/in/eshwar-h-s-4b820638a', color: '#0a66c2' },
+                    { icon: <Mail size={24} />, label: 'EMAIL', value: 'eshwarhs170@gmail.com', href: 'mailto:eshwarhs170@gmail.com', color: '#ef4444' }, 
+                    { icon: <GithubIcon size={24} />, label: 'GITHUB', value: 'github.com/eshwarhs170-a11y', href: 'https://github.com/eshwarhs170-a11y', color: theme === 'light' ? '#333' : '#fff' },
+                    { icon: <LinkedinIcon size={24} />, label: 'LINKEDIN', value: 'linkedin.com/in/eshwar-h-s', href: 'https://www.linkedin.com/in/eshwar-h-s-4b820638a', color: theme === 'light' ? '#0077b5' : '#0a66c2' },
                   ].map((ch) => (
                     <motion.a
                       key={ch.label}
@@ -1222,7 +1240,7 @@ export default function PortfolioPage() {
                       >{ch.icon}</motion.span>
                       <div style={{ flex: 1, overflow: 'hidden' }}>
                         <div style={{ fontSize: '0.75rem', fontWeight: 900, fontFamily: 'monospace', letterSpacing: '3px', color: ch.color, marginBottom: '6px' }}>{ch.label}</div>
-                        <div style={{ fontSize: '0.95rem', color: '#f1f5f9', fontFamily: 'monospace', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ch.value}</div>
+                        <div style={{ fontSize: '0.95rem', color: theme === 'light' ? '#2d2d3a' : '#f1f5f9', fontFamily: 'monospace', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ch.value}</div>
                       </div>
                       <ExternalLink size={16} style={{ color: ch.color, opacity: 0.6, flexShrink: 0 }} />
                     </motion.a>
@@ -1236,16 +1254,27 @@ export default function PortfolioPage() {
 
       </main>
 
-      <footer className="portfolio-footer" style={{ borderTop: '2px solid rgba(239,68,68,0.3)', padding: '40px', background: 'linear-gradient(to bottom, rgba(5,7,12,0.9), rgba(0,0,0,1))', position: 'relative', zIndex: 10 }}>
+      <footer style={{ 
+        borderTop: theme === 'light' ? '2px solid rgba(192,57,43,0.3)' : '2px solid rgba(239,68,68,0.3)',
+        padding: '36px 40px',
+        background: theme === 'light'
+          ? 'linear-gradient(135deg, #dde0ee, #e8ddf0, #ddeaf8)'
+          : 'linear-gradient(to bottom, rgba(5,7,12,0.9), rgba(0,0,0,1))',
+        position: 'relative',
+        zIndex: 10,
+        boxShadow: theme === 'light' 
+          ? 'inset 0 1px 0 rgba(255,255,255,0.7), 0 -4px 20px rgba(0,0,0,0.08)'
+          : 'inset 0 1px 0 rgba(255,255,255,0.03)',
+      }}>
         
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '30px' }}>
           
           {/* Left: Brand & Copyright */}
           <div className="footer-left" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#fff', fontWeight: 900, letterSpacing: '3px', fontSize: '1.2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: theme === 'light' ? '#0f1117' : '#fff', fontWeight: 900, letterSpacing: '3px', fontSize: '1.2rem' }}>
               <Folder size={18} color="#ef4444" /> ESHWAR H S
             </div>
-            <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem', fontFamily: 'monospace', letterSpacing: '1px' }}>
+            <div style={{ color: theme === 'light' ? '#5a5a72' : 'rgba(255,255,255,0.4)', fontSize: '0.75rem', fontFamily: 'monospace', letterSpacing: '1px' }}>
               DETECTIVE DOSSIER © 2026
             </div>
           </div>
@@ -1253,7 +1282,7 @@ export default function PortfolioPage() {
           {/* Middle: Enhanced Socials */}
           <div style={{ display: 'flex', gap: '16px' }}>
             {[
-              { icon: <GithubIcon size={18} />, href: 'https://github.com/eshwarhs170-a11y', color: '#fff' },
+              { icon: <GithubIcon size={18} />, href: 'https://github.com/eshwarhs170-a11y', color: theme === 'light' ? '#333' : '#fff' },
               { icon: <LinkedinIcon size={18} />, href: 'https://www.linkedin.com/in/eshwar-h-s-4b820638a', color: '#0a66c2' },
               { icon: <Mail size={18} />, href: 'mailto:eshwarhs170@gmail.com', color: '#ef4444' }
             ].map((link, i) => (
@@ -1261,7 +1290,14 @@ export default function PortfolioPage() {
                 key={i} 
                 whileHover={{ y: -4, scale: 1.1, backgroundColor: `${link.color}22`, borderColor: link.color, color: link.color, boxShadow: `0 0 12px ${link.color}44` }} 
                 href={link.href} target="_blank" rel="noreferrer" 
-                style={{ color: 'rgba(255,255,255,0.5)', transition: 'all 0.3s', padding: '10px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                style={{ 
+                  color: theme === 'light' ? '#5a5a72' : 'rgba(255,255,255,0.5)', 
+                  transition: 'all 0.3s', padding: '10px', borderRadius: '10px', 
+                  border: theme === 'light' ? '1px solid rgba(0,0,0,0.12)' : '1px solid rgba(255,255,255,0.1)', 
+                  background: theme === 'light' ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.03)', 
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: theme === 'light' ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
+                }}
               >
                 {link.icon}
               </motion.a>
@@ -1276,8 +1312,8 @@ export default function PortfolioPage() {
 
             <motion.a 
               href="/resume.pdf" target="_blank" rel="noreferrer" 
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: 'linear-gradient(135deg, rgba(239,68,68,0.1), rgba(0,0,0,0))', border: '1px solid rgba(239,68,68,0.4)', borderRadius: '6px', color: '#fff', fontSize: '0.8rem', fontFamily: 'monospace', textDecoration: 'none', fontWeight: 800, letterSpacing: '1px' }} 
-              whileHover={{ background: 'rgba(239,68,68,0.2)', borderColor: '#ef4444', boxShadow: '0 0 15px rgba(239,68,68,0.3)', scale: 1.05 }}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: theme === 'light' ? 'linear-gradient(135deg, rgba(192,57,43,0.12), rgba(192,57,43,0.04))' : 'linear-gradient(135deg, rgba(239,68,68,0.1), rgba(0,0,0,0))', border: theme === 'light' ? '1px solid rgba(192,57,43,0.4)' : '1px solid rgba(239,68,68,0.4)', borderRadius: '6px', color: theme === 'light' ? '#c0392b' : '#fff', fontSize: '0.8rem', fontFamily: 'monospace', textDecoration: 'none', fontWeight: 800, letterSpacing: '1px', boxShadow: theme === 'light' ? '0 2px 12px rgba(192,57,43,0.15)' : 'none' }}
+              whileHover={{ background: theme === 'light' ? 'rgba(192,57,43,0.2)' : 'rgba(239,68,68,0.2)', borderColor: theme === 'light' ? '#c0392b' : '#ef4444', boxShadow: '0 0 15px rgba(192,57,43,0.4)', scale: 1.05 }}
             >
               <FileText size={16} /> DECRYPT RESUME
             </motion.a>

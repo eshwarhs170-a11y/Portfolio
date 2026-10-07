@@ -40,14 +40,17 @@ function App() {
 
     const fadeOut = () => {
       if (!audio) return;
+      // Fast fade: reduce volume every 60ms
       const fade = setInterval(() => {
-        if (audio.volume > 0.04) {
-          audio.volume = Math.max(0, audio.volume - 0.04);
+        if (audio.volume > 0.05) {
+          audio.volume = Math.max(0, audio.volume - 0.07);
         } else {
+          audio.volume = 0;
           audio.pause();
+          audio.currentTime = 0;
           clearInterval(fade);
         }
-      }, 80);
+      }, 60);
     };
     window.addEventListener('force-fade-music', fadeOut);
 
@@ -61,7 +64,7 @@ function App() {
     };
   }, [tryPlay]);
 
-  // Fade out music when entering portfolio
+  // Fade out music immediately when entering portfolio (3rd page)
   const enterPortfolio = useCallback(() => {
     window.dispatchEvent(new Event('force-fade-music'));
     setStage('portfolio');
