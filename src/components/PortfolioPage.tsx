@@ -46,22 +46,23 @@ function GlitchText({ text }: { text: string }) {
   return <span className="glitch-hover">{text}</span>;
 }
 
-// Same blood-red circle trail as the LandingPage — clears when cursor stops
-function CursorTrail({ mousePos }: { mousePos: { x: number; y: number } }) {
+// Self-contained cursor trail — manages its own mouse listener so it doesn't cause parent re-renders
+function CursorTrail() {
   const { theme } = useTheme();
   const [trail, setTrail] = useState<{ x: number; y: number; id: number }[]>([]);
   const idRef = useRef(0);
   const clearTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (mousePos.x < 0) return;
-    const newDot = { x: mousePos.x, y: mousePos.y, id: idRef.current++ };
-    setTrail(prev => [...prev.slice(-18), newDot]);
-
-    // Clear trail 400ms after cursor stops moving
-    if (clearTimer.current) clearTimeout(clearTimer.current);
-    clearTimer.current = setTimeout(() => setTrail([]), 400);
-  }, [mousePos]);
+    const handler = (e: MouseEvent) => {
+      const newDot = { x: e.clientX, y: e.clientY, id: idRef.current++ };
+      setTrail(prev => [...prev.slice(-18), newDot]);
+      if (clearTimer.current) clearTimeout(clearTimer.current);
+      clearTimer.current = setTimeout(() => setTrail([]), 400);
+    };
+    window.addEventListener('mousemove', handler);
+    return () => window.removeEventListener('mousemove', handler);
+  }, []);
 
   return (
     <>
@@ -355,14 +356,11 @@ export default function PortfolioPage() {
   const [activeSection, setActiveSection] = useState('home');
   const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
   const [contactVisible, setContactVisible] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
-
   const springX = useSpring(useMotionValue(0), { stiffness: 60, damping: 20 });
   const springY = useSpring(useMotionValue(0), { stiffness: 60, damping: 20 });
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
       const cx = window.innerWidth / 2; const cy = window.innerHeight / 2;
       springX.set((e.clientX - cx) / cx * 8); springY.set((e.clientY - cy) / cy * 5);
     };
@@ -472,7 +470,7 @@ export default function PortfolioPage() {
 
       <main className="portfolio-content">
         <FloatingParticles />
-        <CursorTrail mousePos={mousePos} />
+        <CursorTrail />
 
         <section id="home" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '100px 0 100px', overflow: 'hidden' }}>
           {/* Background Cyber Elements */}
