@@ -94,7 +94,7 @@ function CursorTrail({ mousePos }: { mousePos: { x: number; y: number } }) {
 
 function FloatingParticles() {
   const particles = useMemo(() => Array.from({ length: 40 }, (_, i) => ({
-    id: i, 
+    id: i,
     left: `${Math.random() * 100}vw`,
     size: `${Math.random() * 4 + 2}px`,
     duration: `${Math.random() * 15 + 10}s`,
@@ -189,14 +189,16 @@ function CaseCard({ project, index }: { project: ProjectData; index: number }) {
             onMouseLeave={() => setIsHovered(false)}
           >
             {/* FILM CORNERS */}
-            {(['top-left','top-right','bottom-left','bottom-right'] as const).map(pos => {
-              const [v, h] = pos.split('-') as ['top'|'bottom','left'|'right'];
-              return <div key={pos} style={{ position: 'absolute', [v]: 10, [h]: 10, width: 18, height: 18,
-                borderTop: v==='top' ? '2px solid rgba(239,68,68,0.7)' : 'none',
-                borderBottom: v==='bottom' ? '2px solid rgba(239,68,68,0.7)' : 'none',
-                borderLeft: h==='left' ? '2px solid rgba(239,68,68,0.7)' : 'none',
-                borderRight: h==='right' ? '2px solid rgba(239,68,68,0.7)' : 'none',
-                zIndex: 10, pointerEvents: 'none' }} />;
+            {(['top-left', 'top-right', 'bottom-left', 'bottom-right'] as const).map(pos => {
+              const [v, h] = pos.split('-') as ['top' | 'bottom', 'left' | 'right'];
+              return <div key={pos} style={{
+                position: 'absolute', [v]: 10, [h]: 10, width: 18, height: 18,
+                borderTop: v === 'top' ? '2px solid rgba(239,68,68,0.7)' : 'none',
+                borderBottom: v === 'bottom' ? '2px solid rgba(239,68,68,0.7)' : 'none',
+                borderLeft: h === 'left' ? '2px solid rgba(239,68,68,0.7)' : 'none',
+                borderRight: h === 'right' ? '2px solid rgba(239,68,68,0.7)' : 'none',
+                zIndex: 10, pointerEvents: 'none'
+              }} />;
             })}
 
             {/* SCANLINES */}
@@ -450,8 +452,8 @@ export default function PortfolioPage() {
         </div>
         <nav>
           {navLinks.map(link => (
-            <motion.a 
-              key={link.id} href={link.href} 
+            <motion.a
+              key={link.id} href={link.href}
               className={activeSection === link.id ? 'nav-active' : ''}
               whileHover={{ y: -3, scale: 1.05, textShadow: '0 0 10px rgba(255,255,255,0.5)' }}
               whileTap={{ scale: 0.95 }}
@@ -482,14 +484,14 @@ export default function PortfolioPage() {
           </div>
 
           <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1fr 450px', gap: '140px', width: '100%', maxWidth: '1400px', padding: '0 40px', alignItems: 'center' }}>
-            
+
             {/* ── LEFT: TERMINAL TEXT ── */}
             <div className="hero-text" style={{ position: 'relative', zIndex: 10 }}>
-              
+
               {/* Status Bar */}
-              <motion.div 
-                initial={{ opacity: 0, width: 0 }} 
-                animate={{ opacity: 1, width: 'auto' }} 
+              <motion.div
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: 'auto' }}
                 transition={{ duration: 0.8, ease: 'circOut' }}
                 style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', background: theme === 'light' ? 'rgba(59,130,246,0.15)' : 'rgba(239,68,68,0.1)', border: theme === 'light' ? '1px solid rgba(59,130,246,0.4)' : '1px solid rgba(239,68,68,0.3)', padding: '6px 16px', borderRadius: '100px', marginBottom: '24px', overflow: 'hidden', whiteSpace: 'nowrap' }}
               >
@@ -499,17 +501,17 @@ export default function PortfolioPage() {
 
               {/* Title */}
               <div style={{ position: 'relative', marginBottom: '16px' }}>
-                <motion.h1 
-                  initial={{ opacity: 0, y: 20 }} 
-                  animate={{ opacity: 1, y: 0 }} 
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
                   style={{ fontSize: '4.5rem', fontWeight: 900, lineHeight: 1.1, margin: 0, color: '#fff', textTransform: 'uppercase', letterSpacing: '-1px' }}
                 >
                   <GlitchText text="Eshwar H S" />
                 </motion.h1>
-                <motion.h2 
-                  initial={{ opacity: 0, x: -20 }} 
-                  animate={{ opacity: 1, x: 0 }} 
+                <motion.h2
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
                   style={{ fontSize: '1.8rem', fontWeight: 300, color: theme === 'light' ? '#64748b' : '#94a3b8', margin: '8px 0 0', display: 'flex', alignItems: 'center', gap: '12px' }}
                 >
@@ -520,13 +522,13 @@ export default function PortfolioPage() {
               </div>
 
               {/* Bio with typing effect */}
-              <motion.div 
-                initial={{ opacity: 0, rotateX: -8, y: 16 }} 
-                animate={{ opacity: 1, rotateX: 0, y: 0 }} 
+              <motion.div
+                initial={{ opacity: 0, rotateX: -8, y: 16 }}
+                animate={{ opacity: 1, rotateX: 0, y: 0 }}
                 transition={{ delay: 0.6, duration: 1 }}
                 whileHover={{ scale: 1.02, rotateY: 2, boxShadow: theme === 'light' ? '8px 15px 40px rgba(0,0,0,0.1), inset 0 2px 10px rgba(255,255,255,1)' : '8px 15px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08)' }}
-                style={{ 
-                  background: theme === 'light' 
+                style={{
+                  background: theme === 'light'
                     ? 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(245,248,255,0.85))'
                     : 'linear-gradient(135deg, rgba(15,20,40,0.85), rgba(5,8,20,0.7))',
                   padding: '28px 32px',
@@ -545,27 +547,27 @@ export default function PortfolioPage() {
                 }}
               >
                 <p style={{ margin: 0, fontSize: '1.05rem', color: theme === 'light' ? '#334155' : '#cbd5e1', lineHeight: 1.8, fontFamily: 'monospace' }}>
-                  Every complex problem leaves a trail. I follow the evidence — and build the solution.<br/><br/>
+                  Every complex problem leaves a trail. I follow the evidence — and build the solution.<br /><br />
                   Specializing in <strong style={{ color: theme === 'light' ? '#0f1117' : '#fff' }}>Full-Stack Architecture</strong> and <strong style={{ color: theme === 'light' ? '#2563eb' : '#38bdf8' }}>AI Integration</strong>, I turn real-world chaos into production-ready intelligence.
                 </p>
               </motion.div>
 
               {/* Action Buttons */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-                <motion.a whileHover={{ scale: 1.05, boxShadow: theme === 'light' ? '0 15px 40px -10px rgba(59,130,246,0.9)' : '0 15px 40px -10px rgba(239,68,68,0.9)' }} whileTap={{ scale: 0.95 }} href="#projects" style={{ 
-                  background: theme === 'light' ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : 'linear-gradient(135deg, #ef4444, #b91c1c)', color: '#fff', padding: '14px 28px', borderRadius: '8px', 
+                <motion.a whileHover={{ scale: 1.05, boxShadow: theme === 'light' ? '0 15px 40px -10px rgba(59,130,246,0.9)' : '0 15px 40px -10px rgba(239,68,68,0.9)' }} whileTap={{ scale: 0.95 }} href="#projects" style={{
+                  background: theme === 'light' ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : 'linear-gradient(135deg, #ef4444, #b91c1c)', color: '#fff', padding: '14px 28px', borderRadius: '8px',
                   fontSize: '0.88rem', fontWeight: 800, textDecoration: 'none', letterSpacing: '1px', textTransform: 'uppercase',
                   boxShadow: theme === 'light' ? '0 10px 30px -10px rgba(59,130,246,0.6)' : '0 10px 30px -10px rgba(239,68,68,0.8)', border: '1px solid rgba(255,255,255,0.2)',
-                  display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.3s' 
+                  display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.3s'
                 }}>
                   Access Dossier <span style={{ fontFamily: 'monospace' }}>_&gt;</span>
                 </motion.a>
-                <motion.a whileHover={{ scale: 1.05, background: theme === 'light' ? 'rgba(59,130,246,0.1)' : 'rgba(239,68,68,0.1)', borderColor: theme === 'light' ? 'rgba(59,130,246,0.5)' : 'rgba(239,68,68,0.5)' }} whileTap={{ scale: 0.95 }} href="#contact" style={{ 
-                  background: theme === 'light' ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.03)', color: theme === 'light' ? '#1e293b' : '#fff', padding: '14px 28px', borderRadius: '8px', 
+                <motion.a whileHover={{ scale: 1.05, background: theme === 'light' ? 'rgba(59,130,246,0.1)' : 'rgba(239,68,68,0.1)', borderColor: theme === 'light' ? 'rgba(59,130,246,0.5)' : 'rgba(239,68,68,0.5)' }} whileTap={{ scale: 0.95 }} href="#contact" style={{
+                  background: theme === 'light' ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.03)', color: theme === 'light' ? '#1e293b' : '#fff', padding: '14px 28px', borderRadius: '8px',
                   fontSize: '0.88rem', fontWeight: 800, textDecoration: 'none', letterSpacing: '1px', textTransform: 'uppercase',
                   border: theme === 'light' ? '1px solid rgba(0,0,0,0.15)' : '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)',
                   boxShadow: theme === 'light' ? '0 4px 15px rgba(0,0,0,0.05)' : 'none',
-                  display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.3s' 
+                  display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.3s'
                 }}>
                   <Shield size={16} /> Secure Comms
                 </motion.a>
@@ -574,8 +576,8 @@ export default function PortfolioPage() {
             </div>
 
             {/* ── RIGHT: CYBER PROFILE IMAGE ── */}
-            <motion.div 
-              style={{ rotateX: springY, rotateY: springX, transformStyle: 'preserve-3d', perspective: '1000px', display: 'flex', justifyContent: 'center' }} 
+            <motion.div
+              style={{ rotateX: springY, rotateY: springX, transformStyle: 'preserve-3d', perspective: '1000px', display: 'flex', justifyContent: 'center' }}
               initial={{ opacity: 0, scale: 0.8, rotateY: -30 }}
               animate={{ opacity: 1, scale: 1, rotateY: 0 }}
               transition={{ duration: 1.2, type: 'spring' }}
@@ -641,9 +643,9 @@ export default function PortfolioPage() {
               {/* ORBIT 1 — Tools: Git, GitHub, Vercel — radius 130 */}
               <div style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0, animation: 'orbit-cw 40s linear infinite' }}>
                 {[
-                  { name: 'Git', angle: 100, color: '#f05032', icon: <svg width="24" height="24" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#f05032"/><path fill="#fff" d="M27.3 14.7l-10-10a1.9 1.9 0 0 0-2.7 0l-2.1 2.1 2.7 2.7a2.3 2.3 0 0 1 2.9 2.9l2.6 2.6a2.3 2.3 0 1 1-1.4 1.4l-2.4-2.4v6.3a2.3 2.3 0 1 1-1.9 0v-6.4a2.3 2.3 0 0 1-1.2-3l-2.7-2.6-7.2 7.2a1.9 1.9 0 0 0 0 2.7l10 10a1.9 1.9 0 0 0 2.7 0l10-10a1.9 1.9 0 0 0 0-2.8z"/></svg> },
+                  { name: 'Git', angle: 100, color: '#f05032', icon: <svg width="24" height="24" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#f05032" /><path fill="#fff" d="M27.3 14.7l-10-10a1.9 1.9 0 0 0-2.7 0l-2.1 2.1 2.7 2.7a2.3 2.3 0 0 1 2.9 2.9l2.6 2.6a2.3 2.3 0 1 1-1.4 1.4l-2.4-2.4v6.3a2.3 2.3 0 1 1-1.9 0v-6.4a2.3 2.3 0 0 1-1.2-3l-2.7-2.6-7.2 7.2a1.9 1.9 0 0 0 0 2.7l10 10a1.9 1.9 0 0 0 2.7 0l10-10a1.9 1.9 0 0 0 0-2.8z" /></svg> },
                   { name: 'GitHub', angle: 220, color: '#e2e8f0', icon: <GithubIcon size={24} /> },
-                  { name: 'Vercel', angle: 340, color: '#ffffff', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2L22 19.7H2L12 2z"/></svg> },
+                  { name: 'Vercel', angle: 340, color: '#ffffff', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2L22 19.7H2L12 2z" /></svg> },
                 ].map(p => {
                   const rad = (p.angle * Math.PI) / 180;
                   return (
@@ -688,9 +690,9 @@ export default function PortfolioPage() {
               {/* ORBIT 3 — Web Tech: React, Node.js, Tailwind, REST APIs — radius 350 */}
               <div style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0, animation: 'orbit-cw 80s linear infinite' }}>
                 {[
-                  { name: 'React', angle: 60, color: '#61dafb', icon: <svg width="26" height="26" viewBox="0 0 100 100"><circle cx="50" cy="50" r="11" fill="#61dafb"/><ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5"/><ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5" transform="rotate(60 50 50)"/><ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5" transform="rotate(120 50 50)"/></svg> },
-                  { name: 'Node.js', angle: 150, color: '#68a063', icon: <svg width="26" height="26" viewBox="0 0 256 289"><path fill="#68a063" d="M128 0L0 74v141l128 74 128-74V74z"/><path fill="#fff" d="M128 25l103 59.5v119L128 263 25 183.5v-119z"/><path fill="#68a063" d="M128 230l80-46v-92l-80 46z"/></svg> },
-                  { name: 'Tailwind', angle: 240, color: '#38bdf8', icon: <svg width="26" height="26" viewBox="0 0 54 33"><path fill="#38bdf8" d="M27.5 0c-7.3 0-11.8 3.6-13.6 10.8 2.7-3.6 5.9-4.9 9.6-4 2 .5 3.5 2 5.1 3.6 2.7 2.7 5.7 5.8 12.4 5.8 7.3 0 11.8-3.6 13.6-10.8-2.7 3.6-5.9 4.9-9.6 4-2-.5-3.5-2-5.1-3.6-2.7-2.7-5.7-5.8-12.4-5.8zM13.8 16.2c-7.3 0-11.8 3.6-13.6 10.8 2.7-3.6 5.9-4.9 9.6-4 2 .5 3.5 2 5.1 3.6 2.7 2.7 5.7 5.8 12.4 5.8 7.3 0 11.8-3.6 13.6-10.8-2.7 3.6-5.9 4.9-9.6 4-2-.5-3.5-2-5.1-3.6-2.7-2.7-5.7-5.8-12.4-5.8z"/></svg> },
+                  { name: 'React', angle: 60, color: '#61dafb', icon: <svg width="26" height="26" viewBox="0 0 100 100"><circle cx="50" cy="50" r="11" fill="#61dafb" /><ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5" /><ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5" transform="rotate(60 50 50)" /><ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5" transform="rotate(120 50 50)" /></svg> },
+                  { name: 'Node.js', angle: 150, color: '#68a063', icon: <svg width="26" height="26" viewBox="0 0 256 289"><path fill="#68a063" d="M128 0L0 74v141l128 74 128-74V74z" /><path fill="#fff" d="M128 25l103 59.5v119L128 263 25 183.5v-119z" /><path fill="#68a063" d="M128 230l80-46v-92l-80 46z" /></svg> },
+                  { name: 'Tailwind', angle: 240, color: '#38bdf8', icon: <svg width="26" height="26" viewBox="0 0 54 33"><path fill="#38bdf8" d="M27.5 0c-7.3 0-11.8 3.6-13.6 10.8 2.7-3.6 5.9-4.9 9.6-4 2 .5 3.5 2 5.1 3.6 2.7 2.7 5.7 5.8 12.4 5.8 7.3 0 11.8-3.6 13.6-10.8-2.7 3.6-5.9 4.9-9.6 4-2-.5-3.5-2-5.1-3.6-2.7-2.7-5.7-5.8-12.4-5.8zM13.8 16.2c-7.3 0-11.8 3.6-13.6 10.8 2.7-3.6 5.9-4.9 9.6-4 2 .5 3.5 2 5.1 3.6 2.7 2.7 5.7 5.8 12.4 5.8 7.3 0 11.8-3.6 13.6-10.8-2.7 3.6-5.9 4.9-9.6 4-2-.5-3.5-2-5.1-3.6-2.7-2.7-5.7-5.8-12.4-5.8z" /></svg> },
                   { name: 'REST APIs', angle: 330, color: '#ff6b35', icon: <Globe size={22} color="#ff6b35" /> },
                 ].map(p => {
                   const rad = (p.angle * Math.PI) / 180;
@@ -713,9 +715,9 @@ export default function PortfolioPage() {
               {/* ORBIT 4 — Core: C++, JS, HTML/CSS — radius 460 */}
               <div style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0, animation: 'orbit-ccw 100s linear infinite' }}>
                 {[
-                  { name: 'C++', angle: 0, color: '#00b4d8', icon: <span style={{ color:'#00b4d8', fontWeight:900, fontSize:'1rem', fontFamily:'monospace' }}>C++</span> },
-                  { name: 'JavaScript', angle: 120, color: '#f7df1e', icon: <span style={{ color:'#f7df1e', fontWeight:900, fontSize:'1rem', fontFamily:'monospace' }}>JS</span> },
-                  { name: 'HTML/CSS', angle: 240, color: '#e34f26', icon: <span style={{ color:'#e34f26', fontWeight:900, fontSize:'1rem', fontFamily:'monospace' }}>{'</>'}</span> },
+                  { name: 'C++', angle: 0, color: '#00b4d8', icon: <span style={{ color: '#00b4d8', fontWeight: 900, fontSize: '1rem', fontFamily: 'monospace' }}>C++</span> },
+                  { name: 'JavaScript', angle: 120, color: '#f7df1e', icon: <span style={{ color: '#f7df1e', fontWeight: 900, fontSize: '1rem', fontFamily: 'monospace' }}>JS</span> },
+                  { name: 'HTML/CSS', angle: 240, color: '#e34f26', icon: <span style={{ color: '#e34f26', fontWeight: 900, fontSize: '1rem', fontFamily: 'monospace' }}>{'</>'}</span> },
                 ].map(p => {
                   const rad = (p.angle * Math.PI) / 180;
                   return (
@@ -757,7 +759,7 @@ export default function PortfolioPage() {
                     SKILLS
                   </div>
                 </motion.div>
-                
+
                 {/* Floating orbit ring around the center */}
                 <motion.div animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: 'linear' }} style={{ position: 'absolute', inset: -15, border: '1px solid rgba(239,68,68,0.5)', borderRadius: '50%', borderTopColor: 'transparent', borderBottomColor: 'transparent', pointerEvents: 'none' }} />
               </motion.div>
@@ -1052,11 +1054,11 @@ export default function PortfolioPage() {
             <h2 className="section-title edu-title" style={{ color: '#fff', fontSize: '2.4rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px', textShadow: '0 0 20px rgba(239,68,68,0.5)' }}>Declassified Records // Achievements</h2>
             <span className="section-count" style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.4)', color: '#ef4444', padding: '4px 12px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 'bold' }}>2 FILES FOUND</span>
           </div>
-          
+
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '30px' }}>
-            
+
             {/* ── CARD 1: NammaUGNEET Impact ── */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -1066,7 +1068,7 @@ export default function PortfolioPage() {
             >
               {/* Animated glowing border */}
               <div style={{ position: 'absolute', inset: 0, padding: '2px', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(34,197,94,0.6), rgba(34,197,94,0.1), transparent)', WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', pointerEvents: 'none' }} />
-              
+
               {/* Inner content */}
               <div style={{ position: 'relative', padding: '32px', zIndex: 2 }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '20px' }}>
@@ -1080,9 +1082,9 @@ export default function PortfolioPage() {
                     </div>
                   </div>
                 </div>
-                
+
                 <p style={{ margin: '0 0 24px', fontSize: '0.95rem', color: '#94a3b8', lineHeight: 1.6 }}>Adopted by <strong style={{ color: '#fff' }}>1,200+ NEET UG aspirants</strong> as a real-time college predictor during Karnataka's 2026 counselling season.</p>
-                
+
                 {/* Visual data bar */}
                 <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '12px', display: 'flex', alignItems: 'center', gap: '15px' }}>
                   <div style={{ flex: 1 }}>
@@ -1096,17 +1098,17 @@ export default function PortfolioPage() {
                   </div>
                 </div>
               </div>
-              
+
               {/* Animated Background grid */}
-              <motion.div 
+              <motion.div
                 animate={{ backgroundPosition: ['0px 0px', '20px 20px'] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-                style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '20px 20px', zIndex: 0 }} 
+                style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '20px 20px', zIndex: 0 }}
               />
             </motion.div>
 
             {/* ── CARD 2: CodeFury 9.0 ── */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -1116,7 +1118,7 @@ export default function PortfolioPage() {
             >
               {/* Animated glowing border */}
               <div style={{ position: 'absolute', inset: 0, padding: '2px', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(245,158,11,0.6), rgba(245,158,11,0.1), transparent)', WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', pointerEvents: 'none' }} />
-              
+
               {/* Inner content */}
               <div style={{ position: 'relative', padding: '32px', zIndex: 2 }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '20px' }}>
@@ -1131,21 +1133,21 @@ export default function PortfolioPage() {
                   </div>
                   <Shield size={32} color="rgba(245,158,11,0.2)" />
                 </div>
-                
+
                 <p style={{ margin: '0 0 24px', fontSize: '0.95rem', color: '#94a3b8', lineHeight: 1.6 }}>Participated in the <strong style={{ color: '#fff' }}>9th Annual National-Level Hackathon</strong> organized by IEEE UVCE Computer Society.</p>
-                
+
                 {/* Tech tags */}
                 <div style={{ display: 'flex', gap: '8px' }}>
                   <span style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '4px 10px', borderRadius: '6px', fontSize: '0.7rem', color: '#cbd5e1', fontFamily: 'monospace' }}>COMPETITIVE CODING</span>
                   <span style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '4px 10px', borderRadius: '6px', fontSize: '0.7rem', color: '#cbd5e1', fontFamily: 'monospace' }}>IEEE UVCE</span>
                 </div>
               </div>
-              
+
               {/* Animated Background grid */}
-              <motion.div 
+              <motion.div
                 animate={{ backgroundPosition: ['0px 0px', '20px 20px'] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-                style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '20px 20px', zIndex: 0 }} 
+                style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '20px 20px', zIndex: 0 }}
               />
             </motion.div>
 
@@ -1235,14 +1237,29 @@ export default function PortfolioPage() {
                 {/* Grid overlay bg */}
                 <div style={{ position: 'absolute', inset: 0, backgroundImage: theme === 'light' ? 'linear-gradient(rgba(59,130,246,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.08) 1px, transparent 1px)' : 'linear-gradient(rgba(163,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(163,0,0,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
 
-                <form action="https://api.web3forms.com/submit" method="POST" style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  
-                  {/* Web3Forms Access Key (User needs to replace this) */}
-                  <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE" />
-                  
-                  {/* Optional: Redirect back to site after submission instead of showing their default page */}
-                  {/* <input type="hidden" name="redirect" value="https://yourwebsite.com/success" /> */}
-                  
+                <form
+                  style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column' }}
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    const form = e.target as HTMLFormElement;
+                    const data = new FormData(form);
+                    try {
+                      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
+                      const json = await res.json();
+                      if (json.success) {
+                        alert('Transmission sent! Eshwar will respond shortly.');
+                        form.reset();
+                      } else {
+                        alert('Something went wrong. Please email directly: eshwarhs170@gmail.com');
+                      }
+                    } catch {
+                      alert('Network error. Please email directly: eshwarhs170@gmail.com');
+                    }
+                  }}
+                >
+                  {/* Web3Forms Access Key */}
+                  <input type="hidden" name="access_key" value="e16be2dc-5606-4cf1-8e4b-ad57e0c009f3" />
+
                   {/* 2-col row: NAME + EMAIL */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                     <div>
@@ -1261,16 +1278,16 @@ export default function PortfolioPage() {
                     <input type="text" name="subject" className="cyber-input" placeholder="What's this about?" required />
                   </div>
 
-                  {/* MESSAGE — flex grow to fill remaining space */}
+                  {/* MESSAGE */}
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', marginBottom: '24px' }}>
                     <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: theme === 'light' ? '#3b82f6' : '#ef4444', fontWeight: 800 }}><FileText size={12} /> MESSAGE</label>
                     <textarea name="message" className="cyber-input" placeholder="Detail your project or opportunity..." style={{ flex: 1, resize: 'none', minHeight: '120px' }} required />
                   </div>
 
                   {/* Honeypot Spam Protection */}
-                  <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
+                  <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
 
-                  <motion.button type="submit" className="form-submit" 
+                  <motion.button type="submit" className="form-submit"
                     style={{ background: theme === 'light' ? '#3b82f6' : '#ef4444', color: '#fff', border: 'none', padding: '16px', borderRadius: '12px', fontSize: '1rem', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: theme === 'light' ? '0 10px 30px rgba(59, 130, 246, 0.4)' : '0 10px 30px rgba(239, 68, 68, 0.4)' }}
                     whileHover={{ scale: 1.02, boxShadow: theme === 'light' ? '0 10px 40px rgba(59, 130, 246, 0.6)' : '0 10px 40px rgba(239, 68, 68, 0.6)' }} whileTap={{ scale: 0.98 }}
                   >
@@ -1297,7 +1314,7 @@ export default function PortfolioPage() {
                 {/* Channels — evenly spaced to fill height */}
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', gap: '16px' }}>
                   {[
-                    { icon: <Mail size={24} />, label: 'EMAIL', value: 'eshwarhs170@gmail.com', href: 'mailto:eshwarhs170@gmail.com', color: '#ef4444' }, 
+                    { icon: <Mail size={24} />, label: 'EMAIL', value: 'eshwarhs170@gmail.com', href: 'mailto:eshwarhs170@gmail.com', color: '#ef4444' },
                     { icon: <GithubIcon size={24} />, label: 'GITHUB', value: 'github.com/eshwarhs170-a11y', href: 'https://github.com/eshwarhs170-a11y', color: theme === 'light' ? '#333' : '#fff' },
                     { icon: <LinkedinIcon size={24} />, label: 'LINKEDIN', value: 'linkedin.com/in/eshwar-h-s', href: 'https://www.linkedin.com/in/eshwar-h-s-4b820638a', color: theme === 'light' ? '#0077b5' : '#0a66c2' },
                   ].map((ch) => (
@@ -1331,7 +1348,7 @@ export default function PortfolioPage() {
 
       </main>
 
-      <footer style={{ 
+      <footer style={{
         borderTop: theme === 'light' ? '2px solid rgba(192,57,43,0.3)' : '2px solid rgba(239,68,68,0.3)',
         padding: '36px 40px',
         background: theme === 'light'
@@ -1339,13 +1356,13 @@ export default function PortfolioPage() {
           : 'linear-gradient(to bottom, rgba(5,7,12,0.9), rgba(0,0,0,1))',
         position: 'relative',
         zIndex: 10,
-        boxShadow: theme === 'light' 
+        boxShadow: theme === 'light'
           ? 'inset 0 1px 0 rgba(255,255,255,0.7), 0 -4px 20px rgba(0,0,0,0.08)'
           : 'inset 0 1px 0 rgba(255,255,255,0.03)',
       }}>
-        
+
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '30px' }}>
-          
+
           {/* Left: Brand & Copyright */}
           <div className="footer-left" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: theme === 'light' ? '#0f1117' : '#fff', fontWeight: 900, letterSpacing: '3px', fontSize: '1.2rem' }}>
@@ -1363,15 +1380,15 @@ export default function PortfolioPage() {
               { icon: <LinkedinIcon size={18} />, href: 'https://www.linkedin.com/in/eshwar-h-s-4b820638a', color: '#0a66c2' },
               { icon: <Mail size={18} />, href: 'mailto:eshwarhs170@gmail.com', color: '#ef4444' }
             ].map((link, i) => (
-              <motion.a 
-                key={i} 
-                whileHover={{ y: -4, scale: 1.1, backgroundColor: `${link.color}22`, borderColor: link.color, color: link.color, boxShadow: `0 0 12px ${link.color}44` }} 
-                href={link.href} target="_blank" rel="noreferrer" 
-                style={{ 
-                  color: theme === 'light' ? '#5a5a72' : 'rgba(255,255,255,0.5)', 
-                  transition: 'all 0.3s', padding: '10px', borderRadius: '10px', 
-                  border: theme === 'light' ? '1px solid rgba(0,0,0,0.12)' : '1px solid rgba(255,255,255,0.1)', 
-                  background: theme === 'light' ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.03)', 
+              <motion.a
+                key={i}
+                whileHover={{ y: -4, scale: 1.1, backgroundColor: `${link.color}22`, borderColor: link.color, color: link.color, boxShadow: `0 0 12px ${link.color}44` }}
+                href={link.href} target="_blank" rel="noreferrer"
+                style={{
+                  color: theme === 'light' ? '#5a5a72' : 'rgba(255,255,255,0.5)',
+                  transition: 'all 0.3s', padding: '10px', borderRadius: '10px',
+                  border: theme === 'light' ? '1px solid rgba(0,0,0,0.12)' : '1px solid rgba(255,255,255,0.1)',
+                  background: theme === 'light' ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.03)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   boxShadow: theme === 'light' ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
                 }}
@@ -1387,8 +1404,8 @@ export default function PortfolioPage() {
               <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 8px #10b981' }} /> ONLINE
             </motion.div>
 
-            <motion.a 
-              href="/resume.pdf" target="_blank" rel="noreferrer" 
+            <motion.a
+              href="/resume.pdf" target="_blank" rel="noreferrer"
               style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: theme === 'light' ? 'linear-gradient(135deg, rgba(192,57,43,0.12), rgba(192,57,43,0.04))' : 'linear-gradient(135deg, rgba(239,68,68,0.1), rgba(0,0,0,0))', border: theme === 'light' ? '1px solid rgba(192,57,43,0.4)' : '1px solid rgba(239,68,68,0.4)', borderRadius: '6px', color: theme === 'light' ? '#c0392b' : '#fff', fontSize: '0.8rem', fontFamily: 'monospace', textDecoration: 'none', fontWeight: 800, letterSpacing: '1px', boxShadow: theme === 'light' ? '0 2px 12px rgba(192,57,43,0.15)' : 'none' }}
               whileHover={{ background: theme === 'light' ? 'rgba(192,57,43,0.2)' : 'rgba(239,68,68,0.2)', borderColor: theme === 'light' ? '#c0392b' : '#ef4444', boxShadow: '0 0 15px rgba(192,57,43,0.4)', scale: 1.05 }}
             >
@@ -1460,7 +1477,7 @@ function ScrollToTopButton() {
           whileTap={{ scale: 0.9 }}
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 15l-6-6-6 6"/>
+            <path d="M18 15l-6-6-6 6" />
           </svg>
         </motion.button>
       )}
