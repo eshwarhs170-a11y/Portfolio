@@ -3,6 +3,7 @@ import CyberVortexCanvas from './CyberVortexCanvas';
 import MatrixRain from './MatrixRain';
 import CyberProfileImage from './CyberProfileImage';
 import EduNeuralBg from './EduNeuralBg';
+import AuroraBackground from './AuroraBackground';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import {
   Folder, FileText, User, Mail, Shield, Database,
@@ -26,6 +27,7 @@ const LinkedinIcon = ({ size = 16 }: { size?: number }) => (
     <circle cx="4" cy="4" r="2" />
   </svg>
 );
+
 
 interface ProjectData {
   caseNum: string;
@@ -473,13 +475,21 @@ export default function PortfolioPage() {
         <CursorTrail />
 
         <section id="home" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '100px 0 100px', overflow: 'hidden' }}>
-          {/* Background Cyber Elements */}
-          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
-            {/* Grid */}
+          {/* Aurora plasma background */}
+          <AuroraBackground />
+          {/* Grid */}
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
             <div style={{ position: 'absolute', inset: 0, backgroundImage: theme === 'light' ? 'linear-gradient(rgba(59,130,246,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.05) 1px, transparent 1px)' : 'linear-gradient(rgba(239,68,68,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(239,68,68,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', maskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, transparent 70%)', WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, transparent 70%)' }} />
             {/* Huge Watermark */}
             <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: theme === 'light' ? 0.04 : 0.02, scale: 1 }} transition={{ duration: 2 }} style={{ position: 'absolute', top: '10%', right: '-10%', fontSize: '25vw', fontWeight: 900, color: theme === 'light' ? '#0f1117' : '#fff', whiteSpace: 'nowrap', userSelect: 'none', fontFamily: 'monospace' }}>DOSSIER</motion.div>
           </div>
+
+          {/* Scan sweep line */}
+          <div className="scan-sweep" />
+
+          {/* Pulse rings behind profile */}
+          <div className="pulse-ring" style={{ width: 320, height: 320, right: '8%', top: '50%', marginTop: -160, borderColor: theme === 'light' ? 'rgba(59,130,246,0.3)' : 'rgba(239,68,68,0.3)' }} />
+          <div className="pulse-ring" style={{ width: 320, height: 320, right: '8%', top: '50%', marginTop: -160, borderColor: theme === 'light' ? 'rgba(99,102,241,0.2)' : 'rgba(239,68,68,0.2)', animationDelay: '1.1s' }} />
 
           <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1fr 450px', gap: '140px', width: '100%', maxWidth: '1400px', padding: '0 40px', alignItems: 'center' }}>
 
@@ -503,7 +513,7 @@ export default function PortfolioPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
-                  style={{ fontSize: '4.5rem', fontWeight: 900, lineHeight: 1.1, margin: 0, color: '#fff', textTransform: 'uppercase', letterSpacing: '-1px' }}
+                  style={{ fontSize: '4.5rem', fontWeight: 900, lineHeight: 1.1, margin: 0, color: '#fff', textTransform: 'uppercase', letterSpacing: '-1px', textShadow: theme === 'light' ? '0 0 30px rgba(59,130,246,0.6), 0 0 60px rgba(59,130,246,0.3)' : '0 0 30px rgba(239,68,68,0.5), 0 0 60px rgba(239,68,68,0.25)' }}
                 >
                   <GlitchText text="Eshwar H S" />
                 </motion.h1>
@@ -519,7 +529,7 @@ export default function PortfolioPage() {
                 </motion.h2>
               </div>
 
-              {/* Bio with typing effect */}
+              {/* Bio card */}
               <motion.div
                 initial={{ opacity: 0, rotateX: -8, y: 16 }}
                 animate={{ opacity: 1, rotateX: 0, y: 0 }}
@@ -767,7 +777,6 @@ export default function PortfolioPage() {
 
 
         </section>
-
 
 
         <section id="projects" style={{ position: 'relative', overflow: 'hidden', padding: '60px 0 80px', background: 'rgba(3,5,12,0.97)' }}>

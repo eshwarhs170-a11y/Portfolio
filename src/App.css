@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Share+Tech+Mono&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 
+
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* ===== MILKY WAY GALAXY BACKGROUND ===== */
@@ -1381,3 +1383,130 @@ body, a, button, input, textarea {
   animation: cometFlyLeft 8s linear infinite;
 }
 
+/* ===================================================
+   REFINED EFFECTS — Elegant, not overwhelming
+   =================================================== */
+
+/* 1. Pulsing name glow animation */
+@keyframes nameGlowPulse {
+  0%, 100% { text-shadow: 0 0 20px currentColor, 0 0 40px currentColor; }
+  50%       { text-shadow: 0 0 40px currentColor, 0 0 80px currentColor, 0 0 120px currentColor; }
+}
+
+/* 2. Section title — clean neon underline sweep */
+.section-title-neon {
+  position: relative;
+  display: inline-block;
+}
+.section-title-neon::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(90deg, #ef4444, transparent);
+  border-radius: 2px;
+}
+[data-theme='light'] .section-title-neon::after {
+  background: linear-gradient(90deg, #3b82f6, transparent);
+}
+
+/* 3. Card corner brackets — appears on hover */
+.corner-card {
+  position: relative;
+}
+.corner-card::before,
+.corner-card::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+.corner-card::before {
+  top: 8px; left: 8px;
+  border-top: 2px solid #ef4444;
+  border-left: 2px solid #ef4444;
+  transform: translate(-4px, -4px);
+}
+.corner-card::after {
+  bottom: 8px; right: 8px;
+  border-bottom: 2px solid #ef4444;
+  border-right: 2px solid #ef4444;
+  transform: translate(4px, 4px);
+}
+.corner-card:hover::before,
+.corner-card:hover::after {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+[data-theme='light'] .corner-card::before { border-color: #3b82f6; }
+[data-theme='light'] .corner-card::after  { border-color: #3b82f6; }
+
+/* 4. Soft shimmer sweep (very subtle, no color change) */
+@keyframes subtleShimmer {
+  0%   { transform: translateX(-120%) skewX(-15deg); }
+  100% { transform: translateX(220%) skewX(-15deg); }
+}
+.shimmer-soft {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-soft::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 35%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+  transform: translateX(-120%) skewX(-15deg);
+  animation: subtleShimmer 4s ease-in-out infinite;
+  pointer-events: none;
+}
+[data-theme='light'] .shimmer-soft::after {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+}
+
+/* 5. Scan line sweep */
+@keyframes scanDown {
+  0%   { top: -2%; }
+  100% { top: 102%; }
+}
+.scan-sweep {
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(239,68,68,0.5), transparent);
+  animation: scanDown 5s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+[data-theme='light'] .scan-sweep {
+  background: linear-gradient(to right, transparent, rgba(59,130,246,0.4), transparent);
+}
+
+/* 6. Pulse rings */
+@keyframes pulseRing {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+.pulse-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid;
+  animation: pulseRing 2.5s ease-out infinite;
+  pointer-events: none;
+}
+
+/* 7. Blink cursor */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.blink-cursor {
+  animation: blink 1s step-end infinite;
+  color: #ef4444;
+}
+[data-theme='light'] .blink-cursor { color: #3b82f6; }
