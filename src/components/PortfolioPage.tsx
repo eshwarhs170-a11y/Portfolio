@@ -1235,33 +1235,40 @@ export default function PortfolioPage() {
                 {/* Grid overlay bg */}
                 <div style={{ position: 'absolute', inset: 0, backgroundImage: theme === 'light' ? 'linear-gradient(rgba(59,130,246,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.08) 1px, transparent 1px)' : 'linear-gradient(rgba(163,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(163,0,0,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
 
-                <form style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column' }} onSubmit={(e) => {
-                  e.preventDefault();
-                  alert('Transmission sent! Eshwar will respond shortly.');
-                }}>
+                <form action="https://api.web3forms.com/submit" method="POST" style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  
+                  {/* Web3Forms Access Key (User needs to replace this) */}
+                  <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE" />
+                  
+                  {/* Optional: Redirect back to site after submission instead of showing their default page */}
+                  {/* <input type="hidden" name="redirect" value="https://yourwebsite.com/success" /> */}
+                  
                   {/* 2-col row: NAME + EMAIL */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                     <div>
                       <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: theme === 'light' ? '#3b82f6' : '#ef4444', fontWeight: 800 }}><User size={12} /> NAME</label>
-                      <input type="text" className="cyber-input" placeholder="Your name" required />
+                      <input type="text" name="name" className="cyber-input" placeholder="Your name" required />
                     </div>
                     <div>
                       <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: theme === 'light' ? '#3b82f6' : '#ef4444', fontWeight: 800 }}><Mail size={12} /> EMAIL</label>
-                      <input type="email" className="cyber-input" placeholder="your.email@example.com" required />
+                      <input type="email" name="email" className="cyber-input" placeholder="your.email@example.com" required />
                     </div>
                   </div>
 
                   {/* TOPIC */}
                   <div style={{ marginBottom: '20px' }}>
                     <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: theme === 'light' ? '#3b82f6' : '#ef4444', fontWeight: 800 }}><FileText size={12} /> TOPIC</label>
-                    <input type="text" className="cyber-input" placeholder="What's this about?" required />
+                    <input type="text" name="subject" className="cyber-input" placeholder="What's this about?" required />
                   </div>
 
                   {/* MESSAGE — flex grow to fill remaining space */}
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', marginBottom: '24px' }}>
                     <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: theme === 'light' ? '#3b82f6' : '#ef4444', fontWeight: 800 }}><FileText size={12} /> MESSAGE</label>
-                    <textarea className="cyber-input" placeholder="Detail your project or opportunity..." style={{ flex: 1, resize: 'none', minHeight: '120px' }} required />
+                    <textarea name="message" className="cyber-input" placeholder="Detail your project or opportunity..." style={{ flex: 1, resize: 'none', minHeight: '120px' }} required />
                   </div>
+
+                  {/* Honeypot Spam Protection */}
+                  <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
 
                   <motion.button type="submit" className="form-submit" 
                     style={{ background: theme === 'light' ? '#3b82f6' : '#ef4444', color: '#fff', border: 'none', padding: '16px', borderRadius: '12px', fontSize: '1rem', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: theme === 'light' ? '0 10px 30px rgba(59, 130, 246, 0.4)' : '0 10px 30px rgba(239, 68, 68, 0.4)' }}
