@@ -28,7 +28,7 @@ function DustParticles({ theme }: { theme: 'light' | 'dark' }) {
     meshRef.current.geometry.attributes.position.needsUpdate = true;
   });
 
-  const color = theme === 'light' ? '#8c6b3e' : '#c8a060';
+  const color = theme === 'light' ? '#3b82f6' : '#ef4444';
   const opacity = theme === 'light' ? 0.9 : 0.75;
 
   return (
@@ -60,7 +60,7 @@ function FloatingWireframe({ position, rotationSpeed = 0.01, theme }: { position
     ref.current.rotation.x += rotationSpeed;
     ref.current.rotation.y += rotationSpeed * 1.5;
   });
-  const color = theme === 'light' ? '#d32f2f' : '#a30000';
+  const color = theme === 'light' ? '#2563eb' : '#a30000';
   return (
     <mesh ref={ref} position={position}>
       <icosahedronGeometry args={[1.5, 0]} />
@@ -75,7 +75,7 @@ function FingerprintMesh({ position, theme }: { position: [number, number, numbe
     ref.current.rotation.z = Math.sin(clock.getElapsedTime() * 0.2) * 0.1;
     ref.current.position.y = position[1] + Math.sin(clock.getElapsedTime() * 0.5) * 0.5;
   });
-  const color = theme === 'light' ? '#a17808' : '#d4a017';
+  const color = theme === 'light' ? '#0ea5e9' : '#d4a017';
   return (
     <mesh ref={ref} position={position}>
       <planeGeometry args={[4, 5]} />
@@ -90,23 +90,25 @@ export default function Background3D() {
 
   const isLight = theme === 'light';
   const bgGradient = isLight 
-    ? 'radial-gradient(ellipse at 30% 40%, #f4f1ea 0%, #e7e0d3 50%, #d4c5b0 100%)'
-    : 'radial-gradient(ellipse at 30% 40%, #1f0800 0%, #0a0305 50%, #000 100%)';
+    ? 'radial-gradient(ellipse at 30% 40%, rgba(59, 130, 246, 0.05) 0%, rgba(37, 99, 235, 0.02) 50%, transparent 100%)'
+    : 'radial-gradient(ellipse at 30% 40%, rgba(239, 68, 68, 0.05) 0%, rgba(153, 27, 27, 0.02) 50%, transparent 100%)';
 
   return (
     <div style={{
-      position: 'fixed', inset: 0, zIndex: 0,
+      position: 'absolute', inset: 0, zIndex: -1,
       background: bgGradient,
-      transition: 'background 0.5s ease'
+      transition: 'background 0.5s ease',
+      pointerEvents: 'none',
+      opacity: isLight ? 0.7 : 0.6
     }}>
       <Canvas camera={{ position: [0, 0, 12], fov: 65 }}>
-        <ambientLight intensity={isLight ? 0.8 : 0.4} />
-        <pointLight position={[-6, 4, 4]} intensity={1.2} color={isLight ? "#ff8844" : "#ff4400"} />
-        <pointLight position={[7, -3, 3]} intensity={isLight ? 0.3 : 0.6} color={isLight ? "#ffddaa" : "#440022"} />
+        <ambientLight intensity={isLight ? 1.5 : 0.6} />
+        <pointLight position={[-6, 4, 4]} intensity={2} color={isLight ? "#3b82f6" : "#ff4400"} />
+        <pointLight position={[7, -3, 3]} intensity={isLight ? 1 : 1.5} color={isLight ? "#0ea5e9" : "#ff0044"} />
         <DustParticles theme={theme} />
-        <PulsingOrb position={[-9, 4, -6]} color={isLight ? "#ff5533" : "#cc3300"} radius={3} />
-        <PulsingOrb position={[10, -5, -8]} color={isLight ? "#8855dd" : "#330055"} radius={2.5} />
-        <PulsingOrb position={[0, -8, -4]} color={isLight ? "#995522" : "#442200"} radius={4} />
+        <PulsingOrb position={[-9, 4, -6]} color={isLight ? "#3b82f6" : "#ff3300"} radius={3} />
+        <PulsingOrb position={[10, -5, -8]} color={isLight ? "#0ea5e9" : "#990033"} radius={2.5} />
+        <PulsingOrb position={[0, -8, -4]} color={isLight ? "#2563eb" : "#441100"} radius={4} />
         <FloatingWireframe position={[-6, -2, -3]} rotationSpeed={0.005} theme={theme} />
         <FloatingWireframe position={[8, 3, -5]} rotationSpeed={0.008} theme={theme} />
         <FingerprintMesh position={[0, 0, -10]} theme={theme} />

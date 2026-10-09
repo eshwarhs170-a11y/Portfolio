@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 
 export default function CyberProfileImage({ src }: { src: string }) {
+  const { theme } = useTheme();
   const [glitching, setGlitching] = useState(false);
 
   // Random glitch effect trigger
@@ -32,8 +34,10 @@ export default function CyberProfileImage({ src }: { src: string }) {
         position: 'relative',
         borderRadius: '24px',
         overflow: 'hidden',
-        boxShadow: '0 20px 50px rgba(0,0,0,0.9), inset 0 0 0 2px rgba(239,68,68,0.5), 0 0 40px rgba(239,68,68,0.2)',
-        background: '#05070c',
+        boxShadow: theme === 'light' 
+          ? '0 20px 50px rgba(0,0,0,0.2), inset 0 0 0 2px rgba(59,130,246,0.6), 0 0 40px rgba(59,130,246,0.3)'
+          : '0 20px 50px rgba(0,0,0,0.9), inset 0 0 0 2px rgba(239,68,68,0.5), 0 0 40px rgba(239,68,68,0.2)',
+        background: theme === 'light' ? '#f8fafc' : '#05070c',
       }}
       initial={{ opacity: 0, filter: 'blur(20px)', scale: 0.9 }}
       animate={{ opacity: 1, filter: 'blur(0px)', scale: 1 }}
@@ -52,13 +56,15 @@ export default function CyberProfileImage({ src }: { src: string }) {
         }}
       />
 
-      {/* 2. LED / Dot Matrix Overlay (gives it the "made of dots" look while keeping it 100% recognizable) */}
+      {/* 2. Tech Grid / Dot Overlay */}
       <div 
         style={{
           position: 'absolute',
           inset: 0,
-          backgroundSize: '4px 4px',
-          backgroundImage: 'radial-gradient(circle, rgba(0,0,0,0.55) 1.5px, transparent 1.5px)',
+          backgroundSize: theme === 'light' ? '20px 20px' : '4px 4px',
+          backgroundImage: theme === 'light' 
+            ? 'linear-gradient(rgba(59,130,246,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.1) 1px, transparent 1px)' 
+            : 'radial-gradient(circle, rgba(0,0,0,0.55) 1.5px, transparent 1.5px)',
           pointerEvents: 'none',
           zIndex: 2,
         }}
@@ -70,7 +76,9 @@ export default function CyberProfileImage({ src }: { src: string }) {
           position: 'absolute',
           inset: 0,
           backgroundSize: '100% 4px',
-          backgroundImage: 'linear-gradient(to bottom, transparent, transparent 50%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.25))',
+          backgroundImage: theme === 'light' 
+            ? 'linear-gradient(to bottom, transparent, transparent 50%, rgba(59,130,246,0.08) 50%, rgba(59,130,246,0.08))' 
+            : 'linear-gradient(to bottom, transparent, transparent 50%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.25))',
           pointerEvents: 'none',
           zIndex: 2,
         }}
@@ -139,7 +147,7 @@ export default function CyberProfileImage({ src }: { src: string }) {
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.85) 100%)',
+          background: theme === 'light' ? 'radial-gradient(circle at center, transparent 30%, rgba(255,255,255,0.7) 100%)' : 'radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.85) 100%)',
           pointerEvents: 'none',
           zIndex: 5,
         }}
@@ -153,7 +161,9 @@ export default function CyberProfileImage({ src }: { src: string }) {
           position: 'absolute',
           inset: '-4px',
           borderRadius: '26px',
-          background: 'conic-gradient(from 0deg, transparent 0deg, rgba(239,68,68,0.9) 60deg, rgba(251,191,36,0.8) 100deg, rgba(239,68,68,0.9) 140deg, transparent 200deg, rgba(239,68,68,0.5) 280deg, transparent 360deg)',
+          background: theme === 'light' 
+            ? 'conic-gradient(from 0deg, transparent 0deg, rgba(59,130,246,0.9) 60deg, rgba(14,165,233,0.8) 100deg, rgba(59,130,246,0.9) 140deg, transparent 200deg, rgba(59,130,246,0.5) 280deg, transparent 360deg)'
+            : 'conic-gradient(from 0deg, transparent 0deg, rgba(239,68,68,0.9) 60deg, rgba(251,191,36,0.8) 100deg, rgba(239,68,68,0.9) 140deg, transparent 200deg, rgba(239,68,68,0.5) 280deg, transparent 360deg)',
           zIndex: 6,
           pointerEvents: 'none',
           maskImage: 'radial-gradient(circle, transparent 85%, black 100%)',
@@ -170,7 +180,7 @@ export default function CyberProfileImage({ src }: { src: string }) {
           position: 'absolute',
           inset: 0,
           borderRadius: '24px',
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(239,68,68,0.25) 0%, transparent 60%)',
+          background: theme === 'light' ? 'radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.25) 0%, transparent 60%)' : 'radial-gradient(ellipse at 50% 0%, rgba(239,68,68,0.25) 0%, transparent 60%)',
           zIndex: 6,
           pointerEvents: 'none',
         }}
@@ -178,19 +188,19 @@ export default function CyberProfileImage({ src }: { src: string }) {
 
       {/* 7. Cyberpunk UI Overlays (Framing and Data) */}
       <div style={{ position: 'absolute', top: 24, left: 24, zIndex: 10 }}>
-        <div style={{ width: 40, height: 40, borderTop: '3px solid #ef4444', borderLeft: '3px solid #ef4444', filter: 'drop-shadow(0 0 6px #ef4444)' }} />
+        <div style={{ width: 40, height: 40, borderTop: theme === 'light' ? '3px solid #3b82f6' : '3px solid #ef4444', borderLeft: theme === 'light' ? '3px solid #3b82f6' : '3px solid #ef4444', filter: theme === 'light' ? 'drop-shadow(0 0 6px #3b82f6)' : 'drop-shadow(0 0 6px #ef4444)' }} />
       </div>
       <div style={{ position: 'absolute', bottom: 24, right: 24, zIndex: 10 }}>
-        <div style={{ width: 40, height: 40, borderBottom: '3px solid #ef4444', borderRight: '3px solid #ef4444', filter: 'drop-shadow(0 0 6px #ef4444)' }} />
+        <div style={{ width: 40, height: 40, borderBottom: theme === 'light' ? '3px solid #3b82f6' : '3px solid #ef4444', borderRight: theme === 'light' ? '3px solid #3b82f6' : '3px solid #ef4444', filter: theme === 'light' ? 'drop-shadow(0 0 6px #3b82f6)' : 'drop-shadow(0 0 6px #ef4444)' }} />
       </div>
       
       {/* Top Right System Text */}
       <div style={{ position: 'absolute', top: 28, right: 28, zIndex: 10, textAlign: 'right' }}>
-        <div style={{ color: '#ef4444', fontSize: '0.8rem', fontWeight: 900, fontFamily: 'monospace', letterSpacing: '3px', textShadow: '0 0 8px rgba(239,68,68,0.8)' }}>SYS.OP.001</div>
+        <div style={{ color: theme === 'light' ? '#3b82f6' : '#ef4444', fontSize: '0.8rem', fontWeight: 900, fontFamily: 'monospace', letterSpacing: '3px', textShadow: theme === 'light' ? '0 0 8px rgba(59,130,246,0.8)' : '0 0 8px rgba(239,68,68,0.8)' }}>SYS.OP.001</div>
         <motion.div 
           animate={{ opacity: [1, 0, 1] }} 
           transition={{ duration: 1.5, repeat: Infinity }}
-          style={{ color: '#fff', fontSize: '0.65rem', fontFamily: 'monospace', marginTop: '6px', letterSpacing: '1px' }}
+          style={{ color: theme === 'light' ? '#64748b' : '#fff', fontSize: '0.65rem', fontFamily: 'monospace', marginTop: '6px', letterSpacing: '1px' }}
         >
           [ LIVE FEED ]
         </motion.div>
@@ -204,12 +214,12 @@ export default function CyberProfileImage({ src }: { src: string }) {
               key={i}
               animate={{ height: [`${30 + Math.random() * 20}%`, `${60 + Math.random() * 40}%`, `${30 + Math.random() * 20}%`] }}
               transition={{ duration: 0.4 + Math.random() * 0.5, repeat: Infinity }}
-              style={{ width: '4px', background: '#ef4444', boxShadow: '0 0 6px #ef4444' }}
+              style={{ width: '4px', background: theme === 'light' ? '#3b82f6' : '#ef4444', boxShadow: theme === 'light' ? '0 0 6px #3b82f6' : '0 0 6px #ef4444' }}
             />
           ))}
         </div>
-        <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.6rem', fontFamily: 'monospace', letterSpacing: '2px' }}>
-          BIOMETRIC SCAN: <span style={{ color: '#4ade80', fontWeight: 'bold' }}>MATCH</span>
+        <div style={{ color: theme === 'light' ? '#475569' : 'rgba(255,255,255,0.7)', fontSize: '0.6rem', fontFamily: 'monospace', letterSpacing: '2px' }}>
+          BIOMETRIC SCAN: <span style={{ color: '#10b981', fontWeight: 'bold' }}>MATCH</span>
         </div>
       </div>
     </motion.div>

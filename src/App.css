@@ -169,7 +169,13 @@
 }
 [data-theme='light'] nav a { color: #5a5a72; }
 [data-theme='light'] nav a:hover { background: rgba(0,0,0,0.06); color: #0f1117; }
-[data-theme='light'] nav a.nav-active { background: #c0392b; color: #fff; }
+[data-theme='light'] nav a.nav-active { background: #3b82f6; color: #fff; box-shadow: 0 0 12px rgba(59,130,246,0.5); }
+
+/* Particles */
+[data-theme='light'] .particle-mote {
+  background: #3b82f6 !important;
+  box-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6 !important;
+}
 
 /* Sections */
 [data-theme='light'] section {
@@ -244,9 +250,55 @@
 [data-theme='light'] .form-input::placeholder { color: #8888aa !important; }
 [data-theme='light'] .cyber-input:focus,
 [data-theme='light'] .form-input:focus {
-  border-color: #c0392b !important;
-  box-shadow: 0 0 0 3px rgba(192,57,43,0.12) !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.2), 0 0 15px rgba(59,130,246,0.15) !important;
 }
+
+/* Landing Page Overrides */
+[data-theme='light'] .ambient-light {
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.08) 45%, transparent 75%),
+              radial-gradient(ellipse 40% 35% at 20% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 70%),
+              radial-gradient(ellipse 35% 30% at 80% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+}
+
+[data-theme='light'] .edge-vignette {
+  background: radial-gradient(ellipse 80% 70% at 50% 50%, transparent 40%, rgba(255,255,255,0.4) 80%, rgba(255,255,255,0.9) 100%);
+}
+
+[data-theme='light'] .mouse-spotlight {
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.05) 40%, transparent 70%);
+}
+
+[data-theme='light'] .evidence-marker {
+  background: #3b82f6;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+}
+
+[data-theme='light'] .crime-tape {
+  background: repeating-linear-gradient(-45deg, #e2e8f0 0px, #e2e8f0 20px, #fff 20px, #fff 40px);
+  color: #64748b;
+}
+
+[data-theme='light'] .clue-ticker-label { color: #2563eb; }
+[data-theme='light'] .clue-ticker-text { color: #475569; }
+[data-theme='light'] .coordinates { color: #94a3b8; }
+[data-theme='light'] .scroll-hint { color: #94a3b8; }
+
+[data-theme='light'] .card-corner { border-color: #3b82f6; opacity: 0.8; }
+[data-theme='light'] .card-divider { background: linear-gradient(to right, transparent, rgba(59, 130, 246, 0.3), transparent); }
+[data-theme='light'] .card-meta { color: #64748b; }
+
+[data-theme='light'] .glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), inset 0 0 20px rgba(255, 255, 255, 0.8);
+  border-top: 3px solid #3b82f6;
+}
+[data-theme='light'] .case-stamp { color: #2563eb; font-weight: bold; }
+[data-theme='light'] .typewriter-text { color: #0f1117; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); }
+[data-theme='light'] .cursor { background: #0f1117; }
+
 
 /* Footer */
 [data-theme='light'] .portfolio-footer {

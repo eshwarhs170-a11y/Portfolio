@@ -64,9 +64,14 @@ function App() {
     };
   }, [tryPlay]);
 
-  // Fade out music immediately when entering portfolio (3rd page)
-  const enterPortfolio = useCallback(() => {
+  // Fade out music when leaving cinematic intro (entering landing)
+  const enterLanding = useCallback(() => {
     window.dispatchEvent(new Event('force-fade-music'));
+    setStage('landing');
+  }, []);
+
+  // No music fade needed here — already silent by now
+  const enterPortfolio = useCallback(() => {
     setStage('portfolio');
   }, []);
 
@@ -76,7 +81,7 @@ function App() {
         <Background3D />
         <AnimatePresence mode="wait">
           {stage === 'intro' && (
-            <CinematicIntro key="intro" onComplete={() => setStage('landing')} />
+            <CinematicIntro key="intro" onComplete={enterLanding} />
           )}
           {stage === 'landing' && (
             <LandingPage key="landing" onEnter={enterPortfolio} />

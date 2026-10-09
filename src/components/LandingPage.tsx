@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import Tilt from 'react-parallax-tilt';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+import CyberGrid from './CyberGrid';
 
 interface Props {
   onEnter: () => void;
@@ -24,7 +26,7 @@ const cluePhrases = [
 ];
 
 // Trail of fading dots that follow the cursor
-function CursorTrail({ mousePos }: { mousePos: { x: number; y: number } }) {
+function CursorTrail({ mousePos, theme }: { mousePos: { x: number; y: number }, theme: string }) {
   const [trail, setTrail] = useState<{ x: number; y: number; id: number }[]>([]);
   const idRef = useRef(0);
 
@@ -48,8 +50,8 @@ function CursorTrail({ mousePos }: { mousePos: { x: number; y: number } }) {
               width: 6 + age * 6,
               height: 6 + age * 6,
               borderRadius: '50%',
-              background: `rgba(163, 0, 0, ${age * 0.7})`,
-              boxShadow: `0 0 ${age * 12}px rgba(163, 0, 0, ${age * 0.5})`,
+              background: theme === 'light' ? `rgba(59, 130, 246, ${age * 0.7})` : `rgba(163, 0, 0, ${age * 0.7})`,
+              boxShadow: theme === 'light' ? `0 0 ${age * 12}px rgba(59, 130, 246, ${age * 0.5})` : `0 0 ${age * 12}px rgba(163, 0, 0, ${age * 0.5})`,
               transform: 'translate(-50%, -50%)',
               pointerEvents: 'none',
               zIndex: 50,
@@ -63,6 +65,7 @@ function CursorTrail({ mousePos }: { mousePos: { x: number; y: number } }) {
 }
 
 export default function LandingPage({ onEnter }: Props) {
+  const { theme } = useTheme();
   const [typedText, setTypedText] = useState("");
   const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
   const [isTyping, setIsTyping] = useState(true);
@@ -109,13 +112,6 @@ export default function LandingPage({ onEnter }: Props) {
     return () => clearInterval(interval);
   }, []);
 
-  // ── Auto-silence background music when typing is done ───────────────────────
-  useEffect(() => {
-    if (!isTyping) {
-      window.dispatchEvent(new Event('force-fade-music'));
-    }
-  }, [isTyping]);
-
   // Voice briefing removed since it auto-enters
 
 
@@ -128,31 +124,34 @@ export default function LandingPage({ onEnter }: Props) {
       style={{ position: 'relative', width: '100vw', height: '100vh', zIndex: 10, overflow: 'hidden' }}
     >
       {/* Cursor blood-red trail */}
-      <CursorTrail mousePos={mousePos} />
+      <CursorTrail mousePos={mousePos} theme={theme} />
 
       {/* Always-visible ambient glow — no mouse needed to see this */}
-      <div className="ambient-light" />
+      <div className="ambient-light" style={{ background: theme === 'light' ? 'radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.15), transparent 70%)' : undefined }} />
+
+      {/* Interactive 3D Floor Grid */}
+      <CyberGrid />
 
       {/* Massive Background Marquee / Floating Lines */}
-      <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', opacity: 0.15 }}>
+      <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', opacity: theme === 'light' ? 0.4 : 0.25 }}>
         <motion.div
           animate={{ x: [0, -1000] }}
           transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-          style={{ whiteSpace: 'nowrap', fontSize: '10vw', fontWeight: 900, color: '#fff', fontFamily: 'monospace', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '20px' }}
+          style={{ whiteSpace: 'nowrap', fontSize: '10vw', fontWeight: 900, color: theme === 'light' ? 'rgba(15,23,42,0.1)' : '#fff', fontFamily: 'monospace', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '20px' }}
         >
           ESHWAR H S • FULL-STACK DEVELOPER • AI ENGINEER • ESHWAR H S • FULL-STACK DEVELOPER • AI ENGINEER •
         </motion.div>
         <motion.div
           animate={{ x: [-1000, 0] }}
           transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
-          style={{ whiteSpace: 'nowrap', fontSize: '8vw', fontWeight: 900, color: 'transparent', WebkitTextStroke: '2px rgba(255,255,255,0.8)', fontFamily: 'serif', letterSpacing: '2px', textTransform: 'uppercase', fontStyle: 'italic', marginBottom: '20px' }}
+          style={{ whiteSpace: 'nowrap', fontSize: '8vw', fontWeight: 900, color: 'transparent', WebkitTextStroke: theme === 'light' ? '2px rgba(15,23,42,0.15)' : '2px rgba(255,255,255,0.8)', fontFamily: 'serif', letterSpacing: '2px', textTransform: 'uppercase', fontStyle: 'italic', marginBottom: '20px' }}
         >
           PROBLEM SOLVER • CONTINUOUS LEARNER • INNOVATOR • PROBLEM SOLVER • CONTINUOUS LEARNER • INNOVATOR •
         </motion.div>
         <motion.div
           animate={{ x: [0, -1000] }}
           transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-          style={{ whiteSpace: 'nowrap', fontSize: '7vw', fontWeight: 800, color: '#ef4444', fontFamily: 'monospace', letterSpacing: '6px', textTransform: 'uppercase' }}
+          style={{ whiteSpace: 'nowrap', fontSize: '7vw', fontWeight: 800, color: theme === 'light' ? '#3b82f6' : '#ef4444', fontFamily: 'monospace', letterSpacing: '6px', textTransform: 'uppercase' }}
         >
           BUILDING INTELLIGENT SYSTEMS • DIGITAL CRAFTSMAN • BUILDING INTELLIGENT SYSTEMS • DIGITAL CRAFTSMAN •
         </motion.div>
@@ -214,16 +213,16 @@ export default function LandingPage({ onEnter }: Props) {
       {/* Main card */}
       <div className="landing-center" style={{ zIndex: 10 }}>
         <Tilt
-          perspective={900}
+          perspective={800}
           glareEnable={true}
-          glareMaxOpacity={0.18}
-          scale={1.03}
-          tiltMaxAngleX={10}
-          tiltMaxAngleY={10}
+          glareMaxOpacity={0.25}
+          scale={1.05}
+          tiltMaxAngleX={15}
+          tiltMaxAngleY={15}
           gyroscope={true}
-          style={{ width: '90%', maxWidth: '780px' }}
+          style={{ width: '90%', maxWidth: '780px', transformStyle: 'preserve-3d' }}
         >
-          <div className="glass-card">
+          <div className="glass-card" style={{ transform: 'translateZ(30px)' }}>
             <div className="card-corner card-corner-tl" />
             <div className="card-corner card-corner-tr" />
             <div className="card-corner card-corner-bl" />
@@ -231,7 +230,7 @@ export default function LandingPage({ onEnter }: Props) {
 
             <div className="case-stamp">CASE FILE // 001 &nbsp;·&nbsp; PRIORITY: CRITICAL</div>
 
-            <p className="typewriter-text">
+            <p className="typewriter-text" style={{ transform: 'translateZ(60px)' }}>
               {typedText.split('\n').map((line, i, arr) => (
                 <span key={i}>
                   {line}
@@ -242,7 +241,7 @@ export default function LandingPage({ onEnter }: Props) {
               {!isTyping && <span className="cursor" />}
             </p>
 
-            <div className="card-divider" />
+            <div className="card-divider" style={{ transform: 'translateZ(40px)' }} />
 
             <div className="card-meta">
               <span>DETECTIVE PORTFOLIO</span>

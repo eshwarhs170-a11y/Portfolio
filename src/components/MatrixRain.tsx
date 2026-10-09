@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 export default function MatrixRain() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -22,12 +24,12 @@ export default function MatrixRain() {
     }
 
     const draw = () => {
-      ctx.fillStyle = 'rgba(3, 5, 12, 0.05)';
+      ctx.fillStyle = theme === 'light' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(3, 5, 12, 0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.shadowBlur = 8;
-      ctx.shadowColor = '#ef4444';
-      ctx.fillStyle = '#ef4444';
+      ctx.shadowColor = theme === 'light' ? '#3b82f6' : '#ef4444';
+      ctx.fillStyle = theme === 'light' ? '#3b82f6' : '#ef4444';
       ctx.font = fontSize + 'px monospace';
 
       for (let i = 0; i < drops.length; i++) {
@@ -53,7 +55,7 @@ export default function MatrixRain() {
       clearInterval(interval);
       window.removeEventListener('resize', handleResize);
     }
-  }, []);
+  }, [theme]);
 
   return (
     <canvas

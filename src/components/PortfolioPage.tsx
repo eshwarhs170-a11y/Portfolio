@@ -48,6 +48,7 @@ function GlitchText({ text }: { text: string }) {
 
 // Same blood-red circle trail as the LandingPage — clears when cursor stops
 function CursorTrail({ mousePos }: { mousePos: { x: number; y: number } }) {
+  const { theme } = useTheme();
   const [trail, setTrail] = useState<{ x: number; y: number; id: number }[]>([]);
   const idRef = useRef(0);
   const clearTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -76,8 +77,8 @@ function CursorTrail({ mousePos }: { mousePos: { x: number; y: number } }) {
               width: 6 + age * 6,
               height: 6 + age * 6,
               borderRadius: '50%',
-              background: `rgba(163, 0, 0, ${age * 0.7})`,
-              boxShadow: `0 0 ${age * 12}px rgba(163, 0, 0, ${age * 0.5})`,
+              background: theme === 'light' ? `rgba(59, 130, 246, ${age * 0.7})` : `rgba(163, 0, 0, ${age * 0.7})`,
+              boxShadow: theme === 'light' ? `0 0 ${age * 12}px rgba(59, 130, 246, ${age * 0.5})` : `0 0 ${age * 12}px rgba(163, 0, 0, ${age * 0.5})`,
               transform: 'translate(-50%, -50%)',
               pointerEvents: 'none',
               zIndex: 9999,
@@ -475,9 +476,9 @@ export default function PortfolioPage() {
           {/* Background Cyber Elements */}
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
             {/* Grid */}
-            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(239,68,68,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(239,68,68,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', maskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, transparent 70%)', WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, transparent 70%)' }} />
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: theme === 'light' ? 'linear-gradient(rgba(59,130,246,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.05) 1px, transparent 1px)' : 'linear-gradient(rgba(239,68,68,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(239,68,68,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', maskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, transparent 70%)', WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, transparent 70%)' }} />
             {/* Huge Watermark */}
-            <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 0.02, scale: 1 }} transition={{ duration: 2 }} style={{ position: 'absolute', top: '10%', right: '-10%', fontSize: '25vw', fontWeight: 900, color: '#fff', whiteSpace: 'nowrap', userSelect: 'none', fontFamily: 'monospace' }}>DOSSIER</motion.div>
+            <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: theme === 'light' ? 0.04 : 0.02, scale: 1 }} transition={{ duration: 2 }} style={{ position: 'absolute', top: '10%', right: '-10%', fontSize: '25vw', fontWeight: 900, color: theme === 'light' ? '#0f1117' : '#fff', whiteSpace: 'nowrap', userSelect: 'none', fontFamily: 'monospace' }}>DOSSIER</motion.div>
           </div>
 
           <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1fr 450px', gap: '140px', width: '100%', maxWidth: '1400px', padding: '0 40px', alignItems: 'center' }}>
@@ -490,10 +491,10 @@ export default function PortfolioPage() {
                 initial={{ opacity: 0, width: 0 }} 
                 animate={{ opacity: 1, width: 'auto' }} 
                 transition={{ duration: 0.8, ease: 'circOut' }}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', padding: '6px 16px', borderRadius: '100px', marginBottom: '24px', overflow: 'hidden', whiteSpace: 'nowrap' }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', background: theme === 'light' ? 'rgba(59,130,246,0.15)' : 'rgba(239,68,68,0.1)', border: theme === 'light' ? '1px solid rgba(59,130,246,0.4)' : '1px solid rgba(239,68,68,0.3)', padding: '6px 16px', borderRadius: '100px', marginBottom: '24px', overflow: 'hidden', whiteSpace: 'nowrap' }}
               >
-                <motion.div animate={{ opacity: [1, 0.2, 1] }} transition={{ duration: 1.5, repeat: Infinity }} style={{ width: 8, height: 8, borderRadius: '50%', background: '#ef4444', boxShadow: '0 0 10px #ef4444' }} />
-                <span style={{ color: '#ef4444', fontSize: '0.75rem', fontWeight: 800, letterSpacing: '2px', fontFamily: 'monospace' }}>AGENT ACTIVE // READY FOR ASSIGNMENT</span>
+                <motion.div animate={{ opacity: [1, 0.2, 1] }} transition={{ duration: 1.5, repeat: Infinity }} style={{ width: 8, height: 8, borderRadius: '50%', background: theme === 'light' ? '#3b82f6' : '#ef4444', boxShadow: theme === 'light' ? '0 0 10px #3b82f6' : '0 0 10px #ef4444' }} />
+                <span style={{ color: theme === 'light' ? '#2563eb' : '#ef4444', fontSize: '0.75rem', fontWeight: 800, letterSpacing: '2px', fontFamily: 'monospace' }}>AGENT ACTIVE // READY FOR ASSIGNMENT</span>
               </motion.div>
 
               {/* Title */}
@@ -510,11 +511,11 @@ export default function PortfolioPage() {
                   initial={{ opacity: 0, x: -20 }} 
                   animate={{ opacity: 1, x: 0 }} 
                   transition={{ duration: 0.8, delay: 0.4 }}
-                  style={{ fontSize: '1.8rem', fontWeight: 300, color: '#94a3b8', margin: '8px 0 0', display: 'flex', alignItems: 'center', gap: '12px' }}
+                  style={{ fontSize: '1.8rem', fontWeight: 300, color: theme === 'light' ? '#64748b' : '#94a3b8', margin: '8px 0 0', display: 'flex', alignItems: 'center', gap: '12px' }}
                 >
-                  <span style={{ color: '#ef4444' }}>&lt;</span>
+                  <span style={{ color: theme === 'light' ? '#3b82f6' : '#ef4444' }}>&lt;</span>
                   Full-Stack & AI Engineer
-                  <span style={{ color: '#ef4444' }}>/&gt;</span>
+                  <span style={{ color: theme === 'light' ? '#3b82f6' : '#ef4444' }}>/&gt;</span>
                 </motion.h2>
               </div>
 
@@ -523,48 +524,51 @@ export default function PortfolioPage() {
                 initial={{ opacity: 0, rotateX: -8, y: 16 }} 
                 animate={{ opacity: 1, rotateX: 0, y: 0 }} 
                 transition={{ delay: 0.6, duration: 1 }}
+                whileHover={{ scale: 1.02, rotateY: 2, boxShadow: theme === 'light' ? '8px 15px 40px rgba(0,0,0,0.1), inset 0 2px 10px rgba(255,255,255,1)' : '8px 15px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08)' }}
                 style={{ 
                   background: theme === 'light' 
-                    ? 'linear-gradient(135deg, rgba(255,255,255,0.8), rgba(245,248,255,0.6))'
+                    ? 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(245,248,255,0.85))'
                     : 'linear-gradient(135deg, rgba(15,20,40,0.85), rgba(5,8,20,0.7))',
                   padding: '28px 32px',
                   borderRadius: '0 16px 16px 0',
                   marginBottom: '36px',
                   backdropFilter: 'blur(20px)',
                   border: theme === 'light' ? '1px solid rgba(255,255,255,1)' : '1px solid rgba(255,255,255,0.06)',
-                  borderLeft: '4px solid #ef4444',
+                  borderLeft: theme === 'light' ? '4px solid #3b82f6' : '4px solid #ef4444',
                   boxShadow: theme === 'light'
                     ? '4px 8px 30px rgba(0,0,0,0.06), inset 0 2px 5px rgba(255,255,255,1)'
                     : '4px 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)',
                   transform: 'perspective(1000px) rotateX(1deg)',
                   position: 'relative',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease'
                 }}
               >
-                <p style={{ margin: 0, fontSize: '1.05rem', color: theme === 'light' ? '#2d2d3a' : '#cbd5e1', lineHeight: 1.8, fontFamily: 'monospace' }}>
+                <p style={{ margin: 0, fontSize: '1.05rem', color: theme === 'light' ? '#334155' : '#cbd5e1', lineHeight: 1.8, fontFamily: 'monospace' }}>
                   Every complex problem leaves a trail. I follow the evidence — and build the solution.<br/><br/>
-                  Specializing in <strong style={{ color: theme === 'light' ? '#0f1117' : '#fff' }}>Full-Stack Architecture</strong> and <strong style={{ color: '#38bdf8' }}>AI Integration</strong>, I turn real-world chaos into production-ready intelligence.
+                  Specializing in <strong style={{ color: theme === 'light' ? '#0f1117' : '#fff' }}>Full-Stack Architecture</strong> and <strong style={{ color: theme === 'light' ? '#2563eb' : '#38bdf8' }}>AI Integration</strong>, I turn real-world chaos into production-ready intelligence.
                 </p>
               </motion.div>
 
               {/* Action Buttons */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-                <a href="#projects" style={{ 
-                  background: 'linear-gradient(135deg, #ef4444, #b91c1c)', color: '#fff', padding: '14px 28px', borderRadius: '8px', 
+                <motion.a whileHover={{ scale: 1.05, boxShadow: theme === 'light' ? '0 15px 40px -10px rgba(59,130,246,0.9)' : '0 15px 40px -10px rgba(239,68,68,0.9)' }} whileTap={{ scale: 0.95 }} href="#projects" style={{ 
+                  background: theme === 'light' ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : 'linear-gradient(135deg, #ef4444, #b91c1c)', color: '#fff', padding: '14px 28px', borderRadius: '8px', 
                   fontSize: '0.88rem', fontWeight: 800, textDecoration: 'none', letterSpacing: '1px', textTransform: 'uppercase',
-                  boxShadow: '0 10px 30px -10px rgba(239,68,68,0.8)', border: '1px solid rgba(255,255,255,0.2)',
+                  boxShadow: theme === 'light' ? '0 10px 30px -10px rgba(59,130,246,0.6)' : '0 10px 30px -10px rgba(239,68,68,0.8)', border: '1px solid rgba(255,255,255,0.2)',
                   display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.3s' 
                 }}>
                   Access Dossier <span style={{ fontFamily: 'monospace' }}>_&gt;</span>
-                </a>
-                <a href="#contact" style={{ 
-                  background: 'rgba(255,255,255,0.03)', color: '#fff', padding: '14px 28px', borderRadius: '8px', 
+                </motion.a>
+                <motion.a whileHover={{ scale: 1.05, background: theme === 'light' ? 'rgba(59,130,246,0.1)' : 'rgba(239,68,68,0.1)', borderColor: theme === 'light' ? 'rgba(59,130,246,0.5)' : 'rgba(239,68,68,0.5)' }} whileTap={{ scale: 0.95 }} href="#contact" style={{ 
+                  background: theme === 'light' ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.03)', color: theme === 'light' ? '#1e293b' : '#fff', padding: '14px 28px', borderRadius: '8px', 
                   fontSize: '0.88rem', fontWeight: 800, textDecoration: 'none', letterSpacing: '1px', textTransform: 'uppercase',
-                  border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)',
+                  border: theme === 'light' ? '1px solid rgba(0,0,0,0.15)' : '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)',
+                  boxShadow: theme === 'light' ? '0 4px 15px rgba(0,0,0,0.05)' : 'none',
                   display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.3s' 
                 }}>
                   <Shield size={16} /> Secure Comms
-                </a>
+                </motion.a>
               </motion.div>
 
             </div>
@@ -1196,20 +1200,20 @@ export default function PortfolioPage() {
 
           {/* Animated rings in background */}
           <motion.div
-            animate={{ scale: [1, 1.08, 1], opacity: [0.04, 0.1, 0.04] }}
+            animate={{ scale: [1, 1.08, 1], opacity: theme === 'light' ? [0.15, 0.3, 0.15] : [0.04, 0.1, 0.04] }}
             transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-            style={{ position: 'absolute', top: '50%', left: '30%', transform: 'translate(-50%, -50%)', width: '500px', height: '500px', borderRadius: '50%', border: '1px solid #ef4444', zIndex: 0, pointerEvents: 'none' }}
+            style={{ position: 'absolute', top: '50%', left: '30%', transform: 'translate(-50%, -50%)', width: '500px', height: '500px', borderRadius: '50%', border: theme === 'light' ? '2px solid #3b82f6' : '1px solid #ef4444', zIndex: 0, pointerEvents: 'none' }}
           />
           <motion.div
-            animate={{ scale: [1, 1.12, 1], opacity: [0.03, 0.07, 0.03] }}
+            animate={{ scale: [1, 1.12, 1], opacity: theme === 'light' ? [0.1, 0.25, 0.1] : [0.03, 0.07, 0.03] }}
             transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-            style={{ position: 'absolute', top: '50%', left: '30%', transform: 'translate(-50%, -50%)', width: '700px', height: '700px', borderRadius: '50%', border: '1px solid #3b82f6', zIndex: 0, pointerEvents: 'none' }}
+            style={{ position: 'absolute', top: '50%', left: '30%', transform: 'translate(-50%, -50%)', width: '700px', height: '700px', borderRadius: '50%', border: theme === 'light' ? '2px solid #8b5cf6' : '1px solid #3b82f6', zIndex: 0, pointerEvents: 'none' }}
           />
 
           <motion.div className="contact-section" style={{ position: 'relative', zIndex: 1, background: 'transparent', boxShadow: 'none', maxWidth: '1400px', margin: '0 auto', padding: '0 40px' }} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
 
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '60px' }}>
-              <motion.h2 className="section-title contact-title" style={{ marginBottom: 12, fontSize: '3.5rem', textAlign: 'center' }} animate={{ textShadow: ['0 0 10px #ef4444', '0 0 25px #ef4444', '0 0 10px #ef4444'] }} transition={{ duration: 2, repeat: Infinity }}>Establish Contact</motion.h2>
+              <motion.h2 className="section-title contact-title" style={{ marginBottom: 12, fontSize: '3.5rem', textAlign: 'center', color: theme === 'light' ? '#1e293b' : undefined }} animate={{ textShadow: theme === 'light' ? ['0 0 10px rgba(59,130,246,0.5)', '0 0 25px rgba(59,130,246,0.8)', '0 0 10px rgba(59,130,246,0.5)'] : ['0 0 10px #ef4444', '0 0 25px #ef4444', '0 0 10px #ef4444'] }} transition={{ duration: 2, repeat: Infinity }}>Establish Contact</motion.h2>
               <p className="contact-desc" style={{ maxWidth: '520px', margin: '0 auto', fontSize: '1.1rem', fontStyle: 'italic', lineHeight: 1.6, color: '#94a3b8' }}>
                 "Open to internships, collaborations &amp; AI/Web dev opportunities. Drop a message."
               </p>
@@ -1218,52 +1222,54 @@ export default function PortfolioPage() {
             <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '40px', width: '100%', alignItems: 'stretch' }}>
               {/* Left: Contact Form — compact & wide */}
               <motion.div
-                style={{ padding: '32px 36px', borderRadius: '24px', background: 'rgba(10, 15, 24, 0.8)', backdropFilter: 'blur(24px)', border: '1px solid rgba(239,68,68,0.3)', boxShadow: '0 20px 60px rgba(0,0,0,0.8), inset 0 0 60px rgba(239,68,68,0.05)', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
-                whileHover={{ boxShadow: '0 20px 60px rgba(0,0,0,0.8), 0 0 50px rgba(239,68,68,0.15), inset 0 0 60px rgba(239,68,68,0.1)' }}
+                style={{ padding: '32px 36px', borderRadius: '24px', background: theme === 'light' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(10, 15, 24, 0.8)', backdropFilter: 'blur(24px)', border: theme === 'light' ? '1px solid rgba(59,130,246,0.3)' : '1px solid rgba(239,68,68,0.3)', boxShadow: theme === 'light' ? '0 20px 60px rgba(0,0,0,0.1), inset 0 0 60px rgba(59,130,246,0.05)' : '0 20px 60px rgba(0,0,0,0.8), inset 0 0 60px rgba(239,68,68,0.05)', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+                whileHover={{ boxShadow: theme === 'light' ? '0 20px 60px rgba(0,0,0,0.15), 0 0 50px rgba(59,130,246,0.2), inset 0 0 60px rgba(59,130,246,0.1)' : '0 20px 60px rgba(0,0,0,0.8), 0 0 50px rgba(239,68,68,0.15), inset 0 0 60px rgba(239,68,68,0.1)' }}
                 transition={{ duration: 0.4 }}
               >
                 {/* Animated top bar */}
                 <motion.div
                   animate={{ opacity: [0.4, 1, 0.4], scaleX: [0.7, 1, 0.7] }}
                   transition={{ duration: 3, repeat: Infinity }}
-                  style={{ position: 'absolute', top: 0, left: '5%', width: '90%', height: '1px', background: 'linear-gradient(to right, transparent, #a30000, #ff4444, #a30000, transparent)' }}
+                  style={{ position: 'absolute', top: 0, left: '5%', width: '90%', height: '1px', background: theme === 'light' ? 'linear-gradient(to right, transparent, #3b82f6, #60a5fa, #3b82f6, transparent)' : 'linear-gradient(to right, transparent, #a30000, #ff4444, #a30000, transparent)' }}
                 />
                 {/* Grid overlay bg */}
-                <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(163,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(163,0,0,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', inset: 0, backgroundImage: theme === 'light' ? 'linear-gradient(rgba(59,130,246,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.08) 1px, transparent 1px)' : 'linear-gradient(rgba(163,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(163,0,0,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
 
-                <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <form style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column' }} onSubmit={(e) => {
+                  e.preventDefault();
+                  alert('Transmission sent! Eshwar will respond shortly.');
+                }}>
                   {/* 2-col row: NAME + EMAIL */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                     <div>
-                      <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: '#ef4444', fontWeight: 800 }}><User size={12} /> NAME</label>
-                      <input type="text" className="cyber-input" placeholder="Your name" />
+                      <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: theme === 'light' ? '#3b82f6' : '#ef4444', fontWeight: 800 }}><User size={12} /> NAME</label>
+                      <input type="text" className="cyber-input" placeholder="Your name" required />
                     </div>
                     <div>
-                      <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: '#ef4444', fontWeight: 800 }}><Mail size={12} /> EMAIL</label>
-                      <input type="email" className="cyber-input" placeholder="your.email@example.com" />
+                      <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: theme === 'light' ? '#3b82f6' : '#ef4444', fontWeight: 800 }}><Mail size={12} /> EMAIL</label>
+                      <input type="email" className="cyber-input" placeholder="your.email@example.com" required />
                     </div>
                   </div>
 
                   {/* TOPIC */}
                   <div style={{ marginBottom: '20px' }}>
-                    <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: '#ef4444', fontWeight: 800 }}><FileText size={12} /> TOPIC</label>
-                    <input type="text" className="cyber-input" placeholder="What's this about?" />
+                    <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: theme === 'light' ? '#3b82f6' : '#ef4444', fontWeight: 800 }}><FileText size={12} /> TOPIC</label>
+                    <input type="text" className="cyber-input" placeholder="What's this about?" required />
                   </div>
 
                   {/* MESSAGE — flex grow to fill remaining space */}
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', marginBottom: '24px' }}>
-                    <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: '#ef4444', fontWeight: 800 }}><FileText size={12} /> MESSAGE</label>
-                    <textarea className="cyber-input" placeholder="Detail your project or opportunity..." style={{ flex: 1, resize: 'none', minHeight: '120px' }} />
+                    <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: theme === 'light' ? '#3b82f6' : '#ef4444', fontWeight: 800 }}><FileText size={12} /> MESSAGE</label>
+                    <textarea className="cyber-input" placeholder="Detail your project or opportunity..." style={{ flex: 1, resize: 'none', minHeight: '120px' }} required />
                   </div>
 
-                  <motion.button className="form-submit" 
-                    style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '16px', borderRadius: '12px', fontSize: '1rem', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 10px 30px rgba(239, 68, 68, 0.4)' }}
-                    whileHover={{ scale: 1.02, boxShadow: '0 10px 40px rgba(239, 68, 68, 0.6)' }} whileTap={{ scale: 0.98 }}
-                    onClick={(e) => { e.preventDefault(); alert('Transmission sent! Eshwar will respond shortly.'); }}
+                  <motion.button type="submit" className="form-submit" 
+                    style={{ background: theme === 'light' ? '#3b82f6' : '#ef4444', color: '#fff', border: 'none', padding: '16px', borderRadius: '12px', fontSize: '1rem', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: theme === 'light' ? '0 10px 30px rgba(59, 130, 246, 0.4)' : '0 10px 30px rgba(239, 68, 68, 0.4)' }}
+                    whileHover={{ scale: 1.02, boxShadow: theme === 'light' ? '0 10px 40px rgba(59, 130, 246, 0.6)' : '0 10px 40px rgba(239, 68, 68, 0.6)' }} whileTap={{ scale: 0.98 }}
                   >
                     <Zap size={18} /> TRANSMIT SIGNAL
                   </motion.button>
-                </div>
+                </form>
               </motion.div>
 
               {/* Right: Direct Channels — stretched to same height */}

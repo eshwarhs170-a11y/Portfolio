@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 interface Node {
   x: number;
@@ -11,10 +12,12 @@ interface Node {
   pulseSpeed: number;
 }
 
-const COLORS = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#a855f7'];
+const DARK_COLORS = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#a855f7'];
+const LIGHT_COLORS = ['#3b82f6', '#0ea5e9', '#6366f1', '#2dd4bf', '#8b5cf6'];
 
 export default function EduNeuralBg() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -34,6 +37,7 @@ export default function EduNeuralBg() {
       canvas.height = h;
 
       nodes = [];
+      const colors = theme === 'light' ? LIGHT_COLORS : DARK_COLORS;
       for (let i = 0; i < 55; i++) {
         nodes.push({
           x: Math.random() * w,
@@ -41,7 +45,7 @@ export default function EduNeuralBg() {
           vx: (Math.random() - 0.5) * 0.4,
           vy: (Math.random() - 0.5) * 0.4,
           radius: Math.random() * 2.5 + 1,
-          color: COLORS[Math.floor(Math.random() * COLORS.length)],
+          color: colors[Math.floor(Math.random() * colors.length)],
           pulse: Math.random() * Math.PI * 2,
           pulseSpeed: 0.02 + Math.random() * 0.03,
         });
@@ -98,13 +102,15 @@ export default function EduNeuralBg() {
           const dist = Math.sqrt(dx * dx + dy * dy);
           const maxDist = 140;
           if (dist < maxDist && dist > 0.1) {
-            const alpha = (1 - dist / maxDist) * 0.3;
+            const alpha = (1 - dist / maxDist) * (theme === 'light' ? 0.45 : 0.3);
 
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
-            ctx.lineWidth = 0.6;
+            ctx.strokeStyle = theme === 'light' 
+              ? `rgba(59, 130, 246, ${alpha})`
+              : `rgba(255,255,255,${alpha})`;
+            ctx.lineWidth = theme === 'light' ? 1.2 : 0.6;
             ctx.stroke();
 
             // Traveling pulse dot along the line
@@ -112,8 +118,10 @@ export default function EduNeuralBg() {
             const px = a.x + (b.x - a.x) * t;
             const py = a.y + (b.y - a.y) * t;
             ctx.beginPath();
-            ctx.arc(px, py, 1.2, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255,255,255,${alpha * 2.5})`;
+            ctx.arc(px, py, theme === 'light' ? 2 : 1.2, 0, Math.PI * 2);
+            ctx.fillStyle = theme === 'light' 
+              ? `rgba(37, 99, 235, ${alpha * 2.5})` 
+              : `rgba(255,255,255,${alpha * 2.5})`;
             ctx.fill();
           }
         }
