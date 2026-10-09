@@ -145,18 +145,32 @@ export default function CyberProfileImage({ src }: { src: string }) {
         }}
       />
 
-      {/* 6. Continuous Scanning Laser */}
-      <motion.div 
-        animate={{ top: ['-10%', '110%'] }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: 'linear' }}
+      {/* 6. Rotating Aurora Halo — spins a conic gradient around the full image */}
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
         style={{
           position: 'absolute',
-          left: 0,
-          right: 0,
-          height: '120px',
-          background: 'linear-gradient(to bottom, transparent, rgba(239,68,68,0.1) 40%, rgba(239,68,68,0.6) 95%, rgba(255,255,255,0.9) 100%)',
-          borderBottom: '2px solid #ff4444',
-          boxShadow: '0 15px 30px rgba(239,68,68,0.5)',
+          inset: '-4px',
+          borderRadius: '26px',
+          background: 'conic-gradient(from 0deg, transparent 0deg, rgba(239,68,68,0.9) 60deg, rgba(251,191,36,0.8) 100deg, rgba(239,68,68,0.9) 140deg, transparent 200deg, rgba(239,68,68,0.5) 280deg, transparent 360deg)',
+          zIndex: 6,
+          pointerEvents: 'none',
+          maskImage: 'radial-gradient(circle, transparent 85%, black 100%)',
+          WebkitMaskImage: 'radial-gradient(circle, transparent 85%, black 100%)',
+          filter: 'blur(2px)',
+        }}
+      />
+
+      {/* 6b. Inner breathing glow pulse */}
+      <motion.div
+        animate={{ opacity: [0.3, 0.7, 0.3], scale: [1, 1.02, 1] }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          borderRadius: '24px',
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(239,68,68,0.25) 0%, transparent 60%)',
           zIndex: 6,
           pointerEvents: 'none',
         }}

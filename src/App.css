@@ -1253,17 +1253,34 @@ body, a, button, input, textarea {
   100% { top: 120%; opacity: 0; }
 }
 
-.scanner-laser {
+/* ===== EDU SECTION — AURORA SHIMMER ===== */
+.edu-aurora-shimmer {
   position: absolute;
-  left: 0;
-  right: 0;
-  height: 250px;
-  background: linear-gradient(to bottom, transparent, rgba(239,68,68,0.03) 60%, rgba(239,68,68,0.25) 95%, rgba(255,255,255,0.8) 100%);
-  border-bottom: 2px solid #ef4444;
-  box-shadow: 0 15px 40px rgba(239,68,68,0.5), 0 0 10px rgba(255,255,255,0.5);
-  animation: scanLine 8s linear infinite;
-  z-index: 5;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(239, 68, 68, 0.04) 30%,
+    rgba(251, 191, 36, 0.08) 48%,
+    rgba(239, 68, 68, 0.12) 52%,
+    rgba(251, 191, 36, 0.08) 56%,
+    rgba(239, 68, 68, 0.04) 70%,
+    transparent 100%
+  );
+  animation: auroraShimmer 6s ease-in-out infinite;
+  z-index: 1;
   pointer-events: none;
+  filter: blur(18px);
+}
+
+@keyframes auroraShimmer {
+  0%   { left: -60%; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { left: 120%; opacity: 0; }
 }
 
 

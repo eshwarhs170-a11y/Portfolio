@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import CyberVortexCanvas from './CyberVortexCanvas';
 import MatrixRain from './MatrixRain';
 import CyberProfileImage from './CyberProfileImage';
+import EduNeuralBg from './EduNeuralBg';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import {
   Folder, FileText, User, Mail, Shield, Database,
@@ -823,157 +824,220 @@ export default function PortfolioPage() {
           </div>
         </section>
 
-        <section id="education" style={{ position: 'relative', overflow: 'hidden', padding: '60px 0' }}>
-          {/* Dynamic Laser Scanner */}
-          <div className="scanner-laser" />
+        <section id="education" style={{ position: 'relative', overflow: 'hidden', padding: '80px 0' }}>
+          {/* Neural Network Canvas BG */}
+          <EduNeuralBg />
 
-          <motion.div className="section-header" style={{ marginBottom: '40px' }} initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, type: 'spring' }}>
+          {/* Deep space radial gradient base */}
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.07) 0%, rgba(239,68,68,0.04) 40%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
+
+          <motion.div className="section-header" style={{ marginBottom: '60px', position: 'relative', zIndex: 2 }} initial={{ opacity: 0, y: -30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, type: 'spring' }}>
             <h2 className="section-title edu-title">Education</h2>
             <span className="section-count">3 RECORDS</span>
           </motion.div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '28px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px', position: 'relative', zIndex: 2 }}>
             {[
               {
                 year: '2025 – 2029', degree: 'B.Tech in Computer Science & Engineering',
                 short: 'B.TECH CSE', institution: 'UVCE, Bengaluru',
-                grade: '9.64', gradeLabel: 'CGPA', color: '#ff3333', accentLight: '#ff6666',
+                grade: '9.64', gradeLabel: 'CGPA', color: '#ef4444', accentLight: '#ff6666',
                 image: '/uvce.jpg', status: 'ACTIVE',
+                orbitColor1: 'rgba(239,68,68,0.7)', orbitColor2: 'rgba(251,191,36,0.5)',
               },
               {
                 year: '2023 – 2025', degree: 'Pre-University (Science — PCMB)',
                 short: 'PUC', institution: 'Presidency PU College, Sira',
                 grade: '98.17%', gradeLabel: 'SCORE', color: '#3b82f6', accentLight: '#60a5fa',
                 image: '/presidency.png', status: 'COMPLETED',
+                orbitColor1: 'rgba(59,130,246,0.7)', orbitColor2: 'rgba(168,85,247,0.5)',
               },
               {
                 year: '2023', degree: 'Secondary School (SSLC)',
                 short: 'SSLC', institution: 'Jnanavardhaka Vidya Mandira, Chelur',
                 grade: '98.04%', gradeLabel: 'SCORE', color: '#10b981', accentLight: '#34d399',
                 image: '/venus.jpg', status: 'COMPLETED',
+                orbitColor1: 'rgba(16,185,129,0.7)', orbitColor2: 'rgba(56,189,248,0.5)',
               },
             ].map((item, i) => (
-              <div key={i} style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
-                <motion.div
-                  initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 60, rotateX: 20 }}
+                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.15, type: 'spring', stiffness: 90 }}
-                whileHover={{ y: -10, scale: 1.02 }}
-                style={{
-                  position: 'relative',
-                  borderRadius: '20px',
-                  overflow: 'hidden',
-                  background: 'rgba(8, 12, 24, 0.9)',
-                  border: `1px solid ${item.color}44`,
-                  boxShadow: `0 4px 30px rgba(0,0,0,0.4)`,
-                  backdropFilter: 'blur(16px)',
-                  cursor: 'default',
-                  transition: 'box-shadow 0.35s ease',
-                  flex: 1,
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-                onMouseEnter={e => (e.currentTarget.style.boxShadow = `0 20px 50px rgba(0,0,0,0.6), 0 0 40px ${item.color}33`)}
-                onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 4px 30px rgba(0,0,0,0.4)')}
+                transition={{ duration: 0.8, delay: i * 0.18, type: 'spring', stiffness: 70 }}
+                style={{ position: 'relative', perspective: '1000px' }}
               >
-                {/* Animated top gradient bar */}
+                {/* ── HOLOGRAPHIC ROTATING BORDER ── */}
                 <motion.div
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.4 }}
-                  style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: `linear-gradient(90deg, transparent, ${item.color}, ${item.accentLight}, ${item.color}, transparent)`, zIndex: 2 }}
+                  animate={{ '--angle': ['0deg', '360deg'] } as any}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'linear', delay: i * 1.3 }}
+                  className="holo-card-border"
+                  style={{ '--accent': item.color } as any}
                 />
 
-                {/* Background glow blob */}
-                <div style={{ position: 'absolute', top: '-30%', right: '-20%', width: '200px', height: '200px', borderRadius: '50%', background: `radial-gradient(circle, ${item.color}18 0%, transparent 70%)`, pointerEvents: 'none', zIndex: 0 }} />
-
-                {/* Content */}
-                <div style={{ position: 'relative', zIndex: 1, padding: '36px 30px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-
-                  {/* Status chip */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                    <motion.span
-                      animate={{ opacity: item.status === 'ACTIVE' ? [0.6, 1, 0.6] : 1 }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                      style={{ fontSize: '0.6rem', fontFamily: 'monospace', fontWeight: 700, letterSpacing: '2px', color: item.color, background: `${item.color}18`, border: `1px solid ${item.color}44`, padding: '2px 8px', borderRadius: '4px' }}
-                    >
-                      {item.status === 'ACTIVE' && <span style={{ marginRight: 4 }}>●</span>}{item.status}
-                    </motion.span>
-                    <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '1px' }}>{item.year}</span>
-                  </div>
-
-                  {/* Image with glowing ring */}
-                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                    <motion.div
-                      animate={{ boxShadow: [`0 0 0 3px ${item.color}33`, `0 0 0 6px ${item.color}22`, `0 0 0 3px ${item.color}33`] }}
-                      transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
-                      style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', border: `2px solid ${item.color}88`, background: '#0a0f1a', flexShrink: 0 }}
-                    >
-                      <img src={item.image} alt={item.institution} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </motion.div>
-                  </div>
-
-                  {/* Short label */}
-                  <div style={{ textAlign: 'center', fontSize: '0.72rem', fontFamily: 'monospace', color: item.color, letterSpacing: '3px', fontWeight: 700, marginBottom: '10px' }}>{item.short}</div>
-
-                  {/* Degree */}
-                  <div style={{ textAlign: 'center', fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)', lineHeight: 1.4, marginBottom: '10px' }}>{item.degree}</div>
-
-                  {/* Institution */}
-                  <div style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'monospace', marginBottom: '24px' }}>{item.institution}</div>
-
-                  {/* Spacer to push grade down */}
-                  <div style={{ flex: 1 }} />
-
-                  {/* Divider */}
-                  <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${item.color}55, transparent)`, marginBottom: '16px' }} />
-
-                  {/* Grade */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-                    <span style={{ fontSize: '0.6rem', fontFamily: 'monospace', color: 'var(--text-muted)', letterSpacing: '2px' }}>{item.gradeLabel}</span>
-                    <motion.span
-                      animate={{ textShadow: [`0 0 8px ${item.color}`, `0 0 16px ${item.color}`, `0 0 8px ${item.color}`] }}
-                      transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
-                      style={{ fontSize: '1.7rem', fontWeight: 900, fontFamily: 'monospace', color: item.color }}
-                    >
-                      {item.grade}
-                    </motion.span>
-                  </div>
-                </div>
-
-                {/* Bottom corner decoration */}
-                <div style={{ position: 'absolute', bottom: 0, left: 0, width: '40px', height: '40px', borderRight: `1px solid ${item.color}33`, borderTop: `1px solid ${item.color}33`, borderRadius: '0 8px 0 0', opacity: 0.6 }} />
-                <div style={{ position: 'absolute', bottom: 0, right: 0, width: '40px', height: '40px', borderLeft: `1px solid ${item.color}33`, borderTop: `1px solid ${item.color}33`, borderRadius: '8px 0 0 0', opacity: 0.6 }} />
-              </motion.div>
-
-              {/* Premium Connecting Data Stream */}
-              {i < 2 && (
-                <div
+                {/* ── MAIN CARD ── */}
+                <motion.div
+                  whileHover={{ y: -14, scale: 1.03, rotateY: 3, rotateX: -2 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   style={{
-                    position: 'absolute', top: '50%', right: '-28px', transform: 'translateY(-50%)',
-                    width: '28px', height: '2px', zIndex: 0, overflow: 'hidden'
+                    position: 'relative',
+                    borderRadius: '22px',
+                    overflow: 'hidden',
+                    background: 'linear-gradient(145deg, rgba(6,10,22,0.97) 0%, rgba(10,15,30,0.95) 100%)',
+                    border: `1px solid ${item.color}30`,
+                    backdropFilter: 'blur(20px)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    transformStyle: 'preserve-3d',
                   }}
                 >
-                  {/* Track line */}
-                  <div style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.05)' }} />
-                  
-                  {/* Glowing data packet traveling across */}
+                  {/* ── Iridescent top shimmer bar ── */}
                   <motion.div
-                    animate={{ x: ['-100%', '200%'], opacity: [0, 1, 0] }}
-                    transition={{ duration: 1.2, repeat: Infinity, ease: 'linear', delay: i * 0.4 }}
+                    animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: 'linear', delay: i * 0.5 }}
                     style={{
-                      position: 'absolute', top: '-1px', bottom: '-1px', width: '14px',
-                      background: `linear-gradient(90deg, transparent, ${item.color}, transparent)`,
-                      filter: `drop-shadow(0 0 6px ${item.color})`
+                      height: '3px',
+                      background: `linear-gradient(90deg, transparent, ${item.color}, ${item.accentLight}, white, ${item.accentLight}, ${item.color}, transparent)`,
+                      backgroundSize: '200% 100%',
                     }}
                   />
-                  
-                  {/* Pulsing end nodes */}
-                  <div style={{ position: 'absolute', left: 0, top: '-1.5px', width: '5px', height: '5px', borderRadius: '50%', background: item.color, boxShadow: `0 0 8px ${item.color}` }} />
-                  <div style={{ position: 'absolute', right: 0, top: '-1.5px', width: '5px', height: '5px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)' }} />
-                </div>
-              )}
-            </div>
+
+                  {/* ── Card inner glow blob ── */}
+                  <div style={{
+                    position: 'absolute', top: '-40px', left: '50%', transform: 'translateX(-50%)',
+                    width: '280px', height: '200px', borderRadius: '50%',
+                    background: `radial-gradient(ellipse, ${item.color}12 0%, transparent 70%)`,
+                    pointerEvents: 'none',
+                  }} />
+
+                  {/* ── CONTENT ── */}
+                  <div style={{ padding: '30px 26px', display: 'flex', flexDirection: 'column', flex: 1, position: 'relative', zIndex: 1 }}>
+
+                    {/* Status + year row */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' }}>
+                      <motion.span
+                        animate={item.status === 'ACTIVE' ? { opacity: [0.6, 1, 0.6], boxShadow: [`0 0 6px ${item.color}`, `0 0 14px ${item.color}`, `0 0 6px ${item.color}`] } : {}}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                        style={{ fontSize: '0.58rem', fontFamily: 'monospace', fontWeight: 700, letterSpacing: '2.5px', color: item.color, background: `${item.color}18`, border: `1px solid ${item.color}55`, padding: '3px 10px', borderRadius: '4px' }}
+                      >
+                        {item.status === 'ACTIVE' && <span style={{ marginRight: 5 }}>●</span>}{item.status}
+                      </motion.span>
+                      <span style={{ fontSize: '0.62rem', fontFamily: 'monospace', color: 'rgba(255,255,255,0.35)', letterSpacing: '1px' }}>{item.year}</span>
+                    </div>
+
+                    {/* ── ORBITAL IMAGE ── */}
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
+                      <div style={{ position: 'relative', width: '120px', height: '120px' }}>
+
+                        {/* Orbit ring 1 — spins clockwise */}
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
+                          style={{
+                            position: 'absolute', inset: '-16px',
+                            borderRadius: '50%',
+                            border: `2px solid transparent`,
+                            background: `conic-gradient(from 0deg, transparent 60%, ${item.orbitColor1} 75%, transparent 90%) border-box`,
+                            WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+                            WebkitMaskComposite: 'destination-out',
+                            maskComposite: 'exclude',
+                          }}
+                        />
+
+                        {/* Orbit ring 2 — spins counter-clockwise, different phase */}
+                        <motion.div
+                          animate={{ rotate: -360 }}
+                          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                          style={{
+                            position: 'absolute', inset: '-8px',
+                            borderRadius: '50%',
+                            border: `1.5px solid transparent`,
+                            background: `conic-gradient(from 120deg, transparent 50%, ${item.orbitColor2} 65%, transparent 80%) border-box`,
+                            WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+                            WebkitMaskComposite: 'destination-out',
+                            maskComposite: 'exclude',
+                          }}
+                        />
+
+                        {/* Orbiting dot on ring 1 */}
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
+                          style={{ position: 'absolute', inset: '-16px', borderRadius: '50%' }}
+                        >
+                          <div style={{
+                            position: 'absolute', top: '-3px', left: '50%', transform: 'translateX(-50%)',
+                            width: '7px', height: '7px', borderRadius: '50%',
+                            background: item.color,
+                            boxShadow: `0 0 12px ${item.color}, 0 0 24px ${item.color}88`,
+                          }} />
+                        </motion.div>
+
+                        {/* Orbiting dot on ring 2 */}
+                        <motion.div
+                          animate={{ rotate: -360 }}
+                          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                          style={{ position: 'absolute', inset: '-8px', borderRadius: '50%' }}
+                        >
+                          <div style={{
+                            position: 'absolute', bottom: '-3px', left: '50%', transform: 'translateX(-50%)',
+                            width: '5px', height: '5px', borderRadius: '50%',
+                            background: item.accentLight,
+                            boxShadow: `0 0 8px ${item.accentLight}`,
+                          }} />
+                        </motion.div>
+
+                        {/* Image core */}
+                        <motion.div
+                          animate={{ boxShadow: [`0 0 20px ${item.color}40`, `0 0 40px ${item.color}70`, `0 0 20px ${item.color}40`] }}
+                          transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.6 }}
+                          style={{ width: '120px', height: '120px', borderRadius: '50%', overflow: 'hidden', border: `3px solid ${item.color}60`, background: '#050810' }}
+                        >
+                          <img src={item.image} alt={item.institution} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.9) contrast(1.1)' }} />
+                        </motion.div>
+                      </div>
+                    </div>
+
+                    {/* Short label */}
+                    <motion.div
+                      animate={{ letterSpacing: ['3px', '5px', '3px'] }}
+                      transition={{ duration: 4, repeat: Infinity, delay: i * 0.8 }}
+                      style={{ textAlign: 'center', fontSize: '0.7rem', fontFamily: 'monospace', color: item.color, fontWeight: 800, marginBottom: '10px', textShadow: `0 0 10px ${item.color}88` }}
+                    >
+                      {item.short}
+                    </motion.div>
+
+                    {/* Degree */}
+                    <div style={{ textAlign: 'center', fontSize: '1rem', fontWeight: 700, color: '#f1f5f9', lineHeight: 1.45, marginBottom: '8px' }}>{item.degree}</div>
+
+                    {/* Institution */}
+                    <div style={{ textAlign: 'center', fontSize: '0.78rem', color: 'rgba(255,255,255,0.4)', fontFamily: 'monospace', marginBottom: '24px' }}>{item.institution}</div>
+
+                    <div style={{ flex: 1 }} />
+
+
+
+                    {/* Grade */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+                      <span style={{ fontSize: '0.58rem', fontFamily: 'monospace', color: 'rgba(255,255,255,0.3)', letterSpacing: '2px' }}>{item.gradeLabel}</span>
+                      <motion.span
+                        animate={{ textShadow: [`0 0 10px ${item.color}`, `0 0 25px ${item.color}, 0 0 50px ${item.color}88`, `0 0 10px ${item.color}`] }}
+                        transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }}
+                        style={{ fontSize: '1.85rem', fontWeight: 900, fontFamily: 'monospace', color: item.color }}
+                      >
+                        {item.grade}
+                      </motion.span>
+                    </div>
+                  </div>
+
+                  {/* Corner accents */}
+                  <div style={{ position: 'absolute', top: 12, left: 12, width: 20, height: 20, borderTop: `2px solid ${item.color}88`, borderLeft: `2px solid ${item.color}88`, borderRadius: '3px 0 0 0' }} />
+                  <div style={{ position: 'absolute', top: 12, right: 12, width: 20, height: 20, borderTop: `2px solid ${item.color}88`, borderRight: `2px solid ${item.color}88`, borderRadius: '0 3px 0 0' }} />
+                  <div style={{ position: 'absolute', bottom: 12, left: 12, width: 20, height: 20, borderBottom: `2px solid ${item.color}88`, borderLeft: `2px solid ${item.color}88`, borderRadius: '0 0 0 3px' }} />
+                  <div style={{ position: 'absolute', bottom: 12, right: 12, width: 20, height: 20, borderBottom: `2px solid ${item.color}88`, borderRight: `2px solid ${item.color}88`, borderRadius: '0 0 3px 0' }} />
+                </motion.div>
+              </motion.div>
             ))}
           </div>
         </section>
