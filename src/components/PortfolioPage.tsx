@@ -4,6 +4,8 @@ import MatrixRain from './MatrixRain';
 import CyberProfileImage from './CyberProfileImage';
 import EduNeuralBg from './EduNeuralBg';
 import AuroraBackground from './AuroraBackground';
+import VolumetricSmokeNebulaBg from './VolumetricSmokeNebulaBg';
+import AuroraPlasmaSmokeBg from './AuroraPlasmaSmokeBg';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import {
   Folder, FileText, User, Mail, Shield, Database,
@@ -779,13 +781,9 @@ export default function PortfolioPage() {
         </section>
 
 
-        <section id="projects" style={{ position: 'relative', overflow: 'hidden', padding: '60px 0 80px', background: 'rgba(3,5,12,0.97)' }}>
-          {/* Glowing Orbs for ambient background lighting */}
-          <div style={{ position: 'absolute', top: '10%', left: '-10%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(239,68,68,0.1) 0%, transparent 70%)', filter: 'blur(50px)', zIndex: 0, pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', bottom: '10%', right: '-10%', width: '800px', height: '800px', background: 'radial-gradient(circle, rgba(239,68,68,0.08) 0%, transparent 70%)', filter: 'blur(60px)', zIndex: 0, pointerEvents: 'none' }} />
-
-          {/* Dynamic Laser Scanner */}
-          {/* scanner removed */}
+        <section id="projects" style={{ position: 'relative', overflow: 'hidden', padding: '60px 0 80px' }}>
+          {/* Billowing Aurora Plasma Smoke Nebula */}
+          <AuroraPlasmaSmokeBg />
 
           {/* Animated Background for Projects Section */}
           <MatrixRain />
@@ -1162,6 +1160,9 @@ export default function PortfolioPage() {
         </section>
 
         <section id="contact" style={{ position: 'relative', overflow: 'hidden', padding: '100px 0', marginTop: '60px' }}>
+          {/* Moving volumetric purple/indigo smoke nebula background matching reference */}
+          <VolumetricSmokeNebulaBg />
+
           {/* Custom Styles for high-josh inputs */}
           <style>{`
             .cyber-input {
@@ -1304,7 +1305,7 @@ export default function PortfolioPage() {
               </motion.div>
 
               {/* Right: Direct Channels — stretched to same height */}
-              <div style={{ padding: '32px 30px', borderRadius: '24px', background: 'rgba(10, 15, 24, 0.8)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 20px 60px rgba(0,0,0,0.8), inset 0 0 60px rgba(255,255,255,0.02)', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ padding: '32px 30px', borderRadius: '24px', background: theme === 'light' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(10, 15, 24, 0.8)', backdropFilter: 'blur(24px)', border: theme === 'light' ? '1px solid rgba(59,130,246,0.2)' : '1px solid rgba(255,255,255,0.1)', boxShadow: theme === 'light' ? '0 20px 60px rgba(0,0,0,0.08), inset 0 0 60px rgba(59,130,246,0.03)' : '0 20px 60px rgba(0,0,0,0.8), inset 0 0 60px rgba(255,255,255,0.02)', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
                 {/* Animated top bar */}
                 <motion.div
                   animate={{ opacity: [0.3, 0.8, 0.3], scaleX: [0.7, 1, 0.7] }}
