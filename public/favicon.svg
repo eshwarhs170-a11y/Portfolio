@@ -1,57 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <!-- Background Gradient -->
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0a0e17" />
-      <stop offset="100%" stop-color="#05070d" />
-    </linearGradient>
-
-    <!-- Border Glow Gradient -->
-    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <!-- Vibrant Electric Gradient -->
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#00f2fe" />
-      <stop offset="50%" stop-color="#38ef7d" />
-      <stop offset="100%" stop-color="#7928ca" />
+      <stop offset="50%" stop-color="#4facfe" />
+      <stop offset="100%" stop-color="#7000ff" />
     </linearGradient>
 
-    <!-- Cyber Glyph Gradient -->
-    <linearGradient id="glyphGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00f2fe" />
-      <stop offset="100%" stop-color="#4facfe" />
-    </linearGradient>
-
-    <!-- Core Neon Glow Filter -->
-    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="2" result="blur" />
-      <feMerge>
-        <feMergeNode in="blur" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
+    <!-- Inner Soft Radial Light -->
+    <radialGradient id="glow" cx="40%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
   </defs>
 
-  <!-- Rounded App Tile -->
-  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="2.5" />
+  <!-- Bright Rounded Hexagonal Badge (High Visibility on Any Browser Tab) -->
+  <polygon points="32,3 58,18 58,46 32,61 6,46 6,18" fill="url(#shieldGrad)" stroke="#ffffff" stroke-width="2" stroke-linejoin="round" />
+  
+  <!-- Subtle Light Highlight -->
+  <polygon points="32,5 56,19 56,45 32,59 8,45 8,19" fill="url(#glow)" />
 
-  <!-- Subtle Cyber Corner Accents -->
-  <path d="M 8 16 L 8 8 L 16 8" stroke="#00f2fe" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.6" />
-  <path d="M 48 56 L 56 56 L 56 48" stroke="#00f2fe" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.6" />
-
-  <!-- Futuristic "E" Monogram with Cyber Cuts -->
-  <g filter="url(#neonGlow)">
-    <!-- Vertical Spine -->
-    <path d="M 21 16 L 21 48" stroke="url(#glyphGrad)" stroke-width="5" stroke-linecap="round" />
-    
-    <!-- Top Bar -->
-    <path d="M 21 17 L 43 17" stroke="url(#glyphGrad)" stroke-width="5" stroke-linecap="round" />
-    
-    <!-- Middle Tech Bar -->
-    <path d="M 21 32 L 37 32" stroke="url(#glyphGrad)" stroke-width="4.5" stroke-linecap="round" />
-    
-    <!-- Bottom Bar -->
-    <path d="M 21 47 L 43 47" stroke="url(#glyphGrad)" stroke-width="5" stroke-linecap="round" />
-
-    <!-- Cyber Circuit Node (Terminal Dot) -->
-    <circle cx="43" cy="32" r="3" fill="#00f2fe" />
-    <circle cx="43" cy="32" r="1.5" fill="#ffffff" />
-  </g>
+  <!-- Bold, Ultra-Crisp White "E" Monogram with Cyber Cutouts -->
+  <path d="M 20 18 H 44 V 25 H 28 V 29 H 41 V 35 H 28 V 39 H 44 V 46 H 20 Z" fill="#ffffff" />
+  
+  <!-- Cyan Accent Node -->
+  <circle cx="44" cy="32" r="3" fill="#00f2fe" stroke="#ffffff" stroke-width="1.5" />
 </svg>
