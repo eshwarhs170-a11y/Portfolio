@@ -487,13 +487,14 @@ export default function PortfolioPage() {
           </div>
 
           {/* Scan sweep line */}
+          {/* Scan sweep line */}
           <div className="scan-sweep" />
 
           {/* Pulse rings behind profile */}
-          <div className="pulse-ring" style={{ width: 320, height: 320, right: '8%', top: '50%', marginTop: -160, borderColor: theme === 'light' ? 'rgba(59,130,246,0.3)' : 'rgba(239,68,68,0.3)' }} />
-          <div className="pulse-ring" style={{ width: 320, height: 320, right: '8%', top: '50%', marginTop: -160, borderColor: theme === 'light' ? 'rgba(99,102,241,0.2)' : 'rgba(239,68,68,0.2)', animationDelay: '1.1s' }} />
+          <div className="pulse-ring pulse-ring-hero" style={{ width: 320, height: 320, right: '8%', top: '50%', marginTop: -160, borderColor: theme === 'light' ? 'rgba(59,130,246,0.3)' : 'rgba(239,68,68,0.3)' }} />
+          <div className="pulse-ring pulse-ring-hero" style={{ width: 320, height: 320, right: '8%', top: '50%', marginTop: -160, borderColor: theme === 'light' ? 'rgba(99,102,241,0.2)' : 'rgba(239,68,68,0.2)', animationDelay: '1.1s' }} />
 
-          <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1fr 450px', gap: '140px', width: '100%', maxWidth: '1400px', padding: '0 40px', alignItems: 'center' }}>
+          <div className="hero-grid-container" style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '1400px', padding: '0 40px', alignItems: 'center' }}>
 
             {/* ── LEFT: TERMINAL TEXT ── */}
             <div className="hero-text" style={{ position: 'relative', zIndex: 10 }}>
@@ -605,10 +606,9 @@ export default function PortfolioPage() {
           </motion.div>
 
           {/* ===== SOLAR SYSTEM — Proper flat circular orbits ===== */}
-          <div style={{
+          <div className="solar-system-wrapper" style={{
             position: 'relative',
             width: '100%',
-            height: '1000px',
             overflow: 'hidden',
             display: 'flex',
             alignItems: 'center',
@@ -634,8 +634,8 @@ export default function PortfolioPage() {
               ))}
             </div>
 
-            {/* Center reference — everything orbits this point */}
-            <div style={{ position: 'relative', width: '1000px', height: '1000px', flexShrink: 0 }}>
+            {/* Center reference — scaled on mobile via css */}
+            <div className="solar-center-container" style={{ position: 'relative', width: '1000px', height: '1000px', flexShrink: 0 }}>
 
               {/* ORBIT RINGS — static, always fully visible */}
               {[130, 240, 350, 460].map((r, i) => (
@@ -847,7 +847,7 @@ export default function PortfolioPage() {
             <span className="section-count">3 RECORDS</span>
           </motion.div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px', position: 'relative', zIndex: 2 }}>
+          <div className="education-grid" style={{ position: 'relative', zIndex: 2 }}>
             {[
               {
                 year: '2025 – 2029', degree: 'B.Tech in Computer Science & Engineering',
@@ -1060,7 +1060,7 @@ export default function PortfolioPage() {
             <span className="section-count" style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.4)', color: '#ef4444', padding: '4px 12px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 'bold' }}>2 FILES FOUND</span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '30px' }}>
+          <div className="certs-grid" style={{ gap: '30px' }}>
 
             {/* ── CARD 1: NammaUGNEET Impact ── */}
             <motion.div
@@ -1229,7 +1229,7 @@ export default function PortfolioPage() {
               </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '40px', width: '100%', alignItems: 'stretch' }}>
+            <div className="contact-main-grid" style={{ width: '100%', alignItems: 'stretch' }}>
               {/* Left: Contact Form — compact & wide */}
               <motion.div
                 style={{ padding: '32px 36px', borderRadius: '24px', background: theme === 'light' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(10, 15, 24, 0.8)', backdropFilter: 'blur(24px)', border: theme === 'light' ? '1px solid rgba(59,130,246,0.3)' : '1px solid rgba(239,68,68,0.3)', boxShadow: theme === 'light' ? '0 20px 60px rgba(0,0,0,0.1), inset 0 0 60px rgba(59,130,246,0.05)' : '0 20px 60px rgba(0,0,0,0.8), inset 0 0 60px rgba(239,68,68,0.05)', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
@@ -1269,7 +1269,7 @@ export default function PortfolioPage() {
                   <input type="hidden" name="access_key" value="e16be2dc-5606-4cf1-8e4b-ad57e0c009f3" />
 
                   {/* 2-col row: NAME + EMAIL */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                  <div className="contact-name-email-row" style={{ gap: '20px', marginBottom: '20px' }}>
                     <div>
                       <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', fontSize: '0.75rem', color: theme === 'light' ? '#3b82f6' : '#ef4444', fontWeight: 800 }}><User size={12} /> NAME</label>
                       <input type="text" name="name" className="cyber-input" placeholder="Your name" required />
