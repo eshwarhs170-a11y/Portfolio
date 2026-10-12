@@ -1,32 +1,51 @@
-# React + TypeScript + Vite
+# Eshwar H S - Personal Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A modern, interactive 3D cyberpunk-themed developer portfolio built with React, TypeScript, Three.js, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Detective Intro & Cinematic Animations**: Immersive storyline entrance experience.
+- **Interactive 3D Graphics**: Dynamic Three.js canvas effects, particles, and interactive widgets.
+- **Cyberpunk UI & Sound Design**: Custom neon aesthetics, terminal overlays, and ambient audio controls.
+- **Projects & Experience**: Showcase of full-stack projects, skills, education, and achievements.
+- **Responsive & High Performance**: Optimized for all screen sizes and smooth frame rates.
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend**: React 18, TypeScript, Vite
+- **Styling**: Tailwind CSS, Lucide Icons, Framer Motion
+- **3D & Canvas**: Three.js, React Three Fiber / Drei
+- **Audio & FX**: Canvas animations, Web Audio API
 
-## Expanding the Oxlint configuration
+## 🚀 Getting Started
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+### Prerequisites
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+Ensure you have [Node.js](https://nodejs.org/) installed on your machine.
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/eshwarhs170-a11y/Portfolio.git
+   cd Portfolio
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Build for production:
+   ```bash
+   npm run build
+   ```
+
+---
+
+Designed and developed by **Eshwar H S**.
