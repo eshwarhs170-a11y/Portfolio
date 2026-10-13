@@ -89,7 +89,8 @@ export default function LandingPage({ onEnter }: Props) {
 
   useEffect(() => {
     let idx = 0;
-    let timeoutId: number;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    let enterTimeoutId: ReturnType<typeof setTimeout> | undefined;
     const type = () => {
       if (idx < fullText.length) {
         setTypedText(fullText.substring(0, idx + 1));
@@ -98,12 +99,28 @@ export default function LandingPage({ onEnter }: Props) {
       } else {
         setIsTyping(false);
         // Automatically enter after a short delay
-        setTimeout(() => onEnter(), 800);
+        enterTimeoutId = setTimeout(() => onEnter(), 800);
       }
     };
     const init = setTimeout(type, 500);
-    return () => { clearTimeout(timeoutId); clearTimeout(init); };
-  }, []);
+    return () => {
+      clearTimeout(timeoutId);
+      clearTimeout(init);
+      clearTimeout(enterTimeoutId);
+    };
+  }, [onEnter]);
+
+  // Allow pressing Enter or Escape to immediately enter dossier
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === 'Escape') {
+        e.preventDefault();
+        onEnter();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onEnter]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -262,6 +279,21 @@ export default function LandingPage({ onEnter }: Props) {
       >
         <ChevronDown size={20} />
       </motion.div>
+
+      {/* Enter Dossier Button */}
+      <motion.button
+        type="button"
+        className="intro-skip-btn"
+        onClick={onEnter}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.35 }}
+        aria-label="Enter Dossier"
+      >
+        <span className="skip-text">ENTER DOSSIER</span>
+        <span className="skip-arrow">→</span>
+        <span className="skip-kbd">[ESC / ↵]</span>
+      </motion.button>
     </motion.div>
   );
 }

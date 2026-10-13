@@ -912,13 +912,20 @@ nav a.nav-active {
 .contact-btn:hover { border-color: var(--accent-2); color: var(--accent-2); transform: translateY(-2px); }
 
 .portfolio-footer { text-align: center; padding: 40px; border-top: 1px solid var(--section-border); margin-top: 50px; color: var(--text-muted); font-size: 0.9rem; display: flex; flex-direction: column; gap: 10px; align-items: center; }
-/* â”€â”€ CINEMATIC INTRO â”€â”€ */
+/* ── CINEMATIC INTRO ── */
 .cinematic-intro {
   position: fixed; inset: 0; z-index: 1000;
   background: #000;
   display: flex; align-items: center; justify-content: center;
+  user-select: none;
 }
-.intro-content { text-align: center; display: flex; flex-direction: column; gap: 20px; }
+.intro-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
 .intro-classified {
   font-family: 'Share Tech Mono', monospace;
   font-size: clamp(3rem, 8vw, 7rem);
@@ -928,14 +935,139 @@ nav a.nav-active {
 .intro-label {
   font-family: 'Share Tech Mono', monospace;
   font-size: clamp(0.8rem, 2vw, 1.1rem);
-  color: rgba(232, 224, 208, 0.5); letter-spacing: 0.3em;
+  color: rgba(232, 224, 208, 0.5);
+  letter-spacing: 0.3em;
+}
+.intro-subject {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.95rem, 2.2vw, 1.3rem);
+  letter-spacing: 0.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.intro-subject-label {
+  color: #a30000;
+  font-weight: bold;
+}
+.intro-name-wrap {
+  display: inline-flex;
+  align-items: center;
+  color: #ffffff;
+  font-weight: bold;
+  letter-spacing: 0.22em;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+.intro-char-wrapper {
+  position: relative;
+  display: inline-block;
+}
+.intro-char-text {
+  display: inline-block;
+}
+.intro-char-bar {
+  position: absolute;
+  top: 10%;
+  left: -1px;
+  right: -1px;
+  bottom: 10%;
+  background: #000;
+  border-top: 1px solid rgba(163, 0, 0, 0.75);
+  border-bottom: 1px solid rgba(163, 0, 0, 0.75);
+  z-index: 2;
+  transform-origin: right center;
+  pointer-events: none;
+}
+.intro-decrypt-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.intro-pct {
+  color: #a30000;
+  font-weight: bold;
 }
 .intro-bar-container {
-  width: 300px; height: 2px;
-  background: rgba(255,255,255,0.1);
-  margin: 10px auto 0; overflow: hidden;
+  width: 300px;
+  max-width: 80vw;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 auto;
+  overflow: hidden;
 }
-.intro-bar { height: 100%; background: #a30000; }
+.intro-bar {
+  height: 100%;
+  background: #a30000;
+  transition: width 0.03s linear;
+}
+
+/* Skip & Enter dossier buttons */
+.intro-skip-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1001;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(18, 18, 22, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(163, 0, 0, 0.5);
+  color: #e0e0e0;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.intro-skip-btn:hover {
+  background: rgba(163, 0, 0, 0.25);
+  border-color: #ef4444;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 0 16px rgba(163, 0, 0, 0.5);
+}
+
+.intro-skip-btn:active {
+  transform: translateY(0);
+}
+
+.intro-skip-btn .skip-arrow {
+  color: #ef4444;
+  font-size: 0.95rem;
+  transition: transform 0.2s ease;
+}
+
+.intro-skip-btn:hover .skip-arrow {
+  transform: translateX(3px);
+}
+
+.intro-skip-btn .skip-kbd {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 640px) {
+  .intro-skip-btn {
+    bottom: 16px;
+    right: 16px;
+    padding: 7px 12px;
+    font-size: 0.76rem;
+  }
+}
 
 /* â”€â”€ LANDING PAGE EFFECTS â”€â”€ */
 .ambient-light {

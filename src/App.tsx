@@ -9,8 +9,26 @@ import './App.css';
 
 type Stage = 'intro' | 'landing' | 'portfolio';
 
+const INTRO_SEEN_KEY = 'eshwar-intro-seen';
+
+const getIntroSeen = (): boolean => {
+  try {
+    return sessionStorage.getItem(INTRO_SEEN_KEY) === 'true';
+  } catch {
+    return false;
+  }
+};
+
+const setIntroSeen = (): void => {
+  try {
+    sessionStorage.setItem(INTRO_SEEN_KEY, 'true');
+  } catch {
+    // sessionStorage might be restricted/blocked
+  }
+};
+
 function App() {
-  const [stage, setStage] = useState<Stage>('intro');
+  const [stage, setStage] = useState<Stage>(() => (getIntroSeen() ? 'portfolio' : 'intro'));
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const playedRef = useRef(false);
 
@@ -28,6 +46,9 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // If starting straight into portfolio because intro was already seen, don't arm intro audio
+    if (getIntroSeen()) return;
+
     const audio = new Audio('/theme2.mp3');
     audio.volume = 0.55;
     audio.loop = true;
@@ -70,10 +91,17 @@ function App() {
     setStage('landing');
   }, []);
 
-  // No music fade needed here — already silent by now
+  // Mark intro as seen and switch to portfolio
   const enterPortfolio = useCallback(() => {
+    setIntroSeen();
     setStage('portfolio');
   }, []);
+
+  // Immediately fade music and jump straight to portfolio
+  const skipToPortfolio = useCallback(() => {
+    window.dispatchEvent(new Event('force-fade-music'));
+    enterPortfolio();
+  }, [enterPortfolio]);
 
   return (
     <ThemeProvider>
@@ -81,7 +109,7 @@ function App() {
         <Background3D />
         <AnimatePresence mode="wait">
           {stage === 'intro' && (
-            <CinematicIntro key="intro" onComplete={enterLanding} />
+            <CinematicIntro key="intro" onComplete={enterLanding} onSkip={skipToPortfolio} />
           )}
           {stage === 'landing' && (
             <LandingPage key="landing" onEnter={enterPortfolio} />
