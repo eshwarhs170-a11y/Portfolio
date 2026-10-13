@@ -22,92 +22,7 @@
   50%       { opacity: 1; }
 }
 
-/* Galaxy wrapper — sits fixed behind everything */
-.galaxy-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
 
-/* Core galactic spiral arms */
-.galaxy-arm {
-  position: absolute;
-  top: 50%; left: 50%;
-  border-radius: 50%;
-  transform-origin: center;
-}
-.galaxy-arm-1 {
-  width: 200vmax; height: 200vmax;
-  background: radial-gradient(ellipse 70% 30% at 60% 50%,
-    rgba(150, 60, 200, 0.12) 0%,
-    rgba(80, 40, 160, 0.15) 30%,
-    rgba(239, 68, 68, 0.1) 60%,
-    transparent 80%
-  );
-  animation: galaxyRotate 200s linear infinite;
-}
-.galaxy-arm-2 {
-  width: 160vmax; height: 160vmax;
-  background: radial-gradient(ellipse 60% 25% at 40% 50%,
-    rgba(100, 150, 255, 0.15) 0%,
-    rgba(60, 100, 200, 0.12) 40%,
-    transparent 75%
-  );
-  animation: galaxyRotateReverse 150s linear infinite;
-}
-.galaxy-arm-3 {
-  width: 120vmax; height: 120vmax;
-  background: radial-gradient(ellipse 80% 20% at 55% 50%,
-    rgba(239, 68, 68, 0.12) 0%,
-    rgba(180, 50, 50, 0.1) 40%,
-    transparent 70%
-  );
-  animation: galaxyRotate 120s linear infinite;
-}
-
-/* Galactic core glow */
-.galaxy-core {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 600px; height: 600px;
-  border-radius: 50%;
-  background: radial-gradient(circle,
-    rgba(255, 220, 150, 0.12) 0%,
-    rgba(239, 68, 68, 0.1) 30%,
-    rgba(100, 60, 200, 0.08) 60%,
-    transparent 80%
-  );
-  animation: nebulaPulse 8s ease-in-out infinite;
-}
-
-/* Floating nebula clouds */
-.nebula {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  animation: nebulaPulse 12s ease-in-out infinite;
-}
-.nebula-1 {
-  width: 500px; height: 300px;
-  top: 10%; left: 5%;
-  background: radial-gradient(ellipse, rgba(100, 50, 200, 0.18), transparent 70%);
-  animation-delay: 0s;
-}
-.nebula-2 {
-  width: 400px; height: 250px;
-  top: 60%; right: 5%;
-  background: radial-gradient(ellipse, rgba(239, 68, 68, 0.15), transparent 70%);
-  animation-delay: -4s;
-}
-.nebula-3 {
-  width: 350px; height: 200px;
-  bottom: 10%; left: 30%;
-  background: radial-gradient(ellipse, rgba(50, 100, 220, 0.15), transparent 70%);
-  animation-delay: -8s;
-}
 
 
 
@@ -1960,4 +1875,5 @@ body, a, button, input, textarea {
     transform: scale(0.38) !important;
   }
 }
+
 

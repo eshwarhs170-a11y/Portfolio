@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Tilt from 'react-parallax-tilt';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-import CyberGrid from './CyberGrid';
 
 interface Props {
   onEnter: () => void;
@@ -19,50 +18,11 @@ const evidenceMarkers = [
 
 const cluePhrases = [
   "Subject: Eshwar H S (2nd Year CSE @ UVCE)",
-  "CGPA: 9.64 | Passionate about IoT & AI/ML",
-  "Top Case: NammaUGNEET (1,200+ Aspirants)",
-  "Latest Evidence: GramSetu Gemini Vision AI",
-  "Status: Open for Internships & AI/Web Roles",
+  "CGPA: 9.64 | Passionate about Full-Stack & Problem Solving",
+  "Top Project: NammaUGNEET (1,200+ Aspirants)",
+  "Featured: GramSetu Agricultural System",
+  "Status: Open for Internships & Software Roles",
 ];
-
-// Trail of fading dots that follow the cursor
-function CursorTrail({ mousePos, theme }: { mousePos: { x: number; y: number }, theme: string }) {
-  const [trail, setTrail] = useState<{ x: number; y: number; id: number }[]>([]);
-  const idRef = useRef(0);
-
-  useEffect(() => {
-    if (mousePos.x < 0) return;
-    const newDot = { x: mousePos.x, y: mousePos.y, id: idRef.current++ };
-    setTrail(prev => [...prev.slice(-18), newDot]);
-  }, [mousePos]);
-
-  return (
-    <>
-      {trail.map((dot, i) => {
-        const age = i / trail.length; // 0 = oldest, 1 = newest
-        return (
-          <div
-            key={dot.id}
-            style={{
-              position: 'fixed',
-              left: dot.x,
-              top: dot.y,
-              width: 6 + age * 6,
-              height: 6 + age * 6,
-              borderRadius: '50%',
-              background: theme === 'light' ? `rgba(59, 130, 246, ${age * 0.7})` : `rgba(163, 0, 0, ${age * 0.7})`,
-              boxShadow: theme === 'light' ? `0 0 ${age * 12}px rgba(59, 130, 246, ${age * 0.5})` : `0 0 ${age * 12}px rgba(163, 0, 0, ${age * 0.5})`,
-              transform: 'translate(-50%, -50%)',
-              pointerEvents: 'none',
-              zIndex: 50,
-              transition: 'opacity 0.3s ease',
-            }}
-          />
-        );
-      })}
-    </>
-  );
-}
 
 export default function LandingPage({ onEnter }: Props) {
   const { theme } = useTheme();
@@ -140,37 +100,34 @@ export default function LandingPage({ onEnter }: Props) {
       transition={{ duration: 0.8 }}
       style={{ position: 'relative', width: '100vw', height: '100vh', zIndex: 10, overflow: 'hidden' }}
     >
-      {/* Cursor blood-red trail */}
-      <CursorTrail mousePos={mousePos} theme={theme} />
-
-      {/* Always-visible ambient glow — no mouse needed to see this */}
+      {/* Ambient glow */}
       <div className="ambient-light" style={{ background: theme === 'light' ? 'radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.15), transparent 70%)' : undefined }} />
 
-      {/* Interactive 3D Floor Grid */}
-      <CyberGrid />
+      {/* Subtle CSS Floor Grid */}
+      <div style={{ position: 'absolute', inset: 0, backgroundImage: theme === 'light' ? 'linear-gradient(rgba(59,130,246,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.06) 1px, transparent 1px)' : 'linear-gradient(rgba(239,68,68,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(239,68,68,0.04) 1px, transparent 1px)', backgroundSize: '60px 60px', pointerEvents: 'none', zIndex: 1 }} />
 
       {/* Massive Background Marquee / Floating Lines */}
-      <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', opacity: theme === 'light' ? 0.4 : 0.25 }}>
+      <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', opacity: theme === 'light' ? 0.35 : 0.2 }}>
         <motion.div
           animate={{ x: [0, -1000] }}
           transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
           style={{ whiteSpace: 'nowrap', fontSize: '10vw', fontWeight: 900, color: theme === 'light' ? 'rgba(15,23,42,0.1)' : '#fff', fontFamily: 'monospace', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '20px' }}
         >
-          ESHWAR H S • FULL-STACK DEVELOPER • AI ENGINEER • ESHWAR H S • FULL-STACK DEVELOPER • AI ENGINEER •
+          ESHWAR H S &bull; FULL-STACK DEVELOPER &bull; PROBLEM SOLVER &bull; ESHWAR H S &bull; FULL-STACK DEVELOPER &bull; PROBLEM SOLVER &bull;
         </motion.div>
         <motion.div
           animate={{ x: [-1000, 0] }}
           transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
           style={{ whiteSpace: 'nowrap', fontSize: '8vw', fontWeight: 900, color: 'transparent', WebkitTextStroke: theme === 'light' ? '2px rgba(15,23,42,0.15)' : '2px rgba(255,255,255,0.8)', fontFamily: 'serif', letterSpacing: '2px', textTransform: 'uppercase', fontStyle: 'italic', marginBottom: '20px' }}
         >
-          PROBLEM SOLVER • CONTINUOUS LEARNER • INNOVATOR • PROBLEM SOLVER • CONTINUOUS LEARNER • INNOVATOR •
+          PROBLEM SOLVER &bull; DATA STRUCTURES &bull; ALGORITHMS &bull; PROBLEM SOLVER &bull; DATA STRUCTURES &bull; ALGORITHMS &bull;
         </motion.div>
         <motion.div
           animate={{ x: [0, -1000] }}
           transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
           style={{ whiteSpace: 'nowrap', fontSize: '7vw', fontWeight: 800, color: theme === 'light' ? '#3b82f6' : '#ef4444', fontFamily: 'monospace', letterSpacing: '6px', textTransform: 'uppercase' }}
         >
-          BUILDING INTELLIGENT SYSTEMS • DIGITAL CRAFTSMAN • BUILDING INTELLIGENT SYSTEMS • DIGITAL CRAFTSMAN •
+          BUILDING SCALABLE SYSTEMS &bull; DIGITAL CRAFTSMAN &bull; BUILDING SCALABLE SYSTEMS &bull; DIGITAL CRAFTSMAN &bull;
         </motion.div>
       </div>
 
@@ -207,7 +164,7 @@ export default function LandingPage({ onEnter }: Props) {
 
       {/* Cycling clue ticker */}
       <div className="clue-ticker">
-        <span className="clue-ticker-label">// INTEL</span>
+        <span className="clue-ticker-label">INTEL</span>
         <AnimatePresence mode="wait">
           <motion.span
             key={activePhraseIdx}
@@ -245,7 +202,7 @@ export default function LandingPage({ onEnter }: Props) {
             <div className="card-corner card-corner-bl" />
             <div className="card-corner card-corner-br" />
 
-            <div className="case-stamp">CASE FILE // 001 &nbsp;·&nbsp; PRIORITY: CRITICAL</div>
+            <div className="case-stamp">CASE FILE 001 &nbsp;·&nbsp; PRIORITY: HIGH</div>
 
             <p className="typewriter-text" style={{ transform: 'translateZ(60px)' }}>
               {typedText.split('\n').map((line, i, arr) => (

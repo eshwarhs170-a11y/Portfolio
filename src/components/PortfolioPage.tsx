@@ -1,17 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import CyberVortexCanvas from './CyberVortexCanvas';
-import MatrixRain from './MatrixRain';
+import { useEffect, useState } from 'react';
 import CyberProfileImage from './CyberProfileImage';
-import EduNeuralBg from './EduNeuralBg';
-import AuroraBackground from './AuroraBackground';
-import VolumetricSmokeNebulaBg from './VolumetricSmokeNebulaBg';
-import AuroraPlasmaSmokeBg from './AuroraPlasmaSmokeBg';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import {
-  Folder, FileText, User, Mail, Shield, Database,
-  Zap, Globe, Award, X, ExternalLink
+  Folder, FileText, User, Mail, Shield,
+  Zap, Award, X, ExternalLink
 } from 'lucide-react';
-
 
 import ThemeToggle from './ThemeToggle';
 import { useTheme } from '../context/ThemeContext';
@@ -30,7 +23,6 @@ const LinkedinIcon = ({ size = 16 }: { size?: number }) => (
   </svg>
 );
 
-
 interface ProjectData {
   caseNum: string;
   title: string;
@@ -45,77 +37,6 @@ interface ProjectData {
   github?: string;
   live?: string;
 }
-
-function GlitchText({ text }: { text: string }) {
-  return <span className="glitch-hover">{text}</span>;
-}
-
-// Self-contained cursor trail — manages its own mouse listener so it doesn't cause parent re-renders
-function CursorTrail() {
-  const { theme } = useTheme();
-  const [trail, setTrail] = useState<{ x: number; y: number; id: number }[]>([]);
-  const idRef = useRef(0);
-  const clearTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      const newDot = { x: e.clientX, y: e.clientY, id: idRef.current++ };
-      setTrail(prev => [...prev.slice(-18), newDot]);
-      if (clearTimer.current) clearTimeout(clearTimer.current);
-      clearTimer.current = setTimeout(() => setTrail([]), 400);
-    };
-    window.addEventListener('mousemove', handler);
-    return () => window.removeEventListener('mousemove', handler);
-  }, []);
-
-  return (
-    <>
-      {trail.map((dot, i) => {
-        const age = i / trail.length; // 0 = oldest, 1 = newest
-        return (
-          <div
-            key={dot.id}
-            style={{
-              position: 'fixed',
-              left: dot.x,
-              top: dot.y,
-              width: 6 + age * 6,
-              height: 6 + age * 6,
-              borderRadius: '50%',
-              background: theme === 'light' ? `rgba(59, 130, 246, ${age * 0.7})` : `rgba(163, 0, 0, ${age * 0.7})`,
-              boxShadow: theme === 'light' ? `0 0 ${age * 12}px rgba(59, 130, 246, ${age * 0.5})` : `0 0 ${age * 12}px rgba(163, 0, 0, ${age * 0.5})`,
-              transform: 'translate(-50%, -50%)',
-              pointerEvents: 'none',
-              zIndex: 9999,
-              transition: 'opacity 0.3s ease',
-            }}
-          />
-        );
-      })}
-    </>
-  );
-}
-
-
-function FloatingParticles() {
-  const particles = useMemo(() => Array.from({ length: 40 }, (_, i) => ({
-    id: i,
-    left: `${Math.random() * 100}vw`,
-    size: `${Math.random() * 4 + 2}px`,
-    duration: `${Math.random() * 15 + 10}s`,
-    delay: `-${Math.random() * 20}s`
-  })), []);
-
-  return (
-    <div className="floating-particles-bg" aria-hidden="true">
-      {particles.map((p) => (
-        <div key={p.id} className="particle-mote" style={{ left: p.left, width: p.size, height: p.size, animationDuration: p.duration, animationDelay: p.delay }} />
-      ))}
-    </div>
-  );
-}
-
-// Removed ScanLine and SkillBar to fix TS errors
 
 
 
@@ -193,21 +114,6 @@ function CaseCard({ project, index }: { project: ProjectData; index: number }) {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-            {/* FILM CORNERS */}
-            {(['top-left', 'top-right', 'bottom-left', 'bottom-right'] as const).map(pos => {
-              const [v, h] = pos.split('-') as ['top' | 'bottom', 'left' | 'right'];
-              return <div key={pos} style={{
-                position: 'absolute', [v]: 10, [h]: 10, width: 18, height: 18,
-                borderTop: v === 'top' ? '2px solid rgba(239,68,68,0.7)' : 'none',
-                borderBottom: v === 'bottom' ? '2px solid rgba(239,68,68,0.7)' : 'none',
-                borderLeft: h === 'left' ? '2px solid rgba(239,68,68,0.7)' : 'none',
-                borderRight: h === 'right' ? '2px solid rgba(239,68,68,0.7)' : 'none',
-                zIndex: 10, pointerEvents: 'none'
-              }} />;
-            })}
-
-            {/* SCANLINES */}
-            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px)', pointerEvents: 'none', zIndex: 5 }} />
 
             {/* FULL IMAGE */}
             <img src={project.image} alt={project.title} style={{ width: '100%', height: 'auto', display: 'block' }} />
@@ -359,7 +265,6 @@ export default function PortfolioPage() {
   const { theme } = useTheme();
   const [activeSection, setActiveSection] = useState('home');
   const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
-  const [contactVisible, setContactVisible] = useState(false);
   const springX = useSpring(useMotionValue(0), { stiffness: 60, damping: 20 });
   const springY = useSpring(useMotionValue(0), { stiffness: 60, damping: 20 });
 
@@ -376,17 +281,6 @@ export default function PortfolioPage() {
     const ids = ['home', 'skills', 'projects', 'education', 'contact'];
     const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); }), { threshold: 0.35 });
     ids.forEach(id => { const el = document.getElementById(id); if (el) obs.observe(el); });
-    return () => obs.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const el = document.getElementById('contact');
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => setContactVisible(entry.isIntersecting),
-      { threshold: 0.15 }
-    );
-    obs.observe(el);
     return () => obs.disconnect();
   }, []);
 
@@ -430,73 +324,44 @@ export default function PortfolioPage() {
   ];
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} className="portfolio-page" data-theme={theme}>
-      {/* Full-screen animated background — fades in at contact section */}
-      <CyberVortexCanvas visible={contactVisible} />
-
-      {/* Galaxy Background - Behind Everything */}
-      <div className="galaxy-bg">
-        <div className="galaxy-core"></div>
-        <div className="galaxy-arm galaxy-arm-1"></div>
-        <div className="galaxy-arm galaxy-arm-2"></div>
-        <div className="galaxy-arm galaxy-arm-3"></div>
-        <div className="nebula nebula-1"></div>
-        <div className="nebula nebula-2"></div>
-        <div className="nebula nebula-3"></div>
-      </div>
-
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} className="portfolio-page" data-theme={theme}>
       <header className="portfolio-header">
         <div className="header-brand">
-          <motion.div whileHover={{ rotateY: 180, scale: 1.2 }} transition={{ duration: 0.4 }} style={{ display: 'flex', alignItems: 'center' }}>
+          <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.3 }} style={{ display: 'flex', alignItems: 'center' }}>
             <Folder className="brand-icon" size={20} />
           </motion.div>
-          <GlitchText text="ESHWAR H S // DOSSIER" />
+          <span style={{ fontWeight: 800, letterSpacing: '2px', fontSize: '0.95rem', color: theme === 'light' ? '#0f172a' : '#fff', fontFamily: 'monospace' }}>ESHWAR H S</span>
         </div>
         <nav>
           {navLinks.map(link => (
             <motion.a
               key={link.id} href={link.href}
               className={activeSection === link.id ? 'nav-active' : ''}
-              whileHover={{ y: -3, scale: 1.05, textShadow: '0 0 10px rgba(255,255,255,0.5)' }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.96 }}
             >
               {link.label}
             </motion.a>
           ))}
         </nav>
-        <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-          <motion.div className="live-indicator" animate={{ opacity: [0.6, 1, 0.6] }} transition={{ duration: 2, repeat: Infinity }} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div className="live-indicator" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span className="live-dot-sm" /> ACTIVE
-          </motion.div>
+          </div>
           <ThemeToggle />
         </div>
       </header>
 
       <main className="portfolio-content">
-        <FloatingParticles />
-        <CursorTrail />
-
-        <section id="home" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '100px 0 100px', overflow: 'hidden' }}>
-          {/* Aurora plasma background */}
-          <AuroraBackground />
-          {/* Grid */}
+        <section id="home" style={{ position: 'relative', minHeight: '90vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '100px 0 80px', overflow: 'hidden' }}>
+          {/* Subtle clean background grid overlay */}
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
-            <div style={{ position: 'absolute', inset: 0, backgroundImage: theme === 'light' ? 'linear-gradient(rgba(59,130,246,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.05) 1px, transparent 1px)' : 'linear-gradient(rgba(239,68,68,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(239,68,68,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', maskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, transparent 70%)', WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, transparent 70%)' }} />
-            {/* Huge Watermark */}
-            <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: theme === 'light' ? 0.04 : 0.02, scale: 1 }} transition={{ duration: 2 }} style={{ position: 'absolute', top: '10%', right: '-10%', fontSize: '25vw', fontWeight: 900, color: theme === 'light' ? '#0f1117' : '#fff', whiteSpace: 'nowrap', userSelect: 'none', fontFamily: 'monospace' }}>DOSSIER</motion.div>
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: theme === 'light' ? 'linear-gradient(rgba(59,130,246,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.05) 1px, transparent 1px)' : 'linear-gradient(rgba(239,68,68,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(239,68,68,0.03) 1px, transparent 1px)', backgroundSize: '48px 48px', maskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, transparent 75%)', WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, transparent 75%)' }} />
           </div>
 
-          {/* Scan sweep line */}
-          {/* Scan sweep line */}
-          <div className="scan-sweep" />
+          <div className="hero-grid-container" style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: '1400px', padding: '0 40px', alignItems: 'center' }}>
 
-          {/* Pulse rings behind profile */}
-          <div className="pulse-ring pulse-ring-hero" style={{ width: 320, height: 320, right: '8%', top: '50%', marginTop: -160, borderColor: theme === 'light' ? 'rgba(59,130,246,0.3)' : 'rgba(239,68,68,0.3)' }} />
-          <div className="pulse-ring pulse-ring-hero" style={{ width: 320, height: 320, right: '8%', top: '50%', marginTop: -160, borderColor: theme === 'light' ? 'rgba(99,102,241,0.2)' : 'rgba(239,68,68,0.2)', animationDelay: '1.1s' }} />
-
-          <div className="hero-grid-container" style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '1400px', padding: '0 40px', alignItems: 'center' }}>
-
-            {/* ── LEFT: TERMINAL TEXT ── */}
+            {/* ── LEFT: HERO TEXT ── */}
             <div className="hero-text" style={{ position: 'relative', zIndex: 10 }}>
 
               {/* Status Bar */}
@@ -504,10 +369,10 @@ export default function PortfolioPage() {
                 initial={{ opacity: 0, width: 0 }}
                 animate={{ opacity: 1, width: 'auto' }}
                 transition={{ duration: 0.8, ease: 'circOut' }}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', background: theme === 'light' ? 'rgba(59,130,246,0.15)' : 'rgba(239,68,68,0.1)', border: theme === 'light' ? '1px solid rgba(59,130,246,0.4)' : '1px solid rgba(239,68,68,0.3)', padding: '6px 16px', borderRadius: '100px', marginBottom: '24px', overflow: 'hidden', whiteSpace: 'nowrap' }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', background: theme === 'light' ? 'rgba(16,185,129,0.1)' : 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.3)', padding: '6px 16px', borderRadius: '100px', marginBottom: '24px', overflow: 'hidden', whiteSpace: 'nowrap' }}
               >
-                <motion.div animate={{ opacity: [1, 0.2, 1] }} transition={{ duration: 1.5, repeat: Infinity }} style={{ width: 8, height: 8, borderRadius: '50%', background: theme === 'light' ? '#3b82f6' : '#ef4444', boxShadow: theme === 'light' ? '0 0 10px #3b82f6' : '0 0 10px #ef4444' }} />
-                <span style={{ color: theme === 'light' ? '#2563eb' : '#ef4444', fontSize: '0.75rem', fontWeight: 800, letterSpacing: '2px', fontFamily: 'monospace' }}>AGENT ACTIVE // READY FOR ASSIGNMENT</span>
+                <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }} style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 10px #10b981' }} />
+                <span style={{ color: theme === 'light' ? '#047857' : '#34d399', fontSize: '0.75rem', fontWeight: 800, letterSpacing: '1.5px', fontFamily: 'monospace' }}>AVAILABLE FOR OPPORTUNITIES</span>
               </motion.div>
 
               {/* Title */}
@@ -516,82 +381,188 @@ export default function PortfolioPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
-                  style={{ fontSize: '4.5rem', fontWeight: 900, lineHeight: 1.1, margin: 0, color: '#fff', textTransform: 'uppercase', letterSpacing: '-1px', textShadow: theme === 'light' ? '0 0 30px rgba(59,130,246,0.6), 0 0 60px rgba(59,130,246,0.3)' : '0 0 30px rgba(239,68,68,0.5), 0 0 60px rgba(239,68,68,0.25)' }}
+                  style={{ fontSize: '4.5rem', fontWeight: 900, lineHeight: 1.1, margin: 0, color: theme === 'light' ? '#0f172a' : '#fff', textTransform: 'uppercase', letterSpacing: '-1px' }}
                 >
-                  <GlitchText text="Eshwar H S" />
+                  Eshwar H S
                 </motion.h1>
                 <motion.h2
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
-                  style={{ fontSize: '1.8rem', fontWeight: 300, color: theme === 'light' ? '#64748b' : '#94a3b8', margin: '8px 0 0', display: 'flex', alignItems: 'center', gap: '12px' }}
+                  style={{ fontSize: '1.8rem', fontWeight: 400, color: theme === 'light' ? '#64748b' : '#94a3b8', margin: '8px 0 0', display: 'flex', alignItems: 'center', gap: '12px' }}
                 >
                   <span style={{ color: theme === 'light' ? '#3b82f6' : '#ef4444' }}>&lt;</span>
-                  Full-Stack & AI Engineer
+                  Full-Stack Developer &amp; Problem Solver
                   <span style={{ color: theme === 'light' ? '#3b82f6' : '#ef4444' }}>/&gt;</span>
                 </motion.h2>
               </div>
 
               {/* Bio card */}
               <motion.div
-                initial={{ opacity: 0, rotateX: -8, y: 16 }}
-                animate={{ opacity: 1, rotateX: 0, y: 0 }}
-                transition={{ delay: 0.6, duration: 1 }}
-                whileHover={{ scale: 1.02, rotateY: 2, boxShadow: theme === 'light' ? '8px 15px 40px rgba(0,0,0,0.1), inset 0 2px 10px rgba(255,255,255,1)' : '8px 15px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08)' }}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.8 }}
                 style={{
                   background: theme === 'light'
                     ? 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(245,248,255,0.85))'
                     : 'linear-gradient(135deg, rgba(15,20,40,0.85), rgba(5,8,20,0.7))',
-                  padding: '28px 32px',
+                  padding: '26px 30px',
                   borderRadius: '0 16px 16px 0',
-                  marginBottom: '36px',
-                  backdropFilter: 'blur(20px)',
-                  border: theme === 'light' ? '1px solid rgba(255,255,255,1)' : '1px solid rgba(255,255,255,0.06)',
+                  marginBottom: '32px',
+                  backdropFilter: 'blur(16px)',
+                  border: theme === 'light' ? '1px solid rgba(0,0,0,0.06)' : '1px solid rgba(255,255,255,0.06)',
                   borderLeft: theme === 'light' ? '4px solid #3b82f6' : '4px solid #ef4444',
                   boxShadow: theme === 'light'
-                    ? '4px 8px 30px rgba(0,0,0,0.06), inset 0 2px 5px rgba(255,255,255,1)'
-                    : '4px 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)',
-                  transform: 'perspective(1000px) rotateX(1deg)',
+                    ? '4px 8px 30px rgba(0,0,0,0.04)'
+                    : '4px 8px 32px rgba(0,0,0,0.5)',
                   position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease'
+                  overflow: 'hidden'
                 }}
               >
-                <p style={{ margin: 0, fontSize: '1.05rem', color: theme === 'light' ? '#334155' : '#cbd5e1', lineHeight: 1.8, fontFamily: 'monospace' }}>
-                  Every complex problem leaves a trail. I follow the evidence — and build the solution.<br /><br />
-                  Specializing in <strong style={{ color: theme === 'light' ? '#0f1117' : '#fff' }}>Full-Stack Architecture</strong> and <strong style={{ color: theme === 'light' ? '#2563eb' : '#38bdf8' }}>AI Integration</strong>, I turn real-world chaos into production-ready intelligence.
+                <p style={{ margin: 0, fontSize: '1.02rem', color: theme === 'light' ? '#334155' : '#cbd5e1', lineHeight: 1.8, fontFamily: 'monospace' }}>
+                  Passionate about <strong style={{ color: theme === 'light' ? '#0f1117' : '#fff' }}>Data Structures, Algorithms</strong>, and building scalable full-stack applications.<br /><br />
+                  Focused on solving challenging engineering problems with clean, efficient code and transforming ideas into high-performance web products.
                 </p>
               </motion.div>
 
-              {/* Action Buttons */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-                <motion.a whileHover={{ scale: 1.05, boxShadow: theme === 'light' ? '0 15px 40px -10px rgba(59,130,246,0.9)' : '0 15px 40px -10px rgba(239,68,68,0.9)' }} whileTap={{ scale: 0.95 }} href="#projects" style={{
-                  background: theme === 'light' ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : 'linear-gradient(135deg, #ef4444, #b91c1c)', color: '#fff', padding: '14px 28px', borderRadius: '8px',
-                  fontSize: '0.88rem', fontWeight: 800, textDecoration: 'none', letterSpacing: '1px', textTransform: 'uppercase',
-                  boxShadow: theme === 'light' ? '0 10px 30px -10px rgba(59,130,246,0.6)' : '0 10px 30px -10px rgba(239,68,68,0.8)', border: '1px solid rgba(255,255,255,0.2)',
-                  display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.3s'
-                }}>
-                  Access Dossier <span style={{ fontFamily: 'monospace' }}>_&gt;</span>
-                </motion.a>
-                <motion.a whileHover={{ scale: 1.05, background: theme === 'light' ? 'rgba(59,130,246,0.1)' : 'rgba(239,68,68,0.1)', borderColor: theme === 'light' ? 'rgba(59,130,246,0.5)' : 'rgba(239,68,68,0.5)' }} whileTap={{ scale: 0.95 }} href="#contact" style={{
-                  background: theme === 'light' ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.03)', color: theme === 'light' ? '#1e293b' : '#fff', padding: '14px 28px', borderRadius: '8px',
-                  fontSize: '0.88rem', fontWeight: 800, textDecoration: 'none', letterSpacing: '1px', textTransform: 'uppercase',
-                  border: theme === 'light' ? '1px solid rgba(0,0,0,0.15)' : '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)',
-                  boxShadow: theme === 'light' ? '0 4px 15px rgba(0,0,0,0.05)' : 'none',
-                  display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.3s'
-                }}>
-                  <Shield size={16} /> Secure Comms
-                </motion.a>
+              {/* Action Buttons & Hero Socials (LinkedIn, GitHub, Resume directly here) */}
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <motion.a
+                    whileHover={{ scale: 1.04, boxShadow: theme === 'light' ? '0 12px 30px -8px rgba(59,130,246,0.8)' : '0 12px 30px -8px rgba(239,68,68,0.8)' }}
+                    whileTap={{ scale: 0.96 }}
+                    href="#projects"
+                    style={{
+                      background: theme === 'light' ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : 'linear-gradient(135deg, #ef4444, #b91c1c)',
+                      color: '#fff',
+                      padding: '13px 26px',
+                      borderRadius: '8px',
+                      fontSize: '0.88rem',
+                      fontWeight: 800,
+                      textDecoration: 'none',
+                      letterSpacing: '1px',
+                      textTransform: 'uppercase',
+                      boxShadow: theme === 'light' ? '0 8px 24px -6px rgba(59,130,246,0.5)' : '0 8px 24px -6px rgba(239,68,68,0.7)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      transition: 'all 0.3s'
+                    }}
+                  >
+                    View Projects <span style={{ fontFamily: 'monospace' }}>&rarr;</span>
+                  </motion.a>
+                  <motion.a
+                    whileHover={{ scale: 1.04, background: theme === 'light' ? 'rgba(59,130,246,0.1)' : 'rgba(239,68,68,0.1)' }}
+                    whileTap={{ scale: 0.96 }}
+                    href="#contact"
+                    style={{
+                      background: theme === 'light' ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.05)',
+                      color: theme === 'light' ? '#1e293b' : '#fff',
+                      padding: '13px 26px',
+                      borderRadius: '8px',
+                      fontSize: '0.88rem',
+                      fontWeight: 800,
+                      textDecoration: 'none',
+                      letterSpacing: '1px',
+                      textTransform: 'uppercase',
+                      border: theme === 'light' ? '1px solid rgba(0,0,0,0.15)' : '1px solid rgba(255,255,255,0.12)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      transition: 'all 0.3s'
+                    }}
+                  >
+                    <Mail size={16} /> Contact Me
+                  </motion.a>
+                </div>
+
+                {/* Hero Socials & Resume (LinkedIn, GitHub, Resume to hero section only) */}
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap', paddingTop: '4px' }}>
+                  <motion.a
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    href="https://www.linkedin.com/in/eshwar-h-s-4b820638a"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '10px 18px',
+                      borderRadius: '8px',
+                      background: theme === 'light' ? 'rgba(10,102,194,0.1)' : 'rgba(10,102,194,0.15)',
+                      border: theme === 'light' ? '1px solid rgba(10,102,194,0.35)' : '1px solid rgba(10,102,194,0.45)',
+                      color: theme === 'light' ? '#0a66c2' : '#60a5fa',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                      fontFamily: 'monospace',
+                      textDecoration: 'none',
+                      transition: 'all 0.25s'
+                    }}
+                  >
+                    <LinkedinIcon size={16} /> LinkedIn
+                  </motion.a>
+
+                  <motion.a
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    href="https://github.com/eshwarhs170-a11y"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '10px 18px',
+                      borderRadius: '8px',
+                      background: theme === 'light' ? 'rgba(15,23,42,0.06)' : 'rgba(255,255,255,0.06)',
+                      border: theme === 'light' ? '1px solid rgba(0,0,0,0.15)' : '1px solid rgba(255,255,255,0.15)',
+                      color: theme === 'light' ? '#1e293b' : '#f8fafc',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                      fontFamily: 'monospace',
+                      textDecoration: 'none',
+                      transition: 'all 0.25s'
+                    }}
+                  >
+                    <GithubIcon size={16} /> GitHub
+                  </motion.a>
+
+                  <motion.a
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    href="/resume.pdf"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '10px 18px',
+                      borderRadius: '8px',
+                      background: theme === 'light' ? 'rgba(239,68,68,0.08)' : 'rgba(239,68,68,0.15)',
+                      border: theme === 'light' ? '1px solid rgba(239,68,68,0.35)' : '1px solid rgba(239,68,68,0.45)',
+                      color: theme === 'light' ? '#dc2626' : '#f87171',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                      fontFamily: 'monospace',
+                      textDecoration: 'none',
+                      transition: 'all 0.25s'
+                    }}
+                  >
+                    <FileText size={16} /> Resume
+                  </motion.a>
+                </div>
               </motion.div>
 
             </div>
 
-            {/* ── RIGHT: CYBER PROFILE IMAGE ── */}
+            {/* ── RIGHT: CYBER PROFILE IMAGE (NO 3D FINGERPRINT) ── */}
             <motion.div
-              style={{ rotateX: springY, rotateY: springX, transformStyle: 'preserve-3d', perspective: '1000px', display: 'flex', justifyContent: 'center' }}
-              initial={{ opacity: 0, scale: 0.8, rotateY: -30 }}
-              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-              transition={{ duration: 1.2, type: 'spring' }}
+              style={{ rotateX: springY, rotateY: springX, transformStyle: 'preserve-3d', perspective: '1000px', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, type: 'spring' }}
             >
               <CyberProfileImage src="/id_photo.jpg" />
             </motion.div>
@@ -600,9 +571,9 @@ export default function PortfolioPage() {
         </section>
 
         <section id="skills" style={{ overflow: 'hidden' }}>
-          <motion.div className="section-header" style={{ marginBottom: '50px' }} initial={{ opacity: 0, y: 30, rotateX: 20 }} whileInView={{ opacity: 1, y: 0, rotateX: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-            <h2 className="section-title skills-title">Arsenal // Technical Skills</h2>
-            <span className="section-count">SYSTEM PROFILING COMPLETE</span>
+          <motion.div className="section-header" style={{ marginBottom: '50px' }} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+            <h2 className="section-title skills-title">Technical Skills</h2>
+            <span className="section-count">CORE TECHNOLOGIES &amp; TOOLS</span>
           </motion.div>
 
           {/* ===== SOLAR SYSTEM — Proper flat circular orbits ===== */}
@@ -614,23 +585,12 @@ export default function PortfolioPage() {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-            {/* Galaxy starfield */}
+            {/* Subtle Starfield */}
             <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-              {[...Array(80)].map((_, i) => (
-                <motion.div key={`star-${i}`}
-                  animate={{ opacity: [0.1, 0.8, 0.1] }}
-                  transition={{ duration: 2 + (i % 5), repeat: Infinity, delay: i * 0.04 }}
-                  style={{ position: 'absolute', top: `${(i * 13) % 100}%`, left: `${(i * 31) % 100}%`, width: `${(i % 3) + 1}px`, height: `${(i % 3) + 1}px`, background: i % 6 === 0 ? '#ef4444' : '#fff', borderRadius: '50%', boxShadow: `0 0 ${(i % 3) + 2}px ${i % 6 === 0 ? '#ef4444' : '#fff'}` }}
+              {[...Array(35)].map((_, i) => (
+                <div key={`star-${i}`}
+                  style={{ position: 'absolute', top: `${(i * 17) % 100}%`, left: `${(i * 37) % 100}%`, width: `${(i % 2) + 1}px`, height: `${(i % 2) + 1}px`, background: i % 5 === 0 ? 'rgba(239,68,68,0.7)' : 'rgba(255,255,255,0.4)', borderRadius: '50%' }}
                 />
-              ))}
-              {/* Dynamic Shooting Stars */}
-              {[...Array(5)].map((_, i) => (
-                <div key={`shooting-star-${i}`} className="shooting-star" style={{
-                  top: `${Math.random() * 50}%`,
-                  left: `${Math.random() * 100}%`,
-                  animationDelay: `${i * 3.5}s`,
-                  animationDuration: `${Math.random() * 2 + 3}s`
-                }} />
               ))}
             </div>
 
@@ -653,9 +613,30 @@ export default function PortfolioPage() {
               {/* ORBIT 1 — Tools: Git, GitHub, Vercel — radius 130 */}
               <div style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0, animation: 'orbit-cw 40s linear infinite' }}>
                 {[
-                  { name: 'Git', angle: 100, color: '#f05032', icon: <svg width="24" height="24" viewBox="0 0 32 32"><rect width="32" height="32" rx="6" fill="#f05032" /><path fill="#fff" d="M27.3 14.7l-10-10a1.9 1.9 0 0 0-2.7 0l-2.1 2.1 2.7 2.7a2.3 2.3 0 0 1 2.9 2.9l2.6 2.6a2.3 2.3 0 1 1-1.4 1.4l-2.4-2.4v6.3a2.3 2.3 0 1 1-1.9 0v-6.4a2.3 2.3 0 0 1-1.2-3l-2.7-2.6-7.2 7.2a1.9 1.9 0 0 0 0 2.7l10 10a1.9 1.9 0 0 0 2.7 0l10-10a1.9 1.9 0 0 0 0-2.8z" /></svg> },
-                  { name: 'GitHub', angle: 220, color: '#e2e8f0', icon: <GithubIcon size={24} /> },
-                  { name: 'Vercel', angle: 340, color: '#ffffff', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2L22 19.7H2L12 2z" /></svg> },
+                  {
+                    name: 'Git', angle: 100, color: '#f05032',
+                    icon: (
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="#f05032">
+                        <path d="M21.9 10.7L13.3 2.1a2 2 0 0 0-2.8 0L8.3 4.3l3.5 3.5a2.4 2.4 0 0 1 3 3l3.3 3.3a2.4 2.4 0 1 1-1.4 1.4L13.5 12v6.6a2.4 2.4 0 1 1-2 0V12a2.4 2.4 0 0 1-1.3-3.1L6.7 5.4 2.1 10a2 2 0 0 0 0 2.8l8.6 8.6a2 2 0 0 0 2.8 0l8.4-8.4a2 2 0 0 0 0-2.8z" />
+                      </svg>
+                    )
+                  },
+                  {
+                    name: 'GitHub', angle: 220, color: '#e2e8f0',
+                    icon: (
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="#e2e8f0">
+                        <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
+                      </svg>
+                    )
+                  },
+                  {
+                    name: 'Vercel', angle: 340, color: '#ffffff',
+                    icon: (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff">
+                        <path d="M12 2L22 19.7H2L12 2z" />
+                      </svg>
+                    )
+                  },
                 ].map(p => {
                   const rad = (p.angle * Math.PI) / 180;
                   return (
@@ -677,8 +658,28 @@ export default function PortfolioPage() {
               {/* ORBIT 2 — Databases: MongoDB, Firebase — radius 240 */}
               <div style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0, animation: 'orbit-ccw 60s linear infinite' }}>
                 {[
-                  { name: 'MongoDB', angle: 15, color: '#47a248', icon: <Database size={24} color="#47a248" /> },
-                  { name: 'Firebase', angle: 195, color: '#ffca28', icon: <Database size={24} color="#ffca28" /> },
+                  {
+                    name: 'MongoDB', angle: 15, color: '#47a248',
+                    icon: (
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 1.5C11.5 2 7 6.5 7 13.5c0 4.2 3.2 7.7 5 8.8 1.8-1.1 5-4.6 5-8.8 0-7-4.5-11.5-5-12z" fill="#47a248" />
+                        <path d="M12 2.5v17.5c-.3-.2-4.5-3-4.5-6.8 0-6.2 4-9.8 4.5-10.7z" fill="#3fa037" />
+                        <path d="M12 2v18" stroke="#256020" strokeWidth="0.6" />
+                        <path d="M11.5 22.3v1.2c0 .3.2.5.5.5s.5-.2.5-.5v-1.2c-.3.1-.7.1-1 0z" fill="#a4b494" />
+                      </svg>
+                    )
+                  },
+                  {
+                    name: 'Firebase', angle: 195, color: '#ffca28',
+                    icon: (
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                        <path d="M4.1 17L6.6 1.5a.78.78 0 0 1 1.45-.25l3.3 6.16-7.26 9.59z" fill="#ffa000" />
+                        <path d="M18.74 13.64l-2.07-3.92-3.8 3.92 5.87 0z" fill="#f57c00" />
+                        <path d="M16.85 8.84l-1.92-3.66a.78.78 0 0 0-1.4 0L12 8.4l1.37 2.61 3.48-2.17z" fill="#ffca28" />
+                        <path d="M2.87 18.23l8.03 4.54a2.2 2.2 0 0 0 2.2 0l8.03-4.54-5.26-9.96L2.87 18.23z" fill="#ffca28" />
+                      </svg>
+                    )
+                  },
                 ].map(p => {
                   const rad = (p.angle * Math.PI) / 180;
                   return (
@@ -700,10 +701,45 @@ export default function PortfolioPage() {
               {/* ORBIT 3 — Web Tech: React, Node.js, Tailwind, REST APIs — radius 350 */}
               <div style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0, animation: 'orbit-cw 80s linear infinite' }}>
                 {[
-                  { name: 'React', angle: 60, color: '#61dafb', icon: <svg width="26" height="26" viewBox="0 0 100 100"><circle cx="50" cy="50" r="11" fill="#61dafb" /><ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5" /><ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5" transform="rotate(60 50 50)" /><ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5" transform="rotate(120 50 50)" /></svg> },
-                  { name: 'Node.js', angle: 150, color: '#68a063', icon: <svg width="26" height="26" viewBox="0 0 256 289"><path fill="#68a063" d="M128 0L0 74v141l128 74 128-74V74z" /><path fill="#fff" d="M128 25l103 59.5v119L128 263 25 183.5v-119z" /><path fill="#68a063" d="M128 230l80-46v-92l-80 46z" /></svg> },
-                  { name: 'Tailwind', angle: 240, color: '#38bdf8', icon: <svg width="26" height="26" viewBox="0 0 54 33"><path fill="#38bdf8" d="M27.5 0c-7.3 0-11.8 3.6-13.6 10.8 2.7-3.6 5.9-4.9 9.6-4 2 .5 3.5 2 5.1 3.6 2.7 2.7 5.7 5.8 12.4 5.8 7.3 0 11.8-3.6 13.6-10.8-2.7 3.6-5.9 4.9-9.6 4-2-.5-3.5-2-5.1-3.6-2.7-2.7-5.7-5.8-12.4-5.8zM13.8 16.2c-7.3 0-11.8 3.6-13.6 10.8 2.7-3.6 5.9-4.9 9.6-4 2 .5 3.5 2 5.1 3.6 2.7 2.7 5.7 5.8 12.4 5.8 7.3 0 11.8-3.6 13.6-10.8-2.7 3.6-5.9 4.9-9.6 4-2-.5-3.5-2-5.1-3.6-2.7-2.7-5.7-5.8-12.4-5.8z" /></svg> },
-                  { name: 'REST APIs', angle: 330, color: '#ff6b35', icon: <Globe size={22} color="#ff6b35" /> },
+                  {
+                    name: 'React', angle: 60, color: '#61dafb',
+                    icon: (
+                      <svg width="26" height="26" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="11" fill="#61dafb" />
+                        <ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5" />
+                        <ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5" transform="rotate(60 50 50)" />
+                        <ellipse cx="50" cy="50" rx="46" ry="17" fill="none" stroke="#61dafb" strokeWidth="5" transform="rotate(120 50 50)" />
+                      </svg>
+                    )
+                  },
+                  {
+                    name: 'Node.js', angle: 150, color: '#68a063',
+                    icon: (
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="#68a063">
+                        <path d="M12 1.6L2.3 7.2v11.2L12 24l9.7-5.6V7.2L12 1.6zm0 2.4l7.6 4.4v8.8L12 21.6 4.4 17.2V8.4L12 4z" />
+                        <path d="M10.2 8.5v7h2v-4.2l2.4 4.2h1.8V8.5h-2v4.2l-2.4-4.2z" fill="#fff" />
+                      </svg>
+                    )
+                  },
+                  {
+                    name: 'Tailwind', angle: 240, color: '#38bdf8',
+                    icon: (
+                      <svg width="26" height="26" viewBox="0 0 54 33">
+                        <path fill="#38bdf8" d="M27.5 0c-7.3 0-11.8 3.6-13.6 10.8 2.7-3.6 5.9-4.9 9.6-4 2 .5 3.5 2 5.1 3.6 2.7 2.7 5.7 5.8 12.4 5.8 7.3 0 11.8-3.6 13.6-10.8-2.7 3.6-5.9 4.9-9.6 4-2-.5-3.5-2-5.1-3.6-2.7-2.7-5.7-5.8-12.4-5.8zM13.8 16.2c-7.3 0-11.8 3.6-13.6 10.8 2.7-3.6 5.9-4.9 9.6-4 2 .5 3.5 2 5.1 3.6 2.7 2.7 5.7 5.8 12.4 5.8 7.3 0 11.8-3.6 13.6-10.8-2.7 3.6-5.9 4.9-9.6 4-2-.5-3.5-2-5.1-3.6-2.7-2.7-5.7-5.8-12.4-5.8z" />
+                      </svg>
+                    )
+                  },
+                  {
+                    name: 'REST APIs', angle: 330, color: '#ff6b35',
+                    icon: (
+                      <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
+                        <circle cx="5" cy="12" r="3" fill="#ff6b35" />
+                        <circle cx="19" cy="6" r="3" fill="#ff6b35" />
+                        <circle cx="19" cy="18" r="3" fill="#ff6b35" />
+                        <path d="M7.7 10.8l8.6-3.6M7.7 13.2l8.6 3.6" stroke="#ff6b35" strokeWidth="2.2" strokeLinecap="round" />
+                      </svg>
+                    )
+                  },
                 ].map(p => {
                   const rad = (p.angle * Math.PI) / 180;
                   return (
@@ -725,9 +761,38 @@ export default function PortfolioPage() {
               {/* ORBIT 4 — Core: C++, JS, HTML/CSS — radius 460 */}
               <div style={{ position: 'absolute', top: '50%', left: '50%', width: 0, height: 0, animation: 'orbit-ccw 100s linear infinite' }}>
                 {[
-                  { name: 'C++', angle: 0, color: '#00b4d8', icon: <span style={{ color: '#00b4d8', fontWeight: 900, fontSize: '1rem', fontFamily: 'monospace' }}>C++</span> },
-                  { name: 'JavaScript', angle: 120, color: '#f7df1e', icon: <span style={{ color: '#f7df1e', fontWeight: 900, fontSize: '1rem', fontFamily: 'monospace' }}>JS</span> },
-                  { name: 'HTML/CSS', angle: 240, color: '#e34f26', icon: <span style={{ color: '#e34f26', fontWeight: 900, fontSize: '1rem', fontFamily: 'monospace' }}>{'</>'}</span> },
+                  {
+                    name: 'C++', angle: 0, color: '#00b4d8',
+                    icon: (
+                      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+                        <path d="M16 2.5l11.5 6.6v13.8L16 29.5 4.5 22.9V9.1L16 2.5z" stroke="#00b4d8" strokeWidth="2.2" />
+                        <path d="M14.2 12.2c-.8-.7-1.8-1-2.9-1-2.4 0-4.1 1.8-4.1 4.8s1.7 4.8 4.1 4.8c1.1 0 2.1-.3 2.9-1l1.4 1.8c-1.2 1.1-2.7 1.6-4.3 1.6-4 0-6.8-2.9-6.8-7.2s2.8-7.2 6.8-7.2c1.6 0 3.1.5 4.3 1.6l-1.4 1.8z" fill="#00b4d8" />
+                        <path d="M18.8 14.5v3M17.3 16h3" stroke="#00b4d8" strokeWidth="2" strokeLinecap="round" />
+                        <path d="M24 14.5v3M22.5 16h3" stroke="#00b4d8" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                    )
+                  },
+                  {
+                    name: 'JavaScript', angle: 120, color: '#f7df1e',
+                    icon: (
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                        <path d="M3 2l1.8 17.5L12 22l7.2-2.5L21 2H3z" fill="#f7df1e" />
+                        <path d="M12 3.8v16.4l5.5-1.9 1.4-14.5H12z" fill="#dfc817" />
+                        <path d="M6.8 13.5h2v2.4c0 .8-.5 1.2-1.2 1.2-.5 0-.9-.2-1.1-.5l-.8 1.1c.5.6 1.2.9 1.9.9 1.7 0 2.8-.9 2.8-2.7V8.5H8.4v4.2c0 .5-.3.8-.8.8H6.8v0z" fill="#050810" />
+                        <path d="M12.8 15.6c.5.5 1.2.8 1.9.8.8 0 1.3-.4 1.3-1 0-.6-.5-.9-1.5-1.3-1.5-.5-2.4-1.3-2.4-2.5 0-1.4 1.1-2.5 2.8-2.5 1 0 1.8.3 2.3.9l-.9 1.2c-.4-.4-.9-.6-1.4-.6-.7 0-1.1.3-1.1.8 0 .5.4.8 1.3 1.1 1.6.6 2.6 1.4 2.6 2.7 0 1.5-1.2 2.6-3 2.6-1.2 0-2.2-.4-2.9-1.2l1-.1.1-.2z" fill="#050810" />
+                      </svg>
+                    )
+                  },
+                  {
+                    name: 'HTML/CSS', angle: 240, color: '#e34f26',
+                    icon: (
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                        <path d="M3 2l1.8 17.5L12 22l7.2-2.5L21 2H3z" fill="#e34f26" />
+                        <path d="M12 3.8v16.4l5.5-1.9 1.4-14.5H12z" fill="#ef652a" />
+                        <path d="M9.5 9.5L7 12l2.5 2.5M14.5 9.5L17 12l-2.5 2.5M13 8l-2 8" stroke="#ffffff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )
+                  },
                 ].map(p => {
                   const rad = (p.angle * Math.PI) / 180;
                   return (
@@ -782,18 +847,11 @@ export default function PortfolioPage() {
 
 
         <section id="projects" style={{ position: 'relative', overflow: 'hidden', padding: '60px 0 80px' }}>
-          {/* Billowing Aurora Plasma Smoke Nebula */}
-          <AuroraPlasmaSmokeBg />
-
-          {/* Animated Background for Projects Section */}
-          <MatrixRain />
-          <div className="cyber-grid-anim" />
-
           <div className="section-header" style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
-            <h2 className="section-title proj-title" style={{ margin: 0, textShadow: '0 0 15px rgba(239, 68, 68, 0.4)' }}>Featured Dossiers</h2>
+            <h2 className="section-title proj-title" style={{ margin: 0 }}>Featured Projects</h2>
             <div style={{ height: '1px', flex: 1, background: 'linear-gradient(to right, var(--accent-1), transparent)' }} />
             <span className="section-count" style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--accent-1)', padding: '6px 12px', borderRadius: '4px', color: 'var(--accent-1)' }}>
-              {projects.length} ACTIVE CASES
+              {projects.length} PROJECTS
             </span>
           </div>
 
@@ -822,9 +880,9 @@ export default function PortfolioPage() {
                         style={{ position: 'absolute', width: 56, height: 56, border: '1px solid rgba(239,68,68,0.4)', borderRadius: '50%', borderTopColor: 'transparent' }}
                       />
                       {/* Diamond */}
-                      <div style={{ width: 18, height: 18, background: 'rgba(239,68,68,0.9)', transform: 'rotate(45deg)', boxShadow: '0 0 20px rgba(239,68,68,0.8), 0 0 40px rgba(239,68,68,0.4)', zIndex: 2 }} />
+                      <div style={{ width: 18, height: 18, background: 'rgba(239,68,68,0.9)', transform: 'rotate(45deg)', boxShadow: '0 0 20px rgba(239,68,68,0.8)', zIndex: 2 }} />
                       {/* Case label */}
-                      <span style={{ position: 'absolute', top: '100%', marginTop: 10, color: 'rgba(239,68,68,0.7)', fontSize: '0.62rem', fontFamily: 'monospace', fontWeight: 700, letterSpacing: '2px', whiteSpace: 'nowrap' }}>CASE {projects[i + 1]?.caseNum}</span>
+                      <span style={{ position: 'absolute', top: '100%', marginTop: 10, color: 'rgba(239,68,68,0.7)', fontSize: '0.62rem', fontFamily: 'monospace', fontWeight: 700, letterSpacing: '2px', whiteSpace: 'nowrap' }}>PROJECT {i + 2}</span>
                     </div>
                     {/* Right line */}
                     <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(239,68,68,0.8))' }} />
@@ -836,11 +894,8 @@ export default function PortfolioPage() {
         </section>
 
         <section id="education" style={{ position: 'relative', overflow: 'hidden', padding: '80px 0' }}>
-          {/* Neural Network Canvas BG */}
-          <EduNeuralBg />
-
-          {/* Deep space radial gradient base */}
-          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.07) 0%, rgba(239,68,68,0.04) 40%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
+          {/* Subtle deep space gradient */}
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.05) 0%, rgba(239,68,68,0.03) 40%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
 
           <motion.div className="section-header" style={{ marginBottom: '60px', position: 'relative', zIndex: 2 }} initial={{ opacity: 0, y: -30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, type: 'spring' }}>
             <h2 className="section-title edu-title">Education</h2>
@@ -1056,8 +1111,8 @@ export default function PortfolioPage() {
 
         <section id="certifications" style={{ position: 'relative', overflow: 'hidden', padding: '60px 0' }}>
           <div className="section-header" style={{ marginBottom: '40px' }}>
-            <h2 className="section-title edu-title" style={{ color: '#fff', fontSize: '2.4rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px', textShadow: '0 0 20px rgba(239,68,68,0.5)' }}>Declassified Records // Achievements</h2>
-            <span className="section-count" style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.4)', color: '#ef4444', padding: '4px 12px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 'bold' }}>2 FILES FOUND</span>
+            <h2 className="section-title edu-title" style={{ color: '#fff', fontSize: '2.4rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px' }}>Achievements &amp; Highlights</h2>
+            <span className="section-count" style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.4)', color: '#ef4444', padding: '4px 12px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 'bold' }}>NOTABLE HIGHLIGHTS</span>
           </div>
 
           <div className="certs-grid" style={{ gap: '30px' }}>
@@ -1159,11 +1214,8 @@ export default function PortfolioPage() {
           </div>
         </section>
 
-        <section id="contact" style={{ position: 'relative', overflow: 'hidden', padding: '100px 0', marginTop: '60px' }}>
-          {/* Moving volumetric purple/indigo smoke nebula background matching reference */}
-          <VolumetricSmokeNebulaBg />
-
-          {/* Custom Styles for high-josh inputs */}
+        <section id="contact" style={{ position: 'relative', overflow: 'hidden', padding: '90px 0', marginTop: '40px' }}>
+          {/* Custom Styles for inputs */}
           <style>{`
             .cyber-input {
               background: rgba(255,255,255,0.03);
@@ -1203,45 +1255,20 @@ export default function PortfolioPage() {
             }
           `}</style>
 
-          {/* Huge Background Text */}
-          <div style={{ position: 'absolute', top: '5%', left: '50%', transform: 'translate(-50%, 0)', fontSize: '18vw', fontWeight: 900, color: 'transparent', WebkitTextStroke: '2px rgba(255,255,255,0.03)', whiteSpace: 'nowrap', zIndex: 0, pointerEvents: 'none', fontFamily: 'Montserrat, sans-serif', letterSpacing: '0.05em' }}>
-            C O N T A C T
-          </div>
+          <motion.div className="contact-section" style={{ position: 'relative', zIndex: 1, background: 'transparent', boxShadow: 'none', maxWidth: '1400px', margin: '0 auto', padding: '0 40px' }} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
 
-          {/* Animated rings in background */}
-          <motion.div
-            animate={{ scale: [1, 1.08, 1], opacity: theme === 'light' ? [0.15, 0.3, 0.15] : [0.04, 0.1, 0.04] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-            style={{ position: 'absolute', top: '50%', left: '30%', transform: 'translate(-50%, -50%)', width: '500px', height: '500px', borderRadius: '50%', border: theme === 'light' ? '2px solid #3b82f6' : '1px solid #ef4444', zIndex: 0, pointerEvents: 'none' }}
-          />
-          <motion.div
-            animate={{ scale: [1, 1.12, 1], opacity: theme === 'light' ? [0.1, 0.25, 0.1] : [0.03, 0.07, 0.03] }}
-            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-            style={{ position: 'absolute', top: '50%', left: '30%', transform: 'translate(-50%, -50%)', width: '700px', height: '700px', borderRadius: '50%', border: theme === 'light' ? '2px solid #8b5cf6' : '1px solid #3b82f6', zIndex: 0, pointerEvents: 'none' }}
-          />
-
-          <motion.div className="contact-section" style={{ position: 'relative', zIndex: 1, background: 'transparent', boxShadow: 'none', maxWidth: '1400px', margin: '0 auto', padding: '0 40px' }} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
-
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '60px' }}>
-              <motion.h2 className="section-title contact-title" style={{ marginBottom: 12, fontSize: '3.5rem', textAlign: 'center', color: theme === 'light' ? '#1e293b' : undefined }} animate={{ textShadow: theme === 'light' ? ['0 0 10px rgba(59,130,246,0.5)', '0 0 25px rgba(59,130,246,0.8)', '0 0 10px rgba(59,130,246,0.5)'] : ['0 0 10px #ef4444', '0 0 25px #ef4444', '0 0 10px #ef4444'] }} transition={{ duration: 2, repeat: Infinity }}>Establish Contact</motion.h2>
-              <p className="contact-desc" style={{ maxWidth: '520px', margin: '0 auto', fontSize: '1.1rem', fontStyle: 'italic', lineHeight: 1.6, color: '#94a3b8' }}>
-                "Open to internships, collaborations &amp; AI/Web dev opportunities. Drop a message."
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '50px' }}>
+              <h2 className="section-title contact-title" style={{ marginBottom: 12, fontSize: '3.2rem', textAlign: 'center', color: theme === 'light' ? '#1e293b' : '#fff' }}>Get In Touch</h2>
+              <p className="contact-desc" style={{ maxWidth: '520px', margin: '0 auto', fontSize: '1.05rem', lineHeight: 1.6, color: '#94a3b8' }}>
+                Open to internships, full-stack engineering roles, and collaborations. Send a message anytime.
               </p>
             </div>
 
             <div className="contact-main-grid" style={{ width: '100%', alignItems: 'stretch' }}>
               {/* Left: Contact Form — compact & wide */}
               <motion.div
-                style={{ padding: '32px 36px', borderRadius: '24px', background: theme === 'light' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(10, 15, 24, 0.8)', backdropFilter: 'blur(24px)', border: theme === 'light' ? '1px solid rgba(59,130,246,0.3)' : '1px solid rgba(239,68,68,0.3)', boxShadow: theme === 'light' ? '0 20px 60px rgba(0,0,0,0.1), inset 0 0 60px rgba(59,130,246,0.05)' : '0 20px 60px rgba(0,0,0,0.8), inset 0 0 60px rgba(239,68,68,0.05)', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
-                whileHover={{ boxShadow: theme === 'light' ? '0 20px 60px rgba(0,0,0,0.15), 0 0 50px rgba(59,130,246,0.2), inset 0 0 60px rgba(59,130,246,0.1)' : '0 20px 60px rgba(0,0,0,0.8), 0 0 50px rgba(239,68,68,0.15), inset 0 0 60px rgba(239,68,68,0.1)' }}
-                transition={{ duration: 0.4 }}
+                style={{ padding: '32px 36px', borderRadius: '24px', background: theme === 'light' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(10, 15, 24, 0.8)', backdropFilter: 'blur(24px)', border: theme === 'light' ? '1px solid rgba(59,130,246,0.3)' : '1px solid rgba(239,68,68,0.3)', boxShadow: theme === 'light' ? '0 20px 60px rgba(0,0,0,0.06)' : '0 20px 60px rgba(0,0,0,0.8)', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
               >
-                {/* Animated top bar */}
-                <motion.div
-                  animate={{ opacity: [0.4, 1, 0.4], scaleX: [0.7, 1, 0.7] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  style={{ position: 'absolute', top: 0, left: '5%', width: '90%', height: '1px', background: theme === 'light' ? 'linear-gradient(to right, transparent, #3b82f6, #60a5fa, #3b82f6, transparent)' : 'linear-gradient(to right, transparent, #a30000, #ff4444, #a30000, transparent)' }}
-                />
                 {/* Grid overlay bg */}
                 <div style={{ position: 'absolute', inset: 0, backgroundImage: theme === 'light' ? 'linear-gradient(rgba(59,130,246,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.08) 1px, transparent 1px)' : 'linear-gradient(rgba(163,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(163,0,0,0.03) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
 
@@ -1255,7 +1282,7 @@ export default function PortfolioPage() {
                       const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
                       const json = await res.json();
                       if (json.success) {
-                        alert('Transmission sent! Eshwar will respond shortly.');
+                        alert('Message sent successfully! Eshwar will respond shortly.');
                         form.reset();
                       } else {
                         alert('Something went wrong. Please email directly: eshwarhs170@gmail.com');
@@ -1297,25 +1324,19 @@ export default function PortfolioPage() {
 
                   <motion.button type="submit" className="form-submit"
                     style={{ background: theme === 'light' ? '#3b82f6' : '#ef4444', color: '#fff', border: 'none', padding: '16px', borderRadius: '12px', fontSize: '1rem', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: theme === 'light' ? '0 10px 30px rgba(59, 130, 246, 0.4)' : '0 10px 30px rgba(239, 68, 68, 0.4)' }}
-                    whileHover={{ scale: 1.02, boxShadow: theme === 'light' ? '0 10px 40px rgba(59, 130, 246, 0.6)' : '0 10px 40px rgba(239, 68, 68, 0.6)' }} whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                   >
-                    <Zap size={18} /> TRANSMIT SIGNAL
+                    <Zap size={18} /> SEND MESSAGE
                   </motion.button>
                 </form>
               </motion.div>
 
               {/* Right: Direct Channels — stretched to same height */}
-              <div style={{ padding: '32px 30px', borderRadius: '24px', background: theme === 'light' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(10, 15, 24, 0.8)', backdropFilter: 'blur(24px)', border: theme === 'light' ? '1px solid rgba(59,130,246,0.2)' : '1px solid rgba(255,255,255,0.1)', boxShadow: theme === 'light' ? '0 20px 60px rgba(0,0,0,0.08), inset 0 0 60px rgba(59,130,246,0.03)' : '0 20px 60px rgba(0,0,0,0.8), inset 0 0 60px rgba(255,255,255,0.02)', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
-                {/* Animated top bar */}
-                <motion.div
-                  animate={{ opacity: [0.3, 0.8, 0.3], scaleX: [0.7, 1, 0.7] }}
-                  transition={{ duration: 4, repeat: Infinity, delay: 1 }}
-                  style={{ position: 'absolute', top: 0, left: '5%', width: '90%', height: '1px', background: 'linear-gradient(to right, transparent, #3b82f6, #0a66c2, #3b82f6, transparent)' }}
-                />
+              <div style={{ padding: '32px 30px', borderRadius: '24px', background: theme === 'light' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(10, 15, 24, 0.8)', backdropFilter: 'blur(24px)', border: theme === 'light' ? '1px solid rgba(59,130,246,0.2)' : '1px solid rgba(255,255,255,0.1)', boxShadow: theme === 'light' ? '0 20px 60px rgba(0,0,0,0.06)' : '0 20px 60px rgba(0,0,0,0.8)', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
 
                 {/* Header */}
                 <div style={{ marginBottom: '32px' }}>
-                  <div style={{ fontSize: '0.8rem', fontWeight: 800, fontFamily: 'monospace', color: '#94a3b8', letterSpacing: '4px', textAlign: 'center', marginBottom: '8px' }}>— DIRECT CHANNELS —</div>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 800, fontFamily: 'monospace', color: '#94a3b8', letterSpacing: '3px', textAlign: 'center', marginBottom: '8px' }}>DIRECT CHANNELS</div>
                   <div style={{ height: '1px', background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent)' }} />
                 </div>
 
@@ -1332,16 +1353,12 @@ export default function PortfolioPage() {
                       target="_blank"
                       rel="noreferrer"
                       className="cyber-channel"
-                      whileHover={{ scale: 1.02, boxShadow: `0 0 30px ${ch.color}33`, borderColor: ch.color }}
+                      whileHover={{ scale: 1.02, borderColor: ch.color }}
                       style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '20px 24px', background: `linear-gradient(135deg, rgba(255,255,255,0.03), ${ch.color}11)`, border: `1px solid rgba(255,255,255,0.08)`, borderLeft: `4px solid ${ch.color}`, borderRadius: '16px', textDecoration: 'none', color: 'var(--text-main)', transition: 'all 0.3s ease', flex: 1 }}
                     >
-                      <motion.span
-                        style={{ color: ch.color, filter: `drop-shadow(0 0 12px ${ch.color}99)`, flexShrink: 0 }}
-                        animate={{ scale: [1, 1.15, 1] }}
-                        transition={{ duration: 2.5, repeat: Infinity, delay: Math.random() }}
-                      >{ch.icon}</motion.span>
+                      <span style={{ color: ch.color, flexShrink: 0 }}>{ch.icon}</span>
                       <div style={{ flex: 1, overflow: 'hidden' }}>
-                        <div style={{ fontSize: '0.75rem', fontWeight: 900, fontFamily: 'monospace', letterSpacing: '3px', color: ch.color, marginBottom: '6px' }}>{ch.label}</div>
+                        <div style={{ fontSize: '0.75rem', fontWeight: 900, fontFamily: 'monospace', letterSpacing: '2px', color: ch.color, marginBottom: '6px' }}>{ch.label}</div>
                         <div style={{ fontSize: '0.95rem', color: theme === 'light' ? '#2d2d3a' : '#f1f5f9', fontFamily: 'monospace', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ch.value}</div>
                       </div>
                       <ExternalLink size={16} style={{ color: ch.color, opacity: 0.6, flexShrink: 0 }} />
@@ -1373,11 +1390,11 @@ export default function PortfolioPage() {
 
           {/* Left: Brand & Copyright */}
           <div className="footer-left" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: theme === 'light' ? '#0f1117' : '#fff', fontWeight: 900, letterSpacing: '3px', fontSize: '1.2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: theme === 'light' ? '#0f1117' : '#fff', fontWeight: 900, letterSpacing: '2px', fontSize: '1.2rem' }}>
               <Folder size={18} color="#ef4444" /> ESHWAR H S
             </div>
             <div style={{ color: theme === 'light' ? '#5a5a72' : 'rgba(255,255,255,0.4)', fontSize: '0.75rem', fontFamily: 'monospace', letterSpacing: '1px' }}>
-              DETECTIVE DOSSIER © 2026
+              ESHWAR H S &copy; 2026
             </div>
           </div>
 
@@ -1390,7 +1407,7 @@ export default function PortfolioPage() {
             ].map((link, i) => (
               <motion.a
                 key={i}
-                whileHover={{ y: -4, scale: 1.1, backgroundColor: `${link.color}22`, borderColor: link.color, color: link.color, boxShadow: `0 0 12px ${link.color}44` }}
+                whileHover={{ y: -3, scale: 1.08, backgroundColor: `${link.color}22`, borderColor: link.color, color: link.color }}
                 href={link.href} target="_blank" rel="noreferrer"
                 style={{
                   color: theme === 'light' ? '#5a5a72' : 'rgba(255,255,255,0.5)',
@@ -1398,7 +1415,6 @@ export default function PortfolioPage() {
                   border: theme === 'light' ? '1px solid rgba(0,0,0,0.12)' : '1px solid rgba(255,255,255,0.1)',
                   background: theme === 'light' ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.03)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: theme === 'light' ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
                 }}
               >
                 {link.icon}
@@ -1408,16 +1424,16 @@ export default function PortfolioPage() {
 
           {/* Right: Actions & Status */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-            <motion.div className="footer-status" animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 2, repeat: Infinity }} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#10b981', fontFamily: 'monospace', letterSpacing: '1px', fontWeight: 800 }}>
+            <div className="footer-status" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#10b981', fontFamily: 'monospace', letterSpacing: '1px', fontWeight: 800 }}>
               <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 8px #10b981' }} /> ONLINE
-            </motion.div>
+            </div>
 
             <motion.a
               href="/resume.pdf" target="_blank" rel="noreferrer"
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: theme === 'light' ? 'linear-gradient(135deg, rgba(192,57,43,0.12), rgba(192,57,43,0.04))' : 'linear-gradient(135deg, rgba(239,68,68,0.1), rgba(0,0,0,0))', border: theme === 'light' ? '1px solid rgba(192,57,43,0.4)' : '1px solid rgba(239,68,68,0.4)', borderRadius: '6px', color: theme === 'light' ? '#c0392b' : '#fff', fontSize: '0.8rem', fontFamily: 'monospace', textDecoration: 'none', fontWeight: 800, letterSpacing: '1px', boxShadow: theme === 'light' ? '0 2px 12px rgba(192,57,43,0.15)' : 'none' }}
-              whileHover={{ background: theme === 'light' ? 'rgba(192,57,43,0.2)' : 'rgba(239,68,68,0.2)', borderColor: theme === 'light' ? '#c0392b' : '#ef4444', boxShadow: '0 0 15px rgba(192,57,43,0.4)', scale: 1.05 }}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: theme === 'light' ? 'rgba(192,57,43,0.08)' : 'rgba(239,68,68,0.1)', border: theme === 'light' ? '1px solid rgba(192,57,43,0.4)' : '1px solid rgba(239,68,68,0.4)', borderRadius: '6px', color: theme === 'light' ? '#c0392b' : '#fff', fontSize: '0.8rem', fontFamily: 'monospace', textDecoration: 'none', fontWeight: 800, letterSpacing: '1px' }}
+              whileHover={{ background: theme === 'light' ? 'rgba(192,57,43,0.15)' : 'rgba(239,68,68,0.2)', scale: 1.04 }}
             >
-              <FileText size={16} /> DECRYPT RESUME
+              <FileText size={16} /> DOWNLOAD RESUME
             </motion.a>
           </div>
 
