@@ -1,21 +1,24 @@
-# Eshwar H S - Personal Portfolio
+# Eshwar H S — Personal Portfolio
 
-A modern, interactive 3D cyberpunk-themed developer portfolio built with React, TypeScript, Three.js, and Tailwind CSS.
+A modern, interactive detective-themed developer portfolio built with React 19, TypeScript, and Framer Motion.
 
 ## ✨ Features
 
-- **Detective Intro & Cinematic Animations**: Immersive storyline entrance experience.
-- **Interactive 3D Graphics**: Dynamic Three.js canvas effects, particles, and interactive widgets.
-- **Cyberpunk UI & Sound Design**: Custom neon aesthetics, terminal overlays, and ambient audio controls.
-- **Projects & Experience**: Showcase of full-stack projects, skills, education, and achievements.
-- **Responsive & High Performance**: Optimized for all screen sizes and smooth frame rates.
+- **Cinematic Intro & Typing Animations**: Immersive storyline entrance experience with a crime-scene landing page.
+- **Interactive Solar System Skills**: Animated orbiting skill planets showcasing the tech stack.
+- **Flip-Card Projects**: Case-file style project cards that flip to reveal full technical details.
+- **Education & Achievements**: Timeline of degrees, scores, and hackathon participation.
+- **Contact Form**: Web3Forms-powered contact form with direct-channel links.
+- **Light / Dark Theme**: Full theme toggle with smooth CSS transitions.
+- **Responsive & Accessible**: Keyboard-navigable cards, ARIA attributes, responsive layouts.
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React 18, TypeScript, Vite
-- **Styling**: Tailwind CSS, Lucide Icons, Framer Motion
-- **3D & Canvas**: Three.js, React Three Fiber / Drei
-- **Audio & FX**: Canvas animations, Web Audio API
+- **Frontend**: React 19, TypeScript, Vite
+- **Animations**: Framer Motion, react-parallax-tilt
+- **Icons**: Lucide React
+- **Styling**: Inline styles + CSS-in-JS (no Tailwind)
+- **Contact**: Web3Forms API
 
 ## 🚀 Getting Started
 

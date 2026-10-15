@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import CyberProfileImage from './CyberProfileImage';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import {
@@ -44,14 +44,21 @@ function CaseCard({ project, index }: { project: ProjectData; index: number }) {
   const [flipped, setFlipped] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
+  const toggle = () => setFlipped(f => !f);
+
   return (
     <motion.div
+      role="button"
+      tabIndex={0}
+      aria-pressed={flipped}
+      aria-label={`${project.title} case card — press Enter or Space to flip`}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.7, delay: index * 0.1 }}
       style={{ width: '100%', position: 'relative', cursor: 'pointer', perspective: '1200px' }}
-      onClick={() => setFlipped(f => !f)}
+      onClick={toggle}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -858,11 +865,10 @@ export default function PortfolioPage() {
           {/* Vertical stack with separator between cards */}
           <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', gap: '0', padding: '0 40px', maxWidth: '900px', margin: '0 auto' }}>
             {projects.map((p, i) => (
-              <>
-                <CaseCard key={p.caseNum} project={p} index={i} />
+              <Fragment key={p.caseNum}>
+                <CaseCard project={p} index={i} />
                 {i < projects.length - 1 && (
                   <motion.div
-                    key={`sep-${i}`}
                     initial={{ opacity: 0, scaleX: 0 }}
                     whileInView={{ opacity: 1, scaleX: 1 }}
                     viewport={{ once: true }}
@@ -888,7 +894,7 @@ export default function PortfolioPage() {
                     <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(239,68,68,0.8))' }} />
                   </motion.div>
                 )}
-              </>
+              </Fragment>
             ))}
           </div>
         </section>
